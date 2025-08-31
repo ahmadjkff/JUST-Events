@@ -1,11 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT;
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/ecommerce") // ecommerce the name of the db
+  .connect("mongodb://127.0.0.1:27017/just-events")
   .then(() => console.log("Mongoose connected"))
   .catch((err) => console.log(`failed to connect mongoose ${err}`));
 
