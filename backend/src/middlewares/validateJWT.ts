@@ -1,14 +1,22 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { userModel } from "../models/userModel";
-import { ExtendRequest } from "../types/ExtendRequest";
-const validateJWT = (req: ExtendRequest, res: Response, next: NextFunction) => {
-  const authorizationheader = req.get("authorization");
 
-  if (!authorizationheader) {
+import jwt from "jsonwebtoken";
+import { NextFunction, Response } from "express";
+import userModel from "../models/userModel";
+import { IExtendRequest } from "../types/extendedRequest";
+
+export const validateJWT = async (
+  req: IExtendRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const authorizationHeader = req.get("authorization");
+
+  if (!authorizationHeader) {
+
     res.status(403).send("Authorization header was not provided");
     return;
   }
+
 
   const token = authorizationheader.split(" ")[1];
 
@@ -18,7 +26,7 @@ const validateJWT = (req: ExtendRequest, res: Response, next: NextFunction) => {
   }
   jwt.verify(
     token,
-    "yvcJSGq1quCv7Mo4i7ZLuRzMniHjEG6O",
+    process.env.JWT_SECRET,
     async (err, payload) => {
       if (err) {
         res.status(403).send("Invalid token");
@@ -29,12 +37,17 @@ const validateJWT = (req: ExtendRequest, res: Response, next: NextFunction) => {
         return;
       }
 
-      const userPayload = payload as {
-        email: string;
-        firstName: string;
-        lastName: string;
-      };
+    const userPayload = payload as {
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: string;
+    };
       const user = await userModel.findOne({ email: userPayload.email });
+          if (!user) {
+      res.status(403).send("User not found");
+      return;
+    }
       req.user = user;
       next();
     }
@@ -42,3 +55,4 @@ const validateJWT = (req: ExtendRequest, res: Response, next: NextFunction) => {
 };
 
 export default validateJWT;
+
