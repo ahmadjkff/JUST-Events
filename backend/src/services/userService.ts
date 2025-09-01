@@ -44,7 +44,10 @@ export const register = async ({
   });
 
   await newUser.save();
-  return { data: generateJWT({ firstName, lastName, email }), statusCode: 200 };
+  return {
+    data: generateJWT({ firstName, lastName, email, role: assignedRole }),
+    statusCode: 200,
+  };
 };
 
 interface LoginParams {
@@ -103,10 +106,7 @@ export const createAdmin = async ({
   await newAdmin.save();
   return {
     statusCode: 200,
-    data: {
-      token: generateJWT({ firstName, lastName, email, role }),
-      message: "Admin created successfully",
-    },
+    data: generateJWT({ firstName, lastName, email, role }),
   };
 };
 
