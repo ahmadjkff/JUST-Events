@@ -22,12 +22,12 @@ export const register = async ({
     return { data: "User already exists", statusCode: 400 };
   }
 
-  let assignedRole: "admin" | "student";
+  let assignedRole: Roles.ADMIN | Roles.STUDENT;
 
   if (email.endsWith("@cit.just.edu.jo")) {
-    assignedRole = "student";
+    assignedRole = Roles.STUDENT;
   } else if (email.endsWith("@just.edu.jo")) {
-    assignedRole = "admin";
+    assignedRole = Roles.ADMIN;
   } else {
     return {
       data: "Invalid email domain. Registration not allowed.",
@@ -70,6 +70,7 @@ export const login = async ({ email, password }: LoginParams) => {
       email,
       firstName: findUser.firstName,
       lastName: findUser.lastName,
+      role: findUser.role,
     }),
     statusCode: 200,
   };
