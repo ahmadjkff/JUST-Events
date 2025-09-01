@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoute from "./routes/userRoute";
 import adminRouter from "./routes/adminRoute";
-import studentRouter from "./routes/studentRouter";
+import studentRouter from "./routes/studentRoute";
 dotenv.config();
 
 const app = express();
