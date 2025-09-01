@@ -7,7 +7,7 @@ import studentRouter from "./routes/studentRoute";
 dotenv.config();
 
 const app = express();
-const port = 3002;
+const port = process.env.PORT;
 app.use(express.json());
 mongoose
   .connect(process.env.MONGODB_URI!)
