@@ -22,12 +22,12 @@ export const register = async ({
     return { data: "User already exists", statusCode: 400 };
   }
 
-  let assignedRole: "admin" | "student";
+  let assignedRole: Roles.ADMIN | Roles.STUDENT;
 
   if (email.endsWith("@cit.just.edu.jo")) {
-    assignedRole = "student";
+    assignedRole = Roles.STUDENT;
   } else if (email.endsWith("@just.edu.jo")) {
-    assignedRole = "admin";
+    assignedRole = Roles.ADMIN;
   } else {
     return {
       data: "Invalid email domain. Registration not allowed.",
@@ -44,7 +44,10 @@ export const register = async ({
   });
 
   await newUser.save();
-  return { data: generateJWT({ firstName, lastName, email }), statusCode: 200 };
+  return {
+    data: generateJWT({ firstName, lastName, email, role: assignedRole }),
+    statusCode: 200,
+  };
 };
 
 interface LoginParams {
@@ -70,6 +73,7 @@ export const login = async ({ email, password }: LoginParams) => {
       email,
       firstName: findUser.firstName,
       lastName: findUser.lastName,
+      role: findUser.role,
     }),
     statusCode: 200,
   };
@@ -102,10 +106,7 @@ export const createAdmin = async ({
   await newAdmin.save();
   return {
     statusCode: 200,
-    data: {
-      token: generateJWT({ firstName, lastName, email, role }),
-      message: "Admin created successfully",
-    },
+    data: generateJWT({ firstName, lastName, email, role }),
   };
 };
 
