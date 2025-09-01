@@ -8,7 +8,7 @@ const app = express();
 const port = process.env.PORT;
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/just-events")
+  .connect(process.env.MONGODB_URI!)
   .then(() => console.log("Mongoose connected"))
   .catch((err) => console.log(`failed to connect mongoose ${err}`));
 
