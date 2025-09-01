@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import userRouter from "./routes/userRouter";
+import userRoute from "./routes/userRoute";
 import adminRouter from "./routes/adminRouter";
 import studentRouter from "./routes/studentRouter";
 dotenv.config();
@@ -14,7 +14,7 @@ mongoose
   .then(() => console.log("Mongoose connected"))
   .catch((err) => console.log(`failed to connect mongoose ${err}`));
 
-app.use("/user", userRouter);
+app.use("/user", userRoute);
 app.use("/admin", adminRouter);
 app.use("/student", studentRouter);
 app.listen(port, () => {
