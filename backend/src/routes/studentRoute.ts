@@ -1,11 +1,11 @@
 import express from "express";
 import validateJWT from "../middlewares/validateJWT";
-import { ExtendRequest } from "../types/ExtendRequest";
 import isStudent from "../middlewares/isStudent";
+import { IExtendRequest } from "../types/extendedRequest";
 
 const router = express.Router();
 
-router.get("/", validateJWT, isStudent, async (req: ExtendRequest, res) => {
+router.get("/", validateJWT, isStudent, async (req: IExtendRequest, res) => {
   const userId = req.user._id;
   res.status(201).send("Student Route");
 });

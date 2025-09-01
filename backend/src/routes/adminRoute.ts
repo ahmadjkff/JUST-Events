@@ -1,11 +1,11 @@
 import express from "express";
 import validateJWT from "../middlewares/validateJWT";
-import { ExtendRequest } from "../types/ExtendRequest";
 import isAdmin from "../middlewares/isAdmin";
+import { IExtendRequest } from "../types/extendedRequest";
 
 const router = express.Router();
 
-router.get("/", validateJWT, isAdmin, async (req: ExtendRequest, res) => {
+router.get("/", validateJWT, isAdmin, async (req: IExtendRequest, res) => {
   const userId = req.user._id;
   res.status(201).send("Admin route");
 });

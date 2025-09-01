@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
-import { ExtendRequest } from "../types/ExtendRequest";
+import { IExtendRequest } from "../types/extendedRequest";
 
-const isAdmin = (req: ExtendRequest, res: Response, next: NextFunction) => {
+const isAdmin = (req: IExtendRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
     res.status(401).send("Unauthorized");
     return;
