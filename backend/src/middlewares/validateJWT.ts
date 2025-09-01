@@ -1,3 +1,4 @@
+
 import jwt from "jsonwebtoken";
 import { NextFunction, Response } from "express";
 import userModel from "../models/userModel";
@@ -11,27 +12,30 @@ export const validateJWT = async (
   const authorizationHeader = req.get("authorization");
 
   if (!authorizationHeader) {
+
     res.status(403).send("Authorization header was not provided");
     return;
   }
 
-  const token = authorizationHeader.split(" ")[1];
+
+  const token = authorizationheader.split(" ")[1];
 
   if (!token) {
-    res.status(403).send("Bearer token was not found");
+    res.status(403).send("Bearer token not found");
     return;
   }
-
-  jwt.verify(token, process.env.JWT_SECRET || "", async (err, payload) => {
-    if (err) {
-      res.status(403).send("invalid token");
-      return;
-    }
-
-    if (!payload) {
-      res.status(403).send("invalid token payload");
-      return;
-    }
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    async (err, payload) => {
+      if (err) {
+        res.status(403).send("Invalid token");
+        return;
+      }
+      if (!payload) {
+        res.status(403).send("Invalid token payload");
+        return;
+      }
 
     const userPayload = payload as {
       email: string;
@@ -39,16 +43,16 @@ export const validateJWT = async (
       lastName: string;
       role: string;
     };
-
-    //Fetch user from database based on payload
-    const user = await userModel.findOne({ email: userPayload.email });
-
-    if (!user) {
+      const user = await userModel.findOne({ email: userPayload.email });
+          if (!user) {
       res.status(403).send("User not found");
       return;
     }
-
-    req.user = user;
-    next();
-  });
+      req.user = user;
+      next();
+    }
+  );
 };
+
+export default validateJWT;
+
