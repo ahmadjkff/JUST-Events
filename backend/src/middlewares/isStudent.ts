@@ -1,5 +1,6 @@
 import { NextFunction, Response } from "express";
 import { IExtendRequest } from "../types/extendedRequest";
+import { Roles } from "../types/userTypes";
 
 const isStudent = (req: IExtendRequest, res: Response, next: NextFunction) => {
   if (!req.user) {
@@ -7,7 +8,7 @@ const isStudent = (req: IExtendRequest, res: Response, next: NextFunction) => {
     return;
   }
 
-  if (req.user.role !== "student") {
+  if (req.user.role !== Roles.STUDENT) {
     res.status(401).send("Access denied. Student only.");
     return;
   }
