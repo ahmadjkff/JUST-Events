@@ -5,8 +5,8 @@ interface IUser extends Document {
   firstName: string;
   lastName: string;
   email: string;
-  role: string;
-  password: string;
+  role: Roles;
+  faculty: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: Object.values(Roles), required: true },
-  password: { type: String, required: true },
+  faculty: { type: String, required: true },
 });
 
 const userModel = mongoose.model<IUser>("User", userSchema);
