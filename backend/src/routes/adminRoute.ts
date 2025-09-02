@@ -1,7 +1,7 @@
 import express from "express";
 import validateJWT from "../middlewares/validateJWT";
-import isAdmin from "../middlewares/isAdmin";
 import { IExtendRequest } from "../types/extendedRequest";
+import { isAdmin } from "../middlewares/validateUserRole";
 
 const router = express.Router();
 

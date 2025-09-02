@@ -1,6 +1,6 @@
 import express from "express";
 import validateJWT from "../middlewares/validateJWT";
-import isStudent from "../middlewares/isStudent";
+import { isStudent } from "../middlewares/validateUserRole";
 import { IExtendRequest } from "../types/extendedRequest";
 
 const router = express.Router();
