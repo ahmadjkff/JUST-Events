@@ -1,0 +1,15 @@
+import express from "express";
+import bodyParser from "body-parser";
+import authRoutes from "./routes/auth";
+import studentRoutes from "./routes/student";
+
+const app = express();
+app.use(bodyParser.json());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/student", studentRoutes);
+
+const PORT = 5000;
+app.listen(PORT, () =>
+  console.log(`Simulator API running on http://localhost:${PORT}`)
+);
