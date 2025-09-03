@@ -7,6 +7,12 @@ interface IEvent extends Document {
   createdBy: mongoose.Types.ObjectId;
   status: "pending" | "approved" | "rejected";
   registerdStudens: mongoose.Types.ObjectId[];
+  feedback: {
+    student: mongoose.Types.ObjectId;
+    rating: number;
+    comment?: string;
+    createdAt: Date;
+  }[];
 }
 
 const eventSchema = new Schema<IEvent>({
@@ -24,6 +30,14 @@ const eventSchema = new Schema<IEvent>({
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+  ],
+  feedback: [
+    {
+      student: { type: Schema.Types.ObjectId, ref: "User" },
+      rating: { type: Number, min: 1, max: 5 },
+      comment: { type: String },
+      createdAt: { type: Date, default: Date.now },
     },
   ],
 });
