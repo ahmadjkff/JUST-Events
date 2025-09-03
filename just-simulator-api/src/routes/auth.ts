@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { users } from "../data/mockData";
+import userModel from "../models/userModel";
 
 const router = Router();
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password }: { email: string; password: string } = req.body;
-  const user = users[email as keyof typeof users];
+  const user = await userModel.findOne({ email });
 
   if (!user || user.password !== password) {
     return res.status(401).json({

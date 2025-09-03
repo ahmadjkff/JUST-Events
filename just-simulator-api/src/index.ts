@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth";
+import adminRoute from "./routes/adminRoute";
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,6 +15,7 @@ mongoose
   .catch((err) => console.log(`failed to connect mongoose ${err}`));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoute);
 
 const PORT = 5000;
 app.listen(PORT, () =>
