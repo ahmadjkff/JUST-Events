@@ -96,6 +96,17 @@ export const addVolunteer = async (
         message: "User not found",
       };
     }
+
+    if (
+      event.volunteers.includes(userId as unknown as mongoose.Types.ObjectId)
+    ) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "User is already a volunteer for this event",
+      };
+    }
+
     event.volunteers = event.volunteers || [];
     event.volunteers.push(userId as unknown as mongoose.Types.ObjectId);
     await event.save();
