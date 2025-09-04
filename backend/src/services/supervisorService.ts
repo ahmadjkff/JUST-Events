@@ -1,5 +1,6 @@
 import { eventModel } from "../models/eventModel";
 import { EventStatus } from "../types/eventTypes";
+import IResponseStructure from "../types/responseStructure";
 
 interface IBody {
   title: string;
@@ -15,7 +16,7 @@ export const createEvent = async ({
   location,
   date,
   supervisorId,
-}: IBody) => {
+}: IBody): Promise<IResponseStructure> => {
   const event = new eventModel({
     title,
     description,
@@ -27,7 +28,12 @@ export const createEvent = async ({
 
   await event.save();
 
-  return { data: { event }, statusCode: 201 };
+  return {
+    data: { event },
+    statusCode: 201,
+    success: true,
+    message: "Event created successfully",
+  };
 };
 
 interface IApproveOrReject {
@@ -41,12 +47,13 @@ export const approveOrRejectStudentapplacition = async ({
   eventId,
   action,
   supervisorId,
-}: IApproveOrReject) => {
+}: IApproveOrReject): Promise<IResponseStructure> => {
   const event = await eventModel.findById(eventId);
-  if (!event) return { data: "Event not found", statusCode: 403 };
+  if (!event)
+    return { message: "Event not found", statusCode: 403, success: false };
 
   if (event.createdBy.toString() !== supervisorId.toString()) {
-    return { data: "Not authorized", statusCode: 404 };
+    return { message: "Not authorized", statusCode: 404, success: false };
   }
 
   const student = event.registeredStudents.find(
@@ -54,7 +61,11 @@ export const approveOrRejectStudentapplacition = async ({
   );
 
   if (!student) {
-    return { data: "Student not registered", statusCode: 404 };
+    return {
+      message: "Student not registered",
+      statusCode: 404,
+      success: false,
+    };
   }
 
   student.status =
@@ -64,9 +75,10 @@ export const approveOrRejectStudentapplacition = async ({
   await event.save();
 
   return {
+    message: `Student registration ${student.status}`,
+    success: true,
     data: {
       event,
-      message: `Student registration ${student.status}`,
     },
     statusCode: 200,
   };

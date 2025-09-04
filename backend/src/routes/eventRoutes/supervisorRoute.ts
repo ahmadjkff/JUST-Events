@@ -23,14 +23,14 @@ router.post(
       }
 
       const supervisorId = req.user._id;
-      const { data, statusCode } = await createEvent({
+      const { data, statusCode, message, success } = await createEvent({
         title,
         description,
         location,
         date,
         supervisorId,
       });
-      res.status(statusCode).json(data);
+      res.status(statusCode).json({ success, message, data });
     } catch {
       res.status(403).send("something went wrong");
     }
@@ -59,14 +59,15 @@ router.put(
       if (!action) {
         res.status(401).json({ message: "event status is required" });
       }
-      const { data, statusCode } = await approveOrRejectStudentapplacition({
-        studentId,
-        eventId,
-        action,
-        supervisorId,
-      });
+      const { data, statusCode, success, message } =
+        await approveOrRejectStudentapplacition({
+          studentId,
+          eventId,
+          action,
+          supervisorId,
+        });
 
-      res.status(statusCode).json(data);
+      res.status(statusCode).json({ success, message, data });
     } catch {
       res.status(403).send("something went wrong");
     }

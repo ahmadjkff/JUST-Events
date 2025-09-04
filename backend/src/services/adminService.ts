@@ -1,10 +1,14 @@
 import userModel from "../models/userModel";
+import IResponseStructure from "../types/responseStructure";
 import { Roles } from "../types/userTypes";
 
-export const editRole = async (userId: string, newRole: Roles) => {
+export const editRole = async (
+  userId: string,
+  newRole: Roles
+): Promise<IResponseStructure> => {
   const user = await userModel.findById(userId);
   if (!user) {
-    return { statusCode: 404, data: { message: "User not found" } };
+    return { statusCode: 404, success: false, message: "User not found" };
   }
 
   // Send to simulator
@@ -19,7 +23,8 @@ export const editRole = async (userId: string, newRole: Roles) => {
 
     return {
       statusCode: response.status,
-      data: { message: `Error from simulator: ${errorText}` },
+      success: false,
+      message: `Error from simulator: ${errorText}`,
     };
   }
 
@@ -28,6 +33,8 @@ export const editRole = async (userId: string, newRole: Roles) => {
 
   return {
     statusCode: 200,
-    data: { message: "User role updated successfully", user },
+    success: true,
+    message: "User role updated successfully",
+    data: { user },
   };
 };

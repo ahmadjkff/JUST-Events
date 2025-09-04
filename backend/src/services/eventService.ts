@@ -2,13 +2,17 @@ import { eventModel, IEvent } from "../models/eventModel";
 import mongoose from "mongoose";
 import userModel from "../models/userModel";
 import { EventStatus } from "../types/eventTypes";
+import IResponseStructure from "../types/responseStructure";
 
-export const getEventsByStatus = async (status: string) => {
+export const getEventsByStatus = async (
+  status: string
+): Promise<IResponseStructure> => {
   try {
     if (!Object.values(EventStatus).includes(status as EventStatus)) {
       return {
         statusCode: 400,
-        data: { success: false, message: "Invalid status parameter" },
+        success: false,
+        message: "Invalid status parameter",
       };
     }
 
@@ -16,26 +20,31 @@ export const getEventsByStatus = async (status: string) => {
 
     return {
       statusCode: 200,
+      success: true,
+      message: `${status} Events fetched successfully`,
       data: {
-        success: true,
-        message: `${status} Events fetched successfully`,
         events,
       },
     };
   } catch (error: any) {
     return {
       statusCode: 500,
-      data: { success: false, message: "Server error", error: error.message },
+      success: false,
+      message: "Server error",
     };
   }
 };
 
-export const changeEventStatus = async (eventId: string, action: string) => {
+export const changeEventStatus = async (
+  eventId: string,
+  action: string
+): Promise<IResponseStructure> => {
   try {
     if (!Object.values(EventStatus).includes(action as EventStatus)) {
       return {
         statusCode: 400,
-        data: { success: false, message: "Invalid action" },
+        success: false,
+        message: "Invalid action",
       };
     }
 
@@ -43,7 +52,8 @@ export const changeEventStatus = async (eventId: string, action: string) => {
     if (!event) {
       return {
         statusCode: 404,
-        data: { success: false, message: "Event not found" },
+        success: false,
+        message: "Event not found",
       };
     }
 
@@ -52,30 +62,38 @@ export const changeEventStatus = async (eventId: string, action: string) => {
 
     return {
       statusCode: 200,
-      data: { success: true, message: `Event ${action}`, event },
+      success: true,
+      message: `Event ${action}`,
+      data: { event },
     };
   } catch (error: any) {
     return {
       statusCode: 500,
-      data: { success: false, message: "Server error", error: error.message },
+      success: false,
+      message: "Server error",
     };
   }
 };
 
-export const addVolunteer = async (eventId: string, userId: string) => {
+export const addVolunteer = async (
+  eventId: string,
+  userId: string
+): Promise<IResponseStructure> => {
   try {
     const event = await eventModel.findById(eventId);
     if (!event) {
       return {
         statusCode: 404,
-        data: { success: false, message: "Event not found" },
+        success: false,
+        message: "Event not found",
       };
     }
     const user = await userModel.findById(userId);
     if (!user) {
       return {
         statusCode: 404,
-        data: { success: false, message: "User not found" },
+        success: false,
+        message: "User not found",
       };
     }
     event.volunteers = event.volunteers || [];
@@ -83,12 +101,15 @@ export const addVolunteer = async (eventId: string, userId: string) => {
     await event.save();
     return {
       statusCode: 200,
-      data: { success: true, message: "Volunteer added successfully", event },
+      success: true,
+      message: "Volunteer added successfully",
+      data: { event },
     };
   } catch (error: any) {
     return {
       statusCode: 500,
-      data: { success: false, message: "Server error", error: error.message },
+      success: false,
+      message: "Server error",
     };
   }
 };

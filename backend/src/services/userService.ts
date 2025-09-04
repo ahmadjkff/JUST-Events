@@ -1,7 +1,11 @@
+import IResponseStructure from "./../types/responseStructure";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel";
 
-export const login = async (email: string, password: string) => {
+export const login = async (
+  email: string,
+  password: string
+): Promise<IResponseStructure> => {
   try {
     // Call the simulator API to validate credentials
     const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -13,7 +17,8 @@ export const login = async (email: string, password: string) => {
     if (!response.ok) {
       return {
         statusCode: response.status,
-        data: { success: false, message: `Auth service failed` },
+        success: false,
+        message: `Auth service failed`,
       };
     }
 
@@ -22,7 +27,8 @@ export const login = async (email: string, password: string) => {
     if (data.status === "error") {
       return {
         statusCode: 400,
-        data: { success: false, message: data.message },
+        success: false,
+        message: data.message,
       };
     }
 
@@ -57,6 +63,8 @@ export const login = async (email: string, password: string) => {
 
     return {
       statusCode: 200,
+      success: true,
+      message: "Login successful",
       data: {
         token: token,
         user: {
@@ -72,10 +80,8 @@ export const login = async (email: string, password: string) => {
   } catch (error: any) {
     return {
       statusCode: 500,
-      data: {
-        success: false,
-        message: `Something went wrong: ${error.message}`,
-      },
+      success: false,
+      message: `Something went wrong: ${error.message}`,
     };
   }
 };

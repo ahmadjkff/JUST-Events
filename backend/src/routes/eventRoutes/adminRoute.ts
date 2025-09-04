@@ -11,17 +11,22 @@ import { isAdmin } from "../../middlewares/validateUserRole";
 const router = express.Router();
 
 router.get("/:status", validateJWT, isAdmin, async (req, res) => {
-  const status = req.params.status;
+  try {
+    const status = req.params.status;
 
-  if (!status) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Status parameter is required" });
+    if (!status) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Status parameter is required" });
+    }
+
+    const { statusCode, data, message, success } =
+      await getEventsByStatus(status);
+
+    return res.status(statusCode).json({ message, success, data });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Server error" });
   }
-
-  const { statusCode, data } = await getEventsByStatus(status);
-
-  return res.status(statusCode).json(data);
 });
 
 router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
@@ -34,13 +39,13 @@ router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
         .status(400)
         .json({ success: false, message: "Action and Event ID are required" });
     }
-    const { statusCode, data } = await changeEventStatus(
+    const { statusCode, data, message, success } = await changeEventStatus(
       eventId,
       action as EventStatus
     );
-    res.status(statusCode).json(data);
+    res.status(statusCode).json({ success, message, data });
   } catch (error: any) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
@@ -52,12 +57,13 @@ router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
         .status(400)
         .json({ success: false, message: "Event ID and User ID are required" });
     }
-    const { statusCode, data } = await addVolunteer(eventId, userId);
-    res.status(statusCode).json(data);
+    const { statusCode, data, message, success } = await addVolunteer(
+      eventId,
+      userId
+    );
+    res.status(statusCode).json({ success, message, data });
   } catch (error: any) {
-    res
-      .status(500)
-      .json({ success: false, message: "Server error", error: error.message });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 

@@ -23,11 +23,12 @@ router.put(
         return res.status(400).json({ message: "User ID is required" });
       }
 
-      const { statusCode, data } = await editRole(userId, newRole);
+      const { statusCode, data, message, success } = await editRole(
+        userId,
+        newRole
+      );
 
-      res
-        .status(statusCode)
-        .json({ data: { message: data.message, user: data.user } });
+      res.status(statusCode).json({ success, message, data });
     } catch (error: any) {
       res.status(500).json({ message: "Server error", error: error.message });
     }
