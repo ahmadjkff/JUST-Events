@@ -1,0 +1,98 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Primary button variant */
+.button-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.75rem 1.5rem;
+}
+
+.button-primary:hover:not(:disabled) {
+  background-color: #155a94;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 105, 173, 0.3);
+}
+
+.button-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary button variant */
+.button-secondary {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  padding: 0.75rem 1.5rem;
+}
+
+.button-secondary:hover:not(:disabled) {
+  background-color: #b8d9f2;
+}
+
+/* Link button variant */
+.button-link {
+  background: transparent;
+  color: var(--accent-foreground);
+  padding: 0.5rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.button-link:hover:not(:disabled) {
+  text-decoration: none;
+}
+
+/* Full width modifier */
+.button-full {
+  width: 100%;
+}
+
+/* Loading state */
+.button-loading {
+  position: relative;
+  color: transparent;
+}
+
+.button-loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
