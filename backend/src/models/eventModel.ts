@@ -18,6 +18,7 @@ export interface IEvent extends Document {
     comment?: string;
     createdAt: Date;
   }[];
+  volunteers: mongoose.Types.ObjectId[];
 }
 
 const eventSchema = new Schema<IEvent>(
@@ -50,6 +51,7 @@ const eventSchema = new Schema<IEvent>(
         createdAt: { type: Date, default: Date.now },
       },
     ],
+    volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
