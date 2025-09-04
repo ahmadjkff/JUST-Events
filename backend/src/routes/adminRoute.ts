@@ -4,6 +4,7 @@ import { IExtendRequest } from "../types/extendedRequest";
 import { isAdmin } from "../middlewares/validateUserRole";
 import { eventModel } from "../models/eventModel";
 import { editRole } from "../services/adminService";
+import { EventStatus } from "../types/eventTypes";
 
 const router = express.Router();
 // approve event by admin
@@ -17,7 +18,7 @@ router.put(
     const event = await eventModel.findById(eventId);
     if (!event) return res.status(404).send("Event not found");
 
-    event.status = "approved";
+    event.status = EventStatus.APPROVED;
 
     await event.save();
 
@@ -39,7 +40,7 @@ router.put(
     const event = await eventModel.findById(eventId);
     if (!event) return res.status(404).send("Event not found");
 
-    event.status = "rejected";
+    event.status = EventStatus.REJECTED;
 
     await event.save();
 
