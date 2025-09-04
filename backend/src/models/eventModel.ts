@@ -10,16 +10,35 @@ export interface IEvent extends Document {
   registeredStudents: {
     student: mongoose.Types.ObjectId;
     status: EventStatus;
-    registeredAt: Date;
   }[];
   feedback: {
     student: mongoose.Types.ObjectId;
     rating: number;
     comment?: string;
-    createdAt: Date;
   }[];
   volunteers: mongoose.Types.ObjectId[];
 }
+
+const registeredStudentSchema = new Schema(
+  {
+    student: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    status: {
+      type: String,
+      enum: Object.values(EventStatus),
+      default: EventStatus.PENDING,
+    },
+  },
+  { timestamps: true }
+);
+
+const feedbackSchema = new Schema(
+  {
+    student: { type: Schema.Types.ObjectId, ref: "User" },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String, trim: true },
+  },
+  { timestamps: true }
+);
 
 const eventSchema = new Schema<IEvent>(
   {
@@ -32,31 +51,15 @@ const eventSchema = new Schema<IEvent>(
       enum: Object.values(EventStatus),
       default: EventStatus.PENDING,
     },
-    registeredStudents: [
-      {
-        student: { type: Schema.Types.ObjectId, ref: "User", required: true },
-        status: {
-          type: String,
-          enum: Object.values(EventStatus),
-          default: EventStatus.PENDING,
-        },
-        registeredAt: { type: Date, default: Date.now },
-      },
-    ],
-    feedback: [
-      {
-        student: { type: Schema.Types.ObjectId, ref: "User" },
-        rating: { type: Number, required: true, min: 1, max: 5 },
-        comment: { type: String, trim: true },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
+    registeredStudents: [registeredStudentSchema],
+    feedback: [feedbackSchema],
     volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
 
 eventSchema.index({ date: 1 });
+eventSchema.index({ createdBy: 1 });
 
 export const eventModel = mongoose.model<IEvent>("Event", eventSchema);
 
