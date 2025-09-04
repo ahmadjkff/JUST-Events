@@ -27,9 +27,13 @@ const eventSchema = new Schema<IEvent>({
   },
   registerdStudens: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      student: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      status: {
+        type: String,
+        enum: ["pending", "approved", "rejected"],
+        default: "pending",
+      },
+      registeredAt: { type: Date, default: Date.now },
     },
   ],
   feedback: [
