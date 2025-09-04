@@ -14,6 +14,11 @@ router.post(
   async (req: IExtendRequest, res) => {
     try {
       const { title, description, location, date } = req.body;
+
+      if (!title || !description || !location || !date) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
       const supervisorId = req.user._id;
       const { data, statusCode } = await createEvent({
         title,
