@@ -1,10 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import userRoute from "./routes/userRoute";
-import adminRoute from "./routes/adminRoute";
-import studentRoute from "./routes/studentRoute";
-import supervisorRoute from "./routes/supervisorRoute";
+import userRoute from "./routes/authRoutes/userRoute";
+import adminRoute from "./routes/authRoutes/adminRoute";
+import studentRoute from "./routes/eventRoutes/studentRoute";
+import supervisorRoute from "./routes/eventRoutes/supervisorRoute";
 import eventAdminRoute from "./routes/eventRoutes/adminRoute";
 dotenv.config();
 

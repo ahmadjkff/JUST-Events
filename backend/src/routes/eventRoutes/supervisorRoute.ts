@@ -1,11 +1,11 @@
 import express from "express";
-import validateJWT from "../middlewares/validateJWT";
-import { IExtendRequest } from "../types/extendedRequest";
-import { isSupervisor } from "../middlewares/validateUserRole";
+import validateJWT from "../../middlewares/validateJWT";
+import { IExtendRequest } from "../../types/extendedRequest";
+import { isSupervisor } from "../../middlewares/validateUserRole";
 import {
   approveOrRejectStudentapplacition,
   createEvent,
-} from "../services/supervisorService";
+} from "../../services/supervisorService";
 
 const router = express.Router();
 
@@ -39,13 +39,15 @@ router.post(
 
 router.put(
   "/:eventId/registration/:studentId",
+  validateJWT,
+  isSupervisor,
   async (req: IExtendRequest, res) => {
     try {
       const studentId = req.params.studentId;
       const eventId = req.params.eventId;
       const { action } = req.body; // approved or rejected
       const supervisorId = req.user._id;
-      
+
       if (!studentId || !eventId) {
         return res
           .status(400)
