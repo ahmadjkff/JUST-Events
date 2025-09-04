@@ -1,6 +1,7 @@
 import express from "express";
 import { EventStatus } from "../../types/eventTypes";
 import {
+  addVolunteer,
   changeEventStatus,
   getEventsByStatus,
 } from "../../services/eventService";
@@ -38,6 +39,23 @@ router.put("/:action/:eventId", validateJWT, isAdmin, async (req, res) => {
     res.status(statusCode).json(data);
   } catch (error: any) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
+  try {
+    const { eventId, userId } = req.body;
+    if (!eventId || !userId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Event ID and User ID are required" });
+    }
+    const { statusCode, data } = await addVolunteer(eventId, userId);
+    res.status(statusCode).json(data);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 });
 
