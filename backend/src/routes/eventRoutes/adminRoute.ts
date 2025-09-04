@@ -24,9 +24,11 @@ router.get("/:status", validateJWT, isAdmin, async (req, res) => {
   return res.status(statusCode).json(data);
 });
 
-router.put("/:action/:eventId", validateJWT, isAdmin, async (req, res) => {
+router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
+  // to change (action and eventId) to req.body
   try {
-    const { action, eventId } = req.params;
+    const { action, eventId } = req.body;
+
     if (!action || !eventId) {
       return res
         .status(400)
