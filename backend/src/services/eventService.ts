@@ -30,7 +30,7 @@ export const getEventsByStatus = async (
     return {
       statusCode: 500,
       success: false,
-      message: "Server error",
+      message: `Server error ${error.message}`,
     };
   }
 };
@@ -70,7 +70,7 @@ export const changeEventStatus = async (
     return {
       statusCode: 500,
       success: false,
-      message: "Server error",
+      message: `Server error ${error.message}`,
     };
   }
 };
@@ -120,7 +120,7 @@ export const addVolunteer = async (
     return {
       statusCode: 500,
       success: false,
-      message: "Server error",
+      message: `Server error ${error.message}`,
     };
   }
 };

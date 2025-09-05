@@ -24,8 +24,10 @@ router.get("/:status", validateJWT, isAdmin, async (req, res) => {
       await getEventsByStatus(status);
 
     return res.status(statusCode).json({ message, success, data });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: "Server error" });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ success: false, message: `Server error ${error.message}` });
   }
 });
 
@@ -45,7 +47,9 @@ router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
     );
     res.status(statusCode).json({ success, message, data });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res
+      .status(500)
+      .json({ success: false, message: `Server error ${error.message}` });
   }
 });
 
@@ -63,7 +67,9 @@ router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
     );
     res.status(statusCode).json({ success, message, data });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res
+      .status(500)
+      .json({ success: false, message: `Server error ${error.message}` });
   }
 });
 

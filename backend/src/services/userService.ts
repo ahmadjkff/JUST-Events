@@ -81,7 +81,7 @@ export const login = async (
     return {
       statusCode: 500,
       success: false,
-      message: `Something went wrong: ${error.message}`,
+      message: `Server error: ${error.message}`,
     };
   }
 };

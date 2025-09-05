@@ -6,35 +6,43 @@ export const editRole = async (
   userId: string,
   newRole: Roles
 ): Promise<IResponseStructure> => {
-  const user = await userModel.findById(userId);
-  if (!user) {
-    return { statusCode: 404, success: false, message: "User not found" };
-  }
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return { statusCode: 404, success: false, message: "User not found" };
+    }
 
-  // Send to simulator
-  const response = await fetch("http://localhost:5000/api/admin/edit-role", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: user.email, newRole }),
-  });
+    // Send to simulator
+    const response = await fetch("http://localhost:5000/api/admin/edit-role", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: user.email, newRole }),
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
+    if (!response.ok) {
+      const errorText = await response.text();
+
+      return {
+        statusCode: response.status,
+        success: false,
+        message: `Error from simulator: ${errorText}`,
+      };
+    }
+
+    user.role = newRole;
+    await user.save();
 
     return {
-      statusCode: response.status,
+      statusCode: 200,
+      success: true,
+      message: "User role updated successfully",
+      data: { user },
+    };
+  } catch (error: any) {
+    return {
+      statusCode: 500,
       success: false,
-      message: `Error from simulator: ${errorText}`,
+      message: `Server error ${error.message}`,
     };
   }
-
-  user.role = newRole;
-  await user.save();
-
-  return {
-    statusCode: 200,
-    success: true,
-    message: "User role updated successfully",
-    data: { user },
-  };
 };

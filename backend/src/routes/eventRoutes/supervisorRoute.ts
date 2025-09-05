@@ -31,8 +31,8 @@ router.post(
         supervisorId,
       });
       res.status(statusCode).json({ success, message, data });
-    } catch {
-      res.status(403).send("something went wrong");
+    } catch (error: any) {
+      res.status(500).send(`Server error ${error.message}`);
     }
   }
 );
@@ -68,8 +68,8 @@ router.put(
         });
 
       res.status(statusCode).json({ success, message, data });
-    } catch {
-      res.status(403).send("something went wrong");
+    } catch (error: any) {
+      res.status(500).send(`Server error ${error.message}`);
     }
   }
 );
