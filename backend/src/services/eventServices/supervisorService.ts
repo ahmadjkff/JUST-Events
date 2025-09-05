@@ -44,13 +44,103 @@ export const createEvent = async ({
   }
 };
 
+interface IDeleteEvent {
+  eventId: string;
+  supervisorId: string;
+}
+
+export const deleteEvent = async ({
+  eventId,
+  supervisorId,
+}: IDeleteEvent): Promise<IResponseStructure> => {
+  try {
+    const event = await eventModel.findById(eventId);
+    if (!event)
+      return { message: "Event not found ", statusCode: 403, success: false };
+
+    if (event.createdBy.toString() !== supervisorId.toString()) {
+      return { message: "Not authorized", statusCode: 404, success: false };
+    }
+
+    await eventModel.deleteOne({ _id: eventId });
+
+    return {
+      message: "Event deleted successfully",
+      statusCode: 200,
+      data: event,
+      success: true,
+    };
+  } catch (error: any) {
+    return {
+      message: `Server error ${error.message}`,
+      statusCode: 500,
+      success: false,
+    };
+  }
+};
+
+interface IEditEvent {
+  eventId: string;
+  supervisorId: string;
+  title: string;
+  description: string;
+  location: string;
+  date: Date;
+}
+
+export const editEvent = async ({
+  eventId,
+  supervisorId,
+  title,
+  description,
+  location,
+  date,
+}: IEditEvent): Promise<IResponseStructure> => {
+  try {
+    const event = await eventModel.findById(eventId);
+    if (!event)
+      return { message: "Event not found ", statusCode: 403, success: false };
+
+    if (event.createdBy.toString() !== supervisorId.toString()) {
+      return { message: "Not authorized", statusCode: 404, success: false };
+    }
+    if (title) {
+      event.title = title;
+    }
+    if (description) {
+      event.description = description;
+    }
+    if (location) {
+      event.location = location;
+    }
+    if (date) {
+      event.date = date;
+    }
+
+    await event.save();
+
+    return {
+      message: "Event updated successfully",
+      statusCode: 200,
+      data: event,
+      success: true,
+    };
+  } catch (error: any) {
+    return {
+      message: `Server error ${error.message}`,
+      statusCode: 500,
+      success: false,
+    };
+  }
+};
+
 interface IApproveOrReject {
   studentId: string;
   eventId: string;
   action: EventStatus;
   supervisorId: string;
 }
-export const approveOrRejectStudentapplacition = async ({
+export const approveOrRejectStudentApplacition = async ({
   studentId,
   eventId,
   action,
