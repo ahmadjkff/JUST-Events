@@ -1,12 +1,12 @@
 import express from "express";
 import { EventStatus } from "../../types/eventTypes";
+import validateJWT from "../../middlewares/validateJWT";
+import { isAdmin } from "../../middlewares/validateUserRole";
+import { getEventsByStatus } from "../../services/eventServices/userService";
 import {
   addVolunteer,
   changeEventStatus,
-  getEventsByStatus,
-} from "../../services/eventService";
-import validateJWT from "../../middlewares/validateJWT";
-import { isAdmin } from "../../middlewares/validateUserRole";
+} from "../../services/eventServices/adminService";
 
 const router = express.Router();
 

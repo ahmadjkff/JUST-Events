@@ -1,6 +1,6 @@
-import IResponseStructure from "./../types/responseStructure";
+import IResponseStructure from "../../types/responseStructure";
 import jwt from "jsonwebtoken";
-import userModel from "../models/userModel";
+import userModel from "../../models/userModel";
 
 export const login = async (
   email: string,

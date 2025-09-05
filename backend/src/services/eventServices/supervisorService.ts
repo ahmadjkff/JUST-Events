@@ -1,6 +1,6 @@
-import { eventModel } from "../models/eventModel";
-import { EventStatus } from "../types/eventTypes";
-import IResponseStructure from "../types/responseStructure";
+import { eventModel } from "../../models/eventModel";
+import { EventStatus } from "../../types/eventTypes";
+import IResponseStructure from "../../types/responseStructure";
 
 interface IBody {
   title: string;

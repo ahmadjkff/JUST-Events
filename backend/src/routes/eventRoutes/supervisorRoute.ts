@@ -5,7 +5,7 @@ import { isSupervisor } from "../../middlewares/validateUserRole";
 import {
   approveOrRejectStudentapplacition,
   createEvent,
-} from "../../services/supervisorService";
+} from "../../services/eventServices/supervisorService";
 
 const router = express.Router();
 

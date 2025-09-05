@@ -2,7 +2,7 @@ import express from "express";
 import validateJWT from "../../middlewares/validateJWT";
 import { IExtendRequest } from "../../types/extendedRequest";
 import { isAdmin } from "../../middlewares/validateUserRole";
-import { editRole } from "../../services/adminService";
+import { editRole } from "../../services/authServices/adminService";
 import { Roles } from "../../types/userTypes";
 
 const router = express.Router();

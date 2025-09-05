@@ -1,6 +1,6 @@
-import userModel from "../models/userModel";
-import IResponseStructure from "../types/responseStructure";
-import { Roles } from "../types/userTypes";
+import userModel from "../../models/userModel";
+import IResponseStructure from "../../types/responseStructure";
+import { Roles } from "../../types/userTypes";
 
 export const editRole = async (
   userId: string,
