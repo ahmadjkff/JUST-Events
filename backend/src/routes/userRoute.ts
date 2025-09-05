@@ -67,6 +67,8 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+
 const generateJWT = (data: any) => {
   return jwt.sign(data, process.env.JWT_SECRET!, { expiresIn: "1d" });
 };
