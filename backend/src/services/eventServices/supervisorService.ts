@@ -23,7 +23,7 @@ export const createEvent = async ({
 
     if (!response.ok) {
       return {
-        message: "Failed to fetch from simulator",
+        message: `${location} ${response.statusText}`,
         statusCode: response.status,
         success: false,
       };
