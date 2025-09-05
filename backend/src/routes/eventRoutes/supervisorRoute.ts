@@ -3,8 +3,10 @@ import validateJWT from "../../middlewares/validateJWT";
 import { IExtendRequest } from "../../types/extendedRequest";
 import { isSupervisor } from "../../middlewares/validateUserRole";
 import {
-  approveOrRejectStudentapplacition,
+  approveOrRejectStudentApplacition,
   createEvent,
+  deleteEvent,
+  editEvent,
 } from "../../services/eventServices/supervisorService";
 
 const router = express.Router();
@@ -37,6 +39,61 @@ router.post(
   }
 );
 
+//delete event
+router.delete(
+  "/:eventId",
+  validateJWT,
+  isSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const eventId = req.params.eventId;
+
+      if (!eventId) {
+        return res.status(400).json({ message: "EventId is required" });
+      }
+
+      const supervisorId = req.user._id;
+      const { data, statusCode, message, success } = await deleteEvent({
+        eventId,
+        supervisorId,
+      });
+      res.status(statusCode).json({ success, message, data });
+    } catch (error: any) {
+      res.status(500).send(`Server error ${error.message}`);
+    }
+  }
+);
+
+//edit event
+router.put(
+  "/:eventId",
+  validateJWT,
+  isSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const { title, description, location, date } = req.body;
+      const eventId = req.params.eventId;
+
+      if (!eventId) {
+        return res.status(400).json({ message: "EventId is required" });
+      }
+
+      const supervisorId = req.user._id;
+      const { data, statusCode, message, success } = await editEvent({
+        eventId,
+        supervisorId,
+        title,
+        description,
+        location,
+        date,
+      });
+      res.status(statusCode).json({ success, message, data });
+    } catch (error: any) {
+      res.status(500).send(`Server error ${error.message}`);
+    }
+  }
+);
+
 router.put(
   "/:eventId/registration/:studentId",
   validateJWT,
@@ -60,7 +117,7 @@ router.put(
         res.status(401).json({ message: "event status is required" });
       }
       const { data, statusCode, success, message } =
-        await approveOrRejectStudentapplacition({
+        await approveOrRejectStudentApplacition({
           studentId,
           eventId,
           action,
