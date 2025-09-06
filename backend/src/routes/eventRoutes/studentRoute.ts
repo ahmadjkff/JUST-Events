@@ -137,18 +137,21 @@ router.post("/feedback/:eventId", async (req: Request, res: Response) => {
       });
     }
 
-    const feedback = await studentService.feedback(
-      eventId,
-      studentId,
-      rating,
-      comment
-    );
+    const event = await eventModel.findById(eventId);
+    if (!event)
+      return { message: "Event not found ", statusCode: 403, success: false };
 
+    event.feedback.push({
+      student: studentId,
+      rating,
+      comment: comment ? comment : "",
+    });
+    await event.save();
     res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Feedback submitted successfully",
-      data: feedback,
+      data: event.feedback,
     });
   } catch (error: any) {
     res

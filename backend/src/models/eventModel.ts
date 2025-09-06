@@ -8,10 +8,7 @@ export interface IEvent extends Document {
   date: Date;
   createdBy: mongoose.Types.ObjectId;
   status: EventStatus;
-  registeredStudents: {
-    student: mongoose.Types.ObjectId;
-    status: EventStatus;
-  }[];
+
   feedback: {
     student: mongoose.Types.ObjectId;
     rating: number;
@@ -53,7 +50,6 @@ const eventSchema = new Schema<IEvent>(
       enum: Object.values(EventStatus),
       default: EventStatus.PENDING,
     },
-    registeredStudents: [registeredStudentSchema],
     feedback: [feedbackSchema],
     volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
