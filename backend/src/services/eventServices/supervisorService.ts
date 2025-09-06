@@ -1,7 +1,7 @@
-import { log } from "console";
 import { eventModel } from "../../models/eventModel";
 import { EventStatus } from "../../types/eventTypes";
 import IResponseStructure from "../../types/responseStructure";
+import RegistrationModel from "../../models/registrationModel";
 
 interface IBody {
   title: string;
@@ -161,25 +161,54 @@ interface IApproveOrReject {
   action: EventStatus;
   supervisorId: string;
 }
-// export const approveOrRejectStudentApplacition = async ({
-//   studentId,
-//   eventId,
-//   action,
-//   supervisorId,
-// }: IApproveOrReject): Promise<IResponseStructure> => {
-//   try {
-//     const event = await eventModel.findById(eventId);
-//     if (!event)
-//       return { message: "Event not found", statusCode: 403, success: false };
+export const approveOrRejectStudentApplacition = async ({
+  studentId,
+  eventId,
+  action,
+  supervisorId,
+}: IApproveOrReject): Promise<IResponseStructure> => {
+  try {
+    const event = await eventModel.findById(eventId);
+    if (!event)
+      return { message: "Event not found", statusCode: 403, success: false };
 
-//     if (event.createdBy.toString() !== supervisorId.toString()) {
-//       return { message: "Not authorized", statusCode: 404, success: false };
-//     }
-//   } catch (error: any) {
-//     return {
-//       message: `Server error ${error.message}`,
-//       statusCode: 500,
-//       success: false,
-//     };
-//   }
-// };
+    if (event.createdBy.toString() !== supervisorId.toString()) {
+      return { message: "Not authorized", statusCode: 404, success: false };
+    }
+
+    const isRegistered = await RegistrationModel.findOne({
+      student: studentId,
+      event: eventId,
+    });
+
+    if (!isRegistered) {
+      {
+        return {
+          success: false,
+          statusCode: 404,
+          message: "Student is not registered for this event",
+        };
+      }
+    }
+
+    isRegistered.status =
+      action === EventStatus.APPROVED
+        ? EventStatus.APPROVED
+        : EventStatus.REJECTED;
+
+    await isRegistered.save();
+
+    return {
+      success: true,
+      statusCode: 200,
+      message: `Student registration ${isRegistered.status}`,
+      data: isRegistered,
+    };
+  } catch (error: any) {
+    return {
+      message: `Server error ${error.message}`,
+      statusCode: 500,
+      success: false,
+    };
+  }
+};

@@ -2,7 +2,7 @@ import eventModel from "../../models/eventModel";
 import RegistrationModel, {
   IRegistration,
 } from "../../models/registrationModel";
-import { FeedbackModel, IFeedback } from "../../models/feedbackModel";
+//import { FeedbackModel, IFeedback } from "../../models/feedbackModel";
 import { certificateModel, ICertificate } from "../../models/certificateModel";
 import PDFDocument from "pdfkit";
 import { Response } from "express";
@@ -42,19 +42,19 @@ export const studentService = {
     );
   },
 
-  async feedback(
-    eventId: string,
-    studentId: string,
-    rating: number,
-    comment: string
-  ): Promise<IFeedback> {
-    return await FeedbackModel.create({
-      student: studentId,
-      event: eventId,
-      rating,
-      comment,
-    });
-  },
+  // async feedback(
+  //   eventId: string,
+  //   studentId: string,
+  //   rating: number,
+  //   comment: string
+  // ): Promise<IFeedback> {
+  //   return await FeedbackModel.create({
+  //     student: studentId,
+  //     event: eventId,
+  //     rating,
+  //     comment,
+  //   });
+  // },
 
   async certificate(eventId: string, studentId: string): Promise<ICertificate> {
     const certificate = await certificateModel.findOne({
