@@ -4,7 +4,6 @@ import RegistrationModel from "../../models/registration";
 import { FeedbackModel } from "../../models/feedbackModel";
 import { certificateModel } from "../../models/certificateModel";
 
-
 const router = express.Router();
 
 /**
@@ -26,7 +25,10 @@ router.post("/register/:eventId", async (req: Request, res: Response) => {
     }
 
     // Prevent duplicate registration
-    const existing = await RegistrationModel.findOne({ student: studentId, event: eventId });
+    const existing = await RegistrationModel.findOne({
+      student: studentId,
+      event: eventId,
+    });
     if (existing) {
       return res.status(400).json({
         statusCode: 400,
