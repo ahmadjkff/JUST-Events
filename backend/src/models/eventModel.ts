@@ -17,18 +17,6 @@ export interface IEvent extends Document {
   volunteers: mongoose.Types.ObjectId[];
 }
 
-const registeredStudentSchema = new Schema(
-  {
-    student: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    status: {
-      type: String,
-      enum: Object.values(EventStatus),
-      default: EventStatus.PENDING,
-    },
-  },
-  { timestamps: true }
-);
-
 const feedbackSchema = new Schema(
   {
     student: { type: Schema.Types.ObjectId, ref: "User" },

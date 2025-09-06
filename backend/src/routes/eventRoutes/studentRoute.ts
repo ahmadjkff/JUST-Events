@@ -1,7 +1,13 @@
 import express, { Request, Response } from "express";
-import { studentService } from "../../services/eventServices/studentService";
+import {
+  generateCertificate,
+  studentService,
+} from "../../services/eventServices/studentService";
 import eventModel from "../../models/eventModel";
 import RegistrationModel from "../../models/registrationModel";
+import userModel from "../../models/userModel";
+import { IExtendRequest } from "../../types/extendedRequest";
+import validateJWT from "../../middlewares/validateJWT";
 
 const router = express.Router();
 
@@ -163,32 +169,63 @@ router.post("/feedback/:eventId", async (req: Request, res: Response) => {
 /**
  * Download certificate
  */
-router.get("/certificate/:eventId", async (req: Request, res: Response) => {
-  try {
-    const { studentId } = req.body;
-    const { eventId } = req.params;
+// router.get("/certificate/:eventId", async (req: Request, res: Response) => {
+//   try {
+//     const { studentId } = req.body;
+//     const { eventId } = req.params;
 
-    if (!eventId || !studentId) {
-      return res.status(400).json({
-        statusCode: 400,
-        success: false,
-        message: "Missing eventId or studentId",
-      });
+//     if (!eventId || !studentId) {
+//       return res.status(400).json({
+//         statusCode: 400,
+//         success: false,
+//         message: "Missing eventId or studentId",
+//       });
+//     }
+
+//     const certificate = await studentService.certificate(eventId, studentId);
+
+//     res.status(200).json({
+//       statusCode: 200,
+//       success: true,
+//       message: "Certificate retrieved successfully",
+//       data: certificate,
+//     });
+//   } catch (error: any) {
+//     res
+//       .status(400)
+//       .json({ statusCode: 400, success: false, message: error.message });
+//   }
+// });
+
+router.get(
+  "/certificate/:eventId",
+  validateJWT,
+  async (req: IExtendRequest, res) => {
+    const userId = req.user!._id; // from JWT
+    const eventId = req.params.eventId;
+
+    // Verify student participated in the event
+    const event = await eventModel.findById(eventId);
+    if (!event) {
+      // || !event.registeredStudents.some((rs) => rs.student.equals(userId))
+      return res
+        .status(403)
+        .json({ success: false, message: "Not eligible for certificate" });
     }
 
-    const certificate = await studentService.certificate(eventId, studentId);
+    const student = await userModel.findById(userId);
+    if (!student)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
 
-    res.status(200).json({
-      statusCode: 200,
-      success: true,
-      message: "Certificate retrieved successfully",
-      data: certificate,
-    });
-  } catch (error: any) {
-    res
-      .status(400)
-      .json({ statusCode: 400, success: false, message: error.message });
+    await generateCertificate(
+      res,
+      student.firstName + " " + student.lastName,
+      event.title,
+      event.date
+    );
   }
-});
+);
 
 export default router;
