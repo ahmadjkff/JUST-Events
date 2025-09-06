@@ -6,7 +6,7 @@ export interface IRegistration extends Document {
   event: mongoose.Types.ObjectId;
   status: EventStatus;
   isVolunteer: boolean;
-  registeredAt: Date;
+
 }
 
 const registrationSchema = new Schema<IRegistration>(
@@ -19,7 +19,6 @@ const registrationSchema = new Schema<IRegistration>(
       default: EventStatus.PENDING,
     },
     isVolunteer: { type: Boolean, default: false },
-    registeredAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
