@@ -8,6 +8,7 @@ export interface IEvent extends Document {
   date: Date;
   createdBy: mongoose.Types.ObjectId;
   status: EventStatus;
+
   feedback: {
     student: mongoose.Types.ObjectId;
     rating: number;
