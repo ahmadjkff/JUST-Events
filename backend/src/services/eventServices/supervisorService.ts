@@ -1,3 +1,4 @@
+import { log } from "console";
 import { eventModel } from "../../models/eventModel";
 import { EventStatus } from "../../types/eventTypes";
 import IResponseStructure from "../../types/responseStructure";
@@ -18,6 +19,26 @@ export const createEvent = async ({
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
   try {
+    const response = await fetch(`http://localhost:5000/api/stage/${location}`);
+
+    if (!response.ok) {
+      return {
+        message: `${location} ${response.statusText}`,
+        statusCode: response.status,
+        success: false,
+      };
+    }
+
+    const data = await response.json();
+
+    if (data.data.stage.status === "reserved") {
+      return {
+        message: "Stage is reserved",
+        statusCode: 400,
+        success: false,
+      };
+    }
+
     const event = new eventModel({
       title,
       description,

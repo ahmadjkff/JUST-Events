@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/auth";
 import adminRoute from "./routes/adminRoute";
+import stagesRoute from "./routes/stagesRoute";
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,6 +17,7 @@ mongoose
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoute);
+app.use("/api/stage", stagesRoute);
 
 const PORT = 5000;
 app.listen(PORT, () =>
