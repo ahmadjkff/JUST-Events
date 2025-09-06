@@ -48,7 +48,12 @@ export const studentService = {
     rating: number,
     comment: string
   ): Promise<IFeedback> {
-    return await 
+    return await FeedbackModel.create({
+      student: studentId,
+      event: eventId,
+      rating,
+      comment,
+    });
   },
 
   async certificate(eventId: string, studentId: string): Promise<ICertificate> {
