@@ -163,37 +163,6 @@ router.post("/feedback/:eventId", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * Download certificate
- */
-// router.get("/certificate/:eventId", async (req: Request, res: Response) => {
-//   try {
-//     const { studentId } = req.body;
-//     const { eventId } = req.params;
-
-//     if (!eventId || !studentId) {
-//       return res.status(400).json({
-//         statusCode: 400,
-//         success: false,
-//         message: "Missing eventId or studentId",
-//       });
-//     }
-
-//     const certificate = await studentService.certificate(eventId, studentId);
-
-//     res.status(200).json({
-//       statusCode: 200,
-//       success: true,
-//       message: "Certificate retrieved successfully",
-//       data: certificate,
-//     });
-//   } catch (error: any) {
-//     res
-//       .status(400)
-//       .json({ statusCode: 400, success: false, message: error.message });
-//   }
-// });
-
 router.get(
   "/certificate/:eventId",
   validateJWT,
