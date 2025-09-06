@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface ICertificate extends Document {
+export interface ICertificate extends Document {
   student: mongoose.Types.ObjectId;
   event: mongoose.Types.ObjectId;
   issueDate: Date;

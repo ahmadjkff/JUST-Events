@@ -1,8 +1,5 @@
 import express, { Request, Response } from "express";
-import eventModel from "../../models/eventModel";
-import RegistrationModel from "../../models/registration";
-import { FeedbackModel } from "../../models/feedbackModel";
-import { certificateModel } from "../../models/certificateModel";
+import { studentService } from "../../services/eventServices/studentService";
 
 
 const router = express.Router();
@@ -10,49 +7,31 @@ const router = express.Router();
 /**
  * Register for an event
  */
+
 router.post("/register/:eventId", async (req: Request, res: Response) => {
   try {
     const { studentId } = req.body;
     const { eventId } = req.params;
 
-    // Check if event exists
-    const event = await eventModel.findById(eventId);
-    if (!event) {
-      return res.status(404).json({
-        statusCode: 404,
-        success: false,
-        message: "Event not found",
-      });
-    }
-
-    // Prevent duplicate registration
-    const existing = await RegistrationModel.findOne({ student: studentId, event: eventId });
-    if (existing) {
+    if (!eventId || !studentId) {
       return res.status(400).json({
         statusCode: 400,
         success: false,
-        message: "Already registered for this event",
+        message: "Missing eventId or studentId",
       });
     }
 
-    const registration = await RegistrationModel.create({
-      student: studentId,
-      event: eventId,
-      isVolunteer: false,
-    });
+    const registration = await studentService.register(eventId, studentId);
 
-    return res.status(200).json({
+
+    res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Registered successfully",
       data: registration,
     });
-  } catch (error) {
-    return res.status(500).json({
-      statusCode: 500,
-      success: false,
-      message: "Server error",
-    });
+  } catch (error: any) {
+    res.status(400).json({ statusCode: 400, success: false, message: error.message });
   }
 });
 
@@ -64,30 +43,23 @@ router.delete("/cancel/:eventId", async (req: Request, res: Response) => {
     const { studentId } = req.body;
     const { eventId } = req.params;
 
-    const deleted = await RegistrationModel.findOneAndDelete({
-      student: studentId,
-      event: eventId,
-    });
-
-    if (!deleted) {
-      return res.status(404).json({
-        statusCode: 404,
+    if (!eventId || !studentId) {
+      return res.status(400).json({
+        statusCode: 400,
         success: false,
-        message: "Registration not found",
+        message: "Missing eventId or studentId",
       });
     }
 
-    return res.status(200).json({
+    await studentService.cancel(eventId, studentId);
+
+    res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Registration cancelled successfully",
     });
-  } catch (error) {
-    return res.status(500).json({
-      statusCode: 500,
-      success: false,
-      message: "Server error",
-    });
+  } catch (error: any) {
+    res.status(400).json({ statusCode: 400, success: false, message: error.message });
   }
 });
 
@@ -99,24 +71,24 @@ router.post("/volunteer/:eventId", async (req: Request, res: Response) => {
     const { studentId } = req.body;
     const { eventId } = req.params;
 
-    const registration = await RegistrationModel.findOneAndUpdate(
-      { student: studentId, event: eventId },
-      { isVolunteer: true },
-      { new: true, upsert: true } // create if not exist
-    );
+    if (!eventId || !studentId) {
+      return res.status(400).json({
+        statusCode: 400,
+        success: false,
+        message: "Missing eventId or studentId",
+      });
+    }
 
-    return res.status(200).json({
+    const updated = await studentService.volunteer(eventId, studentId);
+
+    res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Volunteer added successfully",
-      data: registration,
+      data: updated,
     });
-  } catch (error) {
-    return res.status(500).json({
-      statusCode: 500,
-      success: false,
-      message: "Server error",
-    });
+  } catch (error: any) {
+    res.status(400).json({ statusCode: 400, success: false, message: error.message });
   }
 });
 
@@ -128,25 +100,24 @@ router.post("/feedback/:eventId", async (req: Request, res: Response) => {
     const { studentId, rating, comment } = req.body;
     const { eventId } = req.params;
 
-    const feedback = await FeedbackModel.create({
-      student: studentId,
-      event: eventId,
-      rating,
-      comment,
-    });
+    if (!eventId || !studentId) {
+      return res.status(400).json({
+        statusCode: 400,
+        success: false,
+        message: "Missing eventId or studentId",
+      });
+    }
 
-    return res.status(200).json({
+    const feedback = await studentService.feedback(eventId, studentId, rating, comment);
+
+    res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Feedback submitted successfully",
       data: feedback,
     });
-  } catch (error) {
-    return res.status(500).json({
-      statusCode: 500,
-      success: false,
-      message: "Server error",
-    });
+  } catch (error: any) {
+    res.status(400).json({ statusCode: 400, success: false, message: error.message });
   }
 });
 
@@ -158,31 +129,24 @@ router.get("/certificate/:eventId", async (req: Request, res: Response) => {
     const { studentId } = req.body;
     const { eventId } = req.params;
 
-    const certificate = await certificateModel.findOne({
-      student: studentId,
-      event: eventId,
-    });
-
-    if (!certificate) {
-      return res.status(404).json({
-        statusCode: 404,
+    if (!eventId || !studentId) {
+      return res.status(400).json({
+        statusCode: 400,
         success: false,
-        message: "Certificate not found",
+        message: "Missing eventId or studentId",
       });
     }
 
-    return res.status(200).json({
+    const certificate = await studentService.certificate(eventId, studentId);
+
+    res.status(200).json({
       statusCode: 200,
       success: true,
       message: "Certificate retrieved successfully",
       data: certificate,
     });
-  } catch (error) {
-    return res.status(500).json({
-      statusCode: 500,
-      success: false,
-      message: "Server error",
-    });
+  } catch (error: any) {
+    res.status(400).json({ statusCode: 400, success: false, message: error.message });
   }
 });
 
