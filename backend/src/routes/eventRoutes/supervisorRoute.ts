@@ -7,6 +7,7 @@ import {
   createEvent,
   deleteEvent,
   editEvent,
+  exportRegisteredStudent,
 } from "../../services/eventServices/supervisorService";
 
 const router = express.Router();
@@ -127,6 +128,49 @@ router.put(
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {
       res.status(500).send(`Server error ${error.message}`);
+    }
+  }
+);
+
+router.get(
+  "/:eventId/registrations/export",
+  validateJWT,
+  isSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const supervisorId = req.user._id;
+      const eventId = req.params.eventId;
+
+      if (!supervisorId || !eventId) {
+        return res
+          .status(400)
+          .json({ message: "eventId and supervisor are required" });
+      }
+      const { data, statusCode, success, message } =
+        await exportRegisteredStudent({
+          supervisorId,
+          eventId,
+        });
+
+      if (!success || !data) {
+        return res
+          .status(statusCode)
+          .json({ success: false, message: message });
+      }
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+
+      res.setHeader(
+        "Content-Disposition",
+        "attachment;filename=" + "studentList.xlsx"
+      );
+      // Save Excel file
+      await data.xlsx.write(res);
+      res.end();
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message });
     }
   }
 );

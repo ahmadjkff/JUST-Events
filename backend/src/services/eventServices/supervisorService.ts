@@ -2,7 +2,7 @@ import { eventModel } from "../../models/eventModel";
 import { EventStatus } from "../../types/eventTypes";
 import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
-
+import ExcelJS from "exceljs";
 interface IBody {
   title: string;
   description: string;
@@ -211,4 +211,67 @@ export const approveOrRejectStudentApplacition = async ({
       success: false,
     };
   }
+};
+interface IExportRegStudent {
+  supervisorId: string;
+  eventId: string;
+}
+export const exportRegisteredStudent = async ({
+  supervisorId,
+  eventId,
+}: IExportRegStudent) => {
+  const event = await eventModel.findById(eventId);
+  if (!event)
+    return { message: "Event not found", statusCode: 403, success: false };
+
+  if (event.createdBy.toString() !== supervisorId.toString()) {
+    return { message: "Not authorized", statusCode: 404, success: false };
+  }
+
+  const registrations = await RegistrationModel.find({
+    event: eventId,
+    status: "approved",
+  })
+    .populate("student", "firstName lastName email")
+    .populate("event", "title description location");
+
+  if (!registrations.length) {
+    return {
+      message: "No approved students found",
+      statusCode: 404,
+      success: false,
+    };
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Approved Students");
+
+  worksheet.columns = [
+    { header: "First Name", key: "firstName", width: 20 },
+    { header: "Last Name", key: "lastName", width: 20 },
+    { header: "Email", key: "email", width: 30 },
+    { header: "Registered At", key: "registeredAt", width: 25 },
+    { header: "Event Title", key: "title", width: 25 },
+    { header: "Event description", key: "description", width: 30 },
+    { header: "Event location", key: "location", width: 25 },
+  ];
+
+  registrations.forEach((r: any) => {
+    worksheet.addRow({
+      firstName: (r.student as any).firstName,
+      lastName: (r.student as any).lastName,
+      email: (r.student as any).email,
+      registeredAt: r.createdAt.toISOString(),
+      title: (r.event as any).title,
+      description: (r.event as any).description,
+      location: (r.event as any).location,
+    });
+  });
+
+  return {
+    success: true,
+    message: "Excel file generated successfully",
+    statusCode: 200,
+    data: workbook,
+  };
 };
