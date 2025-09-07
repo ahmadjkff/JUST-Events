@@ -176,7 +176,7 @@ router.get(
     // Verify student participated in the event
     const event = await eventModel.findById(eventId);
     if (!event) {
-      // || !event.registeredStudents.some((rs) => rs.student.equals(userId))
+      // To-Do || !event.registeredStudents.some((rs) => rs.student.equals(userId))
       return res
         .status(403)
         .json({ success: false, message: "Not eligible for certificate" });
