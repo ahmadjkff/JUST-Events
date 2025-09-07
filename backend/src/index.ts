@@ -6,6 +6,7 @@ import adminRoute from "./routes/authRoutes/adminRoute";
 import studentRoute from "./routes/eventRoutes/studentRoute";
 import supervisorRoute from "./routes/eventRoutes/supervisorRoute";
 import eventAdminRoute from "./routes/eventRoutes/adminRoute";
+import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRoute";
 dotenv.config();
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 app.use("/supervisor", supervisorRoute);
 app.use("/event/admin", eventAdminRoute);
+app.use("/event/supervisor-admin", supervisorAndAdminRoute);
 
 app.listen(port, () => {
   console.log(`connected on port: ${port}`);
