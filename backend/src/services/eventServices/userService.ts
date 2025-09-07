@@ -6,7 +6,8 @@ export const getEventsByStatus = async (
   status: string
 ): Promise<IResponseStructure> => {
   try {
-    if (!Object.values(EventStatus).includes(status as EventStatus)) {
+    const normalizedStatus = status.toUpperCase();
+    if (!Object.values(EventStatus).includes(normalizedStatus as EventStatus)) {
       return {
         statusCode: 400,
         success: false,
@@ -14,7 +15,7 @@ export const getEventsByStatus = async (
       };
     }
 
-    const events = await eventModel.find({ status });
+    const events = await eventModel.find({ status: normalizedStatus });
 
     return {
       statusCode: 200,
