@@ -44,52 +44,19 @@ export const changeEventStatus = async (
   }
 };
 
-export const addVolunteer = async (
-  eventId: string,
-  userId: string
-): Promise<IResponseStructure> => {
-  try {
-    const event = await eventModel.findById(eventId);
-    if (!event) {
-      return {
-        statusCode: 404,
-        success: false,
-        message: "Event not found",
-      };
-    }
-    const user = await userModel.findById(userId);
-    if (!user) {
-      return {
-        statusCode: 404,
-        success: false,
-        message: "User not found",
-      };
-    }
+export const addVolunteer = async (eventId: string, userId: string) => {
+  const event = await eventModel.findById(eventId);
+  if (!event) throw new Error("Event not found");
 
-    if (
-      event.volunteers.includes(userId as unknown as mongoose.Types.ObjectId)
-    ) {
-      return {
-        statusCode: 400,
-        success: false,
-        message: "User is already a volunteer for this event",
-      };
-    }
+  const user = await userModel.findById(userId);
+  if (!user) throw new Error("User not found");
 
-    event.volunteers = event.volunteers || [];
-    event.volunteers.push(userId as unknown as mongoose.Types.ObjectId);
-    await event.save();
-    return {
-      statusCode: 200,
-      success: true,
-      message: "Volunteer added successfully",
-      data: { event },
-    };
-  } catch (error: any) {
-    return {
-      statusCode: 500,
-      success: false,
-      message: `Server error ${error.message}`,
-    };
+  if (event.volunteers.some((v) => v.equals(userId))) {
+    throw new Error("User is already a volunteer");
   }
+
+  event.volunteers.push(new mongoose.Types.ObjectId(userId));
+  await event.save();
+
+  return event;
 };

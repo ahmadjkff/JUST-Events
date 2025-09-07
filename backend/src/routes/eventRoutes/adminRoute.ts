@@ -56,20 +56,24 @@ router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
 router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
   try {
     const { eventId, userId } = req.body;
+
     if (!eventId || !userId) {
       return res
         .status(400)
         .json({ success: false, message: "Event ID and User ID are required" });
     }
-    const { statusCode, data, message, success } = await addVolunteer(
-      eventId,
-      userId
-    );
-    res.status(statusCode).json({ success, message, data });
+
+    const event = await addVolunteer(eventId, userId);
+    return res.status(200).json({
+      success: true,
+      message: "Volunteer added successfully",
+      data: { event },
+    });
   } catch (error: any) {
-    res
-      .status(500)
-      .json({ success: false, message: `Server error ${error.message}` });
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
   }
 });
 
