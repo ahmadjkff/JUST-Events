@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import userRoute from "./routes/authRoutes/userRoute";
 import adminRoute from "./routes/authRoutes/adminRoute";
 import studentRoute from "./routes/eventRoutes/studentRoute";
@@ -10,6 +11,13 @@ import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRout
 dotenv.config();
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true, // if you need cookies
+  })
+);
 const port = process.env.PORT;
 app.use(express.json());
 mongoose
