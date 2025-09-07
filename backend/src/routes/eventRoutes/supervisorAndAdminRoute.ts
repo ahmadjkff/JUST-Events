@@ -31,10 +31,12 @@ router.get("/:eventId/students", async (req: Request, res: Response) => {
 
     if (status) {
       // validate only if status was provided
-      console.log(status);
+      const normalizedStatus = (status as string).toLocaleLowerCase();
 
       if (
-        !(Object.values(EventStatus) as string[]).includes(status as string)
+        !(Object.values(EventStatus) as string[]).includes(
+          normalizedStatus as string
+        )
       ) {
         return res.status(400).json({
           statusCode: 400,
@@ -42,7 +44,7 @@ router.get("/:eventId/students", async (req: Request, res: Response) => {
           message: "Invalid status value",
         });
       }
-      filter.status = status; // use status directly
+      filter.status = normalizedStatus; // use status directly
     }
 
     const students: any = await RegistrationModel.find(filter);
