@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Button from "./ui/Button";
 import "../styles/LoginForm.css";
+import { useAuth } from "../context/AuthContext";
 
 type FormData = {
   email: string;
@@ -9,6 +10,7 @@ type FormData = {
 };
 
 const LoginForm: React.FC = () => {
+  const { login } = useAuth(); // Custom hook for authentication
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -26,6 +28,8 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    login(formData.email, formData.password);
 
     setTimeout(() => {
       console.log("Login attempt:", formData);
