@@ -59,28 +59,36 @@ router.put(
   }
 );
 
-router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
-  try {
-    const { eventId, userId } = req.body;
+router.put(
+  "/add-volunteer/:userId/:eventId",
+  validateJWT,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const { eventId, userId } = req.params;
 
-    if (!eventId || !userId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Event ID and User ID are required" });
+      if (!eventId || !userId) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "Event ID and User ID are required",
+          });
+      }
+
+      const event = await addVolunteer(eventId, userId);
+      return res.status(200).json({
+        success: true,
+        message: "Volunteer added successfully",
+        data: { event },
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        success: false,
+        message: error.message || "Something went wrong",
+      });
     }
-
-    const event = await addVolunteer(eventId, userId);
-    return res.status(200).json({
-      success: true,
-      message: "Volunteer added successfully",
-      data: { event },
-    });
-  } catch (error: any) {
-    return res.status(400).json({
-      success: false,
-      message: error.message || "Something went wrong",
-    });
   }
-});
+);
 
 export default router;
