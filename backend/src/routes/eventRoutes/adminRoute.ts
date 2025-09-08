@@ -31,27 +31,33 @@ router.get("/:status", validateJWT, isAdmin, async (req, res) => {
   }
 });
 
-router.put("/change-status", validateJWT, isAdmin, async (req, res) => {
-  // to change (action and eventId) to req.body
-  try {
-    const { action, eventId } = req.body;
+router.put(
+  "/change-status/:eventId",
+  validateJWT,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const { eventId } = req.params;
+      const { action } = req.body;
 
-    if (!action || !eventId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Action and Event ID are required" });
+      if (!action || !eventId) {
+        return res.status(400).json({
+          success: false,
+          message: "Action and Event ID are required",
+        });
+      }
+      const { statusCode, data, message, success } = await changeEventStatus(
+        eventId,
+        action as EventStatus
+      );
+      res.status(statusCode).json({ success, message, data });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ success: false, message: `Server error ${error.message}` });
     }
-    const { statusCode, data, message, success } = await changeEventStatus(
-      eventId,
-      action as EventStatus
-    );
-    res.status(statusCode).json({ success, message, data });
-  } catch (error: any) {
-    res
-      .status(500)
-      .json({ success: false, message: `Server error ${error.message}` });
   }
-});
+);
 
 router.put("/add-volunteer", validateJWT, isAdmin, async (req, res) => {
   try {
