@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Button from "./ui/Button";
 import "../styles/LoginForm.css";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/auth/AuthContext";
 
 type FormData = {
   email: string;
