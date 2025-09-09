@@ -1,30 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
-import type { User } from "../types/userTypes";
-import { useFetch } from "../hooks/useFetch";
+import { useEffect, useState, type FC, type PropsWithChildren } from "react";
+import { useFetch } from "../../hooks/useFetch";
+import type { User } from "../../types/userTypes";
+import { AuthContext } from "./AuthContext";
 
-interface AuthContextType {
-  token: string | null;
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => void;
-  // To-Do : Implement logout function
-}
-
-const AuthContext = createContext<AuthContextType>({
-  token: null,
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
-  login: () => {},
-});
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -61,6 +40,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
+      console.log("Login error:", error);
       throw error;
     }
   };
@@ -76,5 +56,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Custom hook for easy access
-export const useAuth = () => useContext(AuthContext);
+export default AuthProvider;
