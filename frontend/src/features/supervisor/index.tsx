@@ -3,6 +3,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "../../protectedRoutes";
+import Events from "./pages/Events";
+import Settings from "./pages/Settings";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -11,6 +13,22 @@ const SupervisorRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["supervisor"]}>
           <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="events"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <Events />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="settings"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <Settings />
         </ProtectedRoute>
       }
     />
