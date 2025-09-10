@@ -7,27 +7,35 @@ import {
   addVolunteer,
   changeEventStatus,
 } from "../../services/eventServices/adminService";
+import AppError from "../../types/AppError";
 
 const router = express.Router();
 
-router.get("/:status", validateJWT, isAdmin, async (req, res) => {
+router.get("/", validateJWT, async (req, res) => {
   try {
-    const status = req.params.status;
+    const { status } = req.query;
 
-    if (!status) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Status parameter is required" });
+    const events = await getEventsByStatus(status as string | undefined);
+
+    return res.status(200).json({
+      message: status
+        ? `${status} events fetched successfully`
+        : "All events fetched successfully",
+      success: true,
+      data: events,
+    });
+  } catch (error: any) {
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
     }
 
-    const { statusCode, data, message, success } =
-      await getEventsByStatus(status);
-
-    return res.status(statusCode).json({ message, success, data });
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ success: false, message: `Server error ${error.message}` });
+    return res.status(500).json({
+      success: false,
+      message: `Server error ${error.message}`,
+    });
   }
 });
 
@@ -46,13 +54,22 @@ router.put(
           message: "Action and Event ID are required",
         });
       }
-      const { statusCode, data, message, success } = await changeEventStatus(
-        eventId,
-        action as EventStatus
-      );
-      res.status(statusCode).json({ success, message, data });
+
+      const data = await changeEventStatus(eventId, action);
+      return res.status(200).json({
+        success: true,
+        message: `Event status changed to ${data.status}`,
+        data,
+      });
     } catch (error: any) {
-      res
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({
+          success: false,
+          message: error.message,
+        });
+      }
+
+      return res
         .status(500)
         .json({ success: false, message: `Server error ${error.message}` });
     }
@@ -68,12 +85,10 @@ router.put(
       const { eventId, userId } = req.params;
 
       if (!eventId || !userId) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Event ID and User ID are required",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Event ID and User ID are required",
+        });
       }
 
       const event = await addVolunteer(eventId, userId);
@@ -83,7 +98,13 @@ router.put(
         data: { event },
       });
     } catch (error: any) {
-      return res.status(400).json({
+      if (error instanceof AppError) {
+        return res
+          .status(error.statusCode)
+          .json({ success: false, message: error.message });
+      }
+
+      return res.status(500).json({
         success: false,
         message: error.message || "Something went wrong",
       });

@@ -2,57 +2,33 @@ import mongoose from "mongoose";
 import eventModel from "../../models/eventModel";
 import userModel from "../../models/userModel";
 import { EventStatus } from "../../types/eventTypes";
-import IResponseStructure from "../../types/responseStructure";
+import AppError from "../../types/AppError";
 
-export const changeEventStatus = async (
-  eventId: string,
-  action: string
-): Promise<IResponseStructure> => {
-  try {
-    if (!Object.values(EventStatus).includes(action as EventStatus)) {
-      return {
-        statusCode: 400,
-        success: false,
-        message: "Invalid action",
-      };
-    }
+export const changeEventStatus = async (eventId: string, action: string) => {
+  const normalizedAction = action.toLowerCase();
 
-    const event = await eventModel.findById(eventId);
-    if (!event) {
-      return {
-        statusCode: 404,
-        success: false,
-        message: "Event not found",
-      };
-    }
-
-    event.status = action as EventStatus;
-    await event.save();
-
-    return {
-      statusCode: 200,
-      success: true,
-      message: `Event ${action}`,
-      data: { event },
-    };
-  } catch (error: any) {
-    return {
-      statusCode: 500,
-      success: false,
-      message: `Server error ${error.message}`,
-    };
+  if (!Object.values(EventStatus).includes(normalizedAction as EventStatus)) {
+    throw new AppError("Invalid action", 400);
   }
+
+  const event = await eventModel.findById(eventId);
+  if (!event) throw new AppError("Event not found", 400);
+
+  event.status = normalizedAction as EventStatus;
+  await event.save();
+
+  return event;
 };
 
 export const addVolunteer = async (eventId: string, userId: string) => {
   const event = await eventModel.findById(eventId);
-  if (!event) throw new Error("Event not found");
+  if (!event) throw new AppError("Event not found", 400);
 
   const user = await userModel.findById(userId);
-  if (!user) throw new Error("User not found");
+  if (!user) throw new AppError("User not found", 400);
 
   if (event.volunteers.some((v) => v.equals(userId))) {
-    throw new Error("User is already a volunteer");
+    throw new AppError("User already a volunteer for this event", 400);
   }
 
   event.volunteers.push(new mongoose.Types.ObjectId(userId));

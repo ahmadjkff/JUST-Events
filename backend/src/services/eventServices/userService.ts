@@ -1,35 +1,17 @@
 import eventModel from "../../models/eventModel";
+import AppError from "../../types/AppError";
 import { EventStatus } from "../../types/eventTypes";
-import IResponseStructure from "../../types/responseStructure";
 
-export const getEventsByStatus = async (
-  status: string
-): Promise<IResponseStructure> => {
-  try {
-    const normalizedStatus = status.toUpperCase();
-    if (!Object.values(EventStatus).includes(normalizedStatus as EventStatus)) {
-      return {
-        statusCode: 400,
-        success: false,
-        message: "Invalid status parameter",
-      };
-    }
+export const getEventsByStatus = async (status?: string) => {
+  const normalizedStatus = status ? status.toLowerCase() : null;
+  if (
+    status &&
+    !Object.values(EventStatus).includes(normalizedStatus as EventStatus)
+  )
+    throw new AppError("Invalid status parameter", 400);
 
-    const events = await eventModel.find({ status: normalizedStatus });
+  const query = normalizedStatus ? { status: normalizedStatus } : {};
+  const events = await eventModel.find(query);
 
-    return {
-      statusCode: 200,
-      success: true,
-      message: `${status} Events fetched successfully`,
-      data: {
-        events,
-      },
-    };
-  } catch (error: any) {
-    return {
-      statusCode: 500,
-      success: false,
-      message: `Server error ${error.message}`,
-    };
-  }
+  return events;
 };
