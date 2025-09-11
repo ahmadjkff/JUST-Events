@@ -1,12 +1,19 @@
-import api from "../../../utils/utils";
-
 export const downloadCertificate = async (eventId: string) => {
-  const res = await api.get(`/student/certificate/${eventId}`, {
-    responseType: "blob", 
-  });
+  const res = await fetch(
+    `http://localhost:5000/student/certificate/${eventId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  );
 
+  if (!res.ok) {
+    throw new Error("Failed to download certificate");
+  }
 
-  const url = window.URL.createObjectURL(new Blob([res.data as BlobPart]));
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
   const link = document.createElement("a");
   link.href = url;
   link.setAttribute("download", "certificate.pdf");

@@ -6,7 +6,10 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => void;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; message?: string; userRole?: string }>;
   logout: () => void;
 }
 
@@ -15,7 +18,7 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
   isLoading: true,
-  login: () => {},
+  login: () => Promise.resolve({ success: false }),
   logout: () => {},
 });
 
