@@ -1,5 +1,6 @@
 import express from "express";
 import { login } from "../../services/authServices/userService";
+import AppError from "../../types/AppError";
 
 const router = express.Router();
 
@@ -11,10 +12,18 @@ router.post("/login", async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email and password are required" });
     }
-    const { statusCode, data, message, success } = await login(email, password);
-    return res.status(statusCode).json({ success, message, data });
+    const data = await login(email, password);
+    return res
+      .status(200)
+      .json({ success: true, message: "Logged in successfully", data });
   } catch (error: any) {
-    console.error(error);
+    if (error instanceof AppError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: `Something went wrong: ${error.message}`,
