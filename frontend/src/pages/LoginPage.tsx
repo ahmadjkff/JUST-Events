@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Button from "../components/ui/Button";
@@ -14,7 +14,7 @@ type FormData = {
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -30,34 +30,26 @@ export default function LoginPage() {
     }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // e.preventDefault();
-    // setLoading(true);
-    // setErrorMessage(null);
+    e.preventDefault();
+    setLoading(true);
+    setErrorMessage(null);
 
-    // try {
+    const result = await login(formData.email, formData.password);
 
-    //   const result = await login(formData.email, formData.password);
-    //   const loggedInUser = result.data.user;
+    if (!result.success) {
+      setErrorMessage(result.message ?? null); // ✅ handle undefined safely
+      setLoading(false);
+      return;
+    }
 
+    const role = result.userRole;
 
-    //   if (loggedInUser.role === "admin") {
-    //     navigate("/admin"); 
-    //   } else if (loggedInUser.role === "supervisor") {
-    //     navigate("/supervisor"); 
-    //   } else if (loggedInUser.role === "student") {
-    //     navigate("/student"); 
-    //   } else {
-    //     navigate("/");
-    //   }
-
-    // } catch (err: any) {
-    //   console.error("Login failed:", err);
-    //   setErrorMessage(err.message || "Login failed. Please try again.");
-    // } finally {
-    //   setLoading(false);
-    // }
+    if (role === "admin") navigate("/admin");
+    else if (role === "supervisor") navigate("/supervisor");
+    else if (role === "student") navigate("/student");
+    else navigate("/");
+    setLoading(false);
   };
 
   return (
@@ -103,7 +95,10 @@ export default function LoginPage() {
               </div>
 
               {errorMessage && (
-                <p className="error-message" style={{ color: "red", marginTop: "10px" }}>
+                <p
+                  className="error-message"
+                  style={{ color: "red", marginTop: "10px" }}
+                >
                   {errorMessage}
                 </p>
               )}
