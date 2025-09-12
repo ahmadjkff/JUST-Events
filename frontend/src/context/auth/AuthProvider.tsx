@@ -13,6 +13,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
 
+    // To-Do: user should be fetched from backend to ensure latest data
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
