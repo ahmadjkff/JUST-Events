@@ -1,4 +1,3 @@
-"use client"
 import "../styles/Header.css"
 
 const Header = () => {
@@ -9,7 +8,8 @@ const Header = () => {
           <a href="/" className="logo">
             Just Events
           </a>
-          <h1 className="header-title">Login</h1>
+          {/* TO DO: add dark mode and language button */}
+          <h1 className="header-title">buttons</h1>
         </div>
       </div>
     </header>
