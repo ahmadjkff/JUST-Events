@@ -1,4 +1,3 @@
-"use client"
 import "../styles/Footer.css"
 
 const Footer = () => {
@@ -6,7 +5,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          <div className="footer-links">
+          {/* <div className="footer-links">
             <a href="/privacy" className="footer-link">
               Privacy Policy
             </a>
@@ -16,7 +15,7 @@ const Footer = () => {
             <a href="/support" className="footer-link">
               Support
             </a>
-          </div>
+          </div> */}
           <p className="footer-text">© 2024 Just Events. All rights reserved.</p>
         </div>
       </div>
