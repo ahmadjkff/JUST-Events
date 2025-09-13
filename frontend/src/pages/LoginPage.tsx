@@ -51,8 +51,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-
+    <div className="min-h-screen flex flex-col items-center justify-center">
       <div className="login-container">
         <div className="container">
           <div className="login-form-wrapper">
