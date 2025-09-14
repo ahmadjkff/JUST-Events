@@ -1,4 +1,4 @@
-import Card from "../../../components/ui/Card";
+import { Card } from "../../../components/ui/Card";
 import { useFetch } from "../../../hooks/useFetch";
 
 function Dashboard() {

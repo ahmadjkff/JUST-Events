@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
+
 import "../styles/globals.css";
 import "../styles/LoginForm.css";
 import { useAuth } from "../context/auth/AuthContext";
+import { Button } from "../components/ui/Button";
 
 type FormData = {
   email: string;
@@ -102,9 +103,8 @@ export default function LoginPage() {
               <div className="form-actions">
                 <Button
                   type="submit"
-                  variant="primary"
-                  fullWidth
-                  loading={loading}
+                  variant="default"
+                  disabled={loading}
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
