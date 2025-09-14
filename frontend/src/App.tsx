@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import ProtectedRoute from "./protectedRoutes";
 import NotFound from "./pages/NotFound";
+import Unauthorized from "./pages/Unauthorized";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/admin/*" element={<AdminRoutes />} />
         <Route path="/supervisor/*" element={<SupervisorRoutes />} />
         <Route path="/student/*" element={<StudentRoutes />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
