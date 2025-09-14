@@ -42,12 +42,7 @@ export default function LoginPage() {
       return;
     }
 
-    const role = result.userRole;
-
-    if (role === "admin") navigate("/admin");
-    else if (role === "supervisor") navigate("/supervisor");
-    else if (role === "student") navigate("/student");
-    else navigate("/");
+    navigate("/");
     setLoading(false);
   };
 
@@ -101,11 +96,7 @@ export default function LoginPage() {
               )}
 
               <div className="form-actions">
-                <Button
-                  type="submit"
-                  variant="default"
-                  disabled={loading}
-                >
+                <Button type="submit" variant="default" disabled={loading}>
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
               </div>
