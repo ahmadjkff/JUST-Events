@@ -39,7 +39,6 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       return {
         success: true,
         message: "Login successful",
-        userRole: user.role,
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";
