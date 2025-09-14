@@ -1,15 +1,5 @@
-import { Box } from "@mui/material";
-import SideBar from "../../common/Sidebar";
-
 function Dashboard() {
-  return (
-    <Box sx={{ display: "flex" }}>
-      <SideBar />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <h1>Supervisor Dashboard</h1>
-      </Box>
-    </Box>
-  );
+  return <div>Dashboard</div>;
 }
 
 export default Dashboard;
