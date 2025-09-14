@@ -94,28 +94,15 @@ function Dashboard() {
       registrationDeadline: "4/11/2024",
       onViewDetails: () => console.log("View details clicked"),
       isRegistrationOpen: true,
-      imageUrl: "../../../public/placeholder.svg",
+      imageUrl: "/placeholder.svg",
     },
   };
 
   return (
-    <div className="flex justify-center items-center gap-4 flex-1 flex-wrap ">
+    <div className="flex justify-start items-start gap-4 flex-wrap mx-40 my-10">
       {Object.values(mockData).map((event: any, index: number) => (
         <Card key={index} {...event} />
       ))}
-      {/* <Card
-        title="Annual Science Fair 2024"
-        description="Showcasing the best science projects from students across the university."
-        category="academic"
-        date="4/15/2024"
-        time="09:00 AM"
-        location="University Science Building"
-        participants="120/150 participants"
-        registrationDeadline="4/11/2024"
-        onViewDetails={() => console.log("View details clicked")}
-        isRegistrationOpen={false}
-        imageUrl="../../../public/placeholder.svg" // optional
-      /> */}
     </div>
   );
 }
