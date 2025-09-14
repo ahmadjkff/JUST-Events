@@ -1,9 +1,17 @@
-import { Calendar, Users, Trophy, BookOpen, Clock, MapPin, ArrowRight } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card"
-import { Button } from "../ui/Button"
-import { Badge } from "../ui/badge"
+import {
+  Calendar,
+  Users,
+  Trophy,
+  BookOpen,
+  Clock,
+  MapPin,
+  ArrowRight,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
+import { Button } from "./ui/Button";
+import { Badge } from "./ui/badge";
 
-export default function StudentDashboardCards() {
+export default function DashboardCards() {
   const upcomingEvents = [
     {
       id: 1,
@@ -23,13 +31,25 @@ export default function StudentDashboardCards() {
       category: "Business",
       attendees: 120,
     },
-  ]
+  ];
 
   const achievements = [
-    { title: "Active Participant", description: "Participated in 10 events", icon: Trophy },
-    { title: "Distinguished Learner", description: "Completed 5 courses", icon: BookOpen },
-    { title: "Community Member", description: "Joined 6 months ago", icon: Users },
-  ]
+    {
+      title: "Active Participant",
+      description: "Participated in 10 events",
+      icon: Trophy,
+    },
+    {
+      title: "Distinguished Learner",
+      description: "Completed 5 courses",
+      icon: BookOpen,
+    },
+    {
+      title: "Community Member",
+      description: "Joined 6 months ago",
+      icon: Users,
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -53,7 +73,9 @@ export default function StudentDashboardCards() {
               <Users className="h-8 w-8 text-green-500" />
               <div>
                 <p className="text-2xl font-bold">8</p>
-                <p className="text-sm text-muted-foreground">Registered Events</p>
+                <p className="text-sm text-muted-foreground">
+                  Registered Events
+                </p>
               </div>
             </div>
           </CardContent>
@@ -77,7 +99,9 @@ export default function StudentDashboardCards() {
               <BookOpen className="h-8 w-8 text-purple-500" />
               <div>
                 <p className="text-2xl font-bold">3</p>
-                <p className="text-sm text-muted-foreground">Completed Courses</p>
+                <p className="text-sm text-muted-foreground">
+                  Completed Courses
+                </p>
               </div>
             </div>
           </CardContent>
@@ -160,5 +184,5 @@ export default function StudentDashboardCards() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
