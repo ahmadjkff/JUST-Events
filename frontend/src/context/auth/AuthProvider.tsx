@@ -1,5 +1,4 @@
 import { useEffect, useState, type FC, type PropsWithChildren } from "react";
-import { useFetch } from "../../hooks/useFetch";
 import type { User } from "../../types/userTypes";
 import { AuthContext } from "./AuthContext";
 
@@ -7,7 +6,6 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { doFetch } = useFetch();
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -23,13 +21,22 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const result = await doFetch(`/user/login`, {
-        method: "POST",
-        body: { email, password },
-      });
+      const result = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/user/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
 
-      const token = result.data.token;
-      const user = result.data.user;
+      const data = await result.json();
+      if (!result.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      const token = data.data.token;
+      const user = data.data.user;
 
       setToken(token);
       setUser(user);
