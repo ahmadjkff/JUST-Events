@@ -1,6 +1,8 @@
 import express from "express";
 import { login } from "../../services/authServices/userService";
 import AppError from "../../types/AppError";
+import userModel from "../../models/userModel";
+import validateJWT from "../../middlewares/validateJWT";
 
 const router = express.Router();
 
@@ -28,6 +30,20 @@ router.post("/login", async (req, res) => {
       success: false,
       message: `Something went wrong: ${error.message}`,
     });
+  }
+});
+
+router.get("/", validateJWT, async (req: any, res) => {
+  try {
+    const user = await userModel.findById(req.user._id).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
