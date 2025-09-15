@@ -8,6 +8,7 @@ import studentRoute from "./routes/eventRoutes/studentRoute";
 import supervisorRoute from "./routes/eventRoutes/supervisorRoute";
 import eventAdminRoute from "./routes/eventRoutes/adminRoute";
 import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRoute";
+import eventUserRoute from "./routes/eventRoutes/userRoute";
 dotenv.config();
 
 const app = express();
@@ -27,6 +28,7 @@ mongoose
 
 app.use("/user", userRoute);
 app.use("/admin", adminRoute);
+app.use("/event", eventUserRoute);
 app.use("/student", studentRoute);
 app.use("/supervisor", supervisorRoute);
 app.use("/event/admin", eventAdminRoute);
