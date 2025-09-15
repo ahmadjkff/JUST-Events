@@ -3,6 +3,8 @@ import { login } from "../../services/authServices/userService";
 import AppError from "../../types/AppError";
 import userModel from "../../models/userModel";
 import validateJWT from "../../middlewares/validateJWT";
+import NodeCache from "node-cache";
+import { IExtendRequest } from "../../types/extendedRequest";
 
 const router = express.Router();
 
@@ -33,17 +35,30 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/", validateJWT, async (req: any, res) => {
+const cache = new NodeCache({ stdTTL: 600 });
+
+router.get("/", validateJWT, async (req: IExtendRequest, res) => {
   try {
-    const user = await userModel.findById(req.user._id).select("-password");
+    const cacheKey = req.user._id.toString();
+    const cachedUser = cache.get(cacheKey);
+
+    if (cachedUser) {
+      console.log("Returning cached user");
+      return res.status(200).json({ success: true, user: cachedUser });
+    }
+
+    const user = await userModel.findById(req.user._id);
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
     }
-    res.json({ success: true, user });
+
+    cache.set(cacheKey, user);
+    return res.status(200).json({ success: true, user });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("User route error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
