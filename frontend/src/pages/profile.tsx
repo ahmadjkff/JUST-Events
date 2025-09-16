@@ -1,9 +1,11 @@
 import Sidebar from "../components/Sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card"
+import { useTitle } from "../hooks/useTitle";
 
 function Profile() {
-
+  useTitle("Profile - JUST Events");
+  
   const user = {
     name: "Anas Khaled",
     image: "https://ui-avatars.com/api/?name=Anas+Khaled",

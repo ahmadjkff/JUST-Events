@@ -5,9 +5,18 @@ import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
 import BrowseEvents from "../../pages/browseEvents";
 import Profile from "../../pages/profile";
+import Setting from "../../pages/setting";
 
 const StudentRoutes: React.FC = () => (
   <Routes>
+    <Route
+      path="setting"
+      element={
+        <ProtectedRoute allowedRoles={["student", "supervisor"]}>
+          <Setting />
+        </ProtectedRoute>
+      }
+    />
     <Route
       path="profile"
       element={
