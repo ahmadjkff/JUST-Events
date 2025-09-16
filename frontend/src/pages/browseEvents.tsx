@@ -25,48 +25,54 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
+import { useEvent } from "../context/event/EventContext";
+import { useEffect } from "react";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
+  const { events, fetchEvents } = useEvent();
 
-  const availableEvents = [
-    {
-      id: 1,
-      title: "AI & Machine Learning Summit",
-      date: "2024-02-10",
-      time: "9:00 AM",
-      location: "Innovation Center",
-      category: "Technology",
-      attendees: 150,
-      description:
-        "Discover the latest trends in AI and Machine Learning with industry experts.",
-    },
-    {
-      id: 2,
-      title: "Marketing Strategies Workshop",
-      date: "2024-02-15",
-      time: "1:00 PM",
-      location: "Business Hub",
-      category: "Business",
-      attendees: 80,
-      description:
-        "Enhance your marketing skills with hands-on sessions and expert guidance.",
-    },
-  ];
+  //   {
+  //     id: 1,
+  //     title: "AI & Machine Learning Summit",
+  //     date: "2024-02-10",
+  //     time: "9:00 AM",
+  //     location: "Innovation Center",
+  //     category: "Technology",
+  //     attendees: 150,
+  //     description:
+  //       "Discover the latest trends in AI and Machine Learning with industry experts.",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Marketing Strategies Workshop",
+  //     date: "2024-02-15",
+  //     time: "1:00 PM",
+  //     location: "Business Hub",
+  //     category: "Business",
+  //     attendees: 80,
+  //     description:
+  //       "Enhance your marketing skills with hands-on sessions and expert guidance.",
+  //   },
+  // ];
 
-  const featuredEvents = [
-    {
-      id: 3,
-      title: "Leadership & Teamwork Seminar",
-      date: "2024-03-01",
-      time: "11:00 AM",
-      location: "Main Auditorium",
-      category: "Career",
-      attendees: 200,
-      description:
-        "Learn effective leadership and teamwork strategies from successful leaders.",
-    },
-  ];
+  // const featuredEvents = [
+  //   {
+  //     id: 3,
+  //     title: "Leadership & Teamwork Seminar",
+  //     date: "2024-03-01",
+  //     time: "11:00 AM",
+  //     location: "Main Auditorium",
+  //     category: "Career",
+  //     attendees: 200,
+  //     description:
+  //       "Learn effective leadership and teamwork strategies from successful leaders.",
+  //   },
+  // ];
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   const getCategoryColor = (category: string) => {
     const colors = {
@@ -183,18 +189,18 @@ function BrowseEvents() {
           <Tabs defaultValue="available" className="space-y-6">
             <TabsList className="grid w-full grid-cols-2 max-w-md">
               <TabsTrigger value="available">
-                Available Events ({availableEvents.length})
+                Available Events ({events.length})
               </TabsTrigger>
               <TabsTrigger value="featured">
-                Featured Events ({featuredEvents.length})
+                Featured Events ({events.length})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="available" className="space-y-4">
-              {availableEvents.length > 0 ? (
+              {events.length > 0 ? (
                 <div className="grid gap-4">
-                  {availableEvents.map((event) => (
-                    <EventCard key={event.id} event={event} />
+                  {events.map((event) => (
+                    <EventCard key={event._id} event={event} />
                   ))}
                 </div>
               ) : (
@@ -214,10 +220,10 @@ function BrowseEvents() {
             </TabsContent>
 
             <TabsContent value="featured" className="space-y-4">
-              {featuredEvents.length > 0 ? (
+              {events.length > 0 ? (
                 <div className="grid gap-4">
-                  {featuredEvents.map((event) => (
-                    <EventCard key={event.id} event={event} />
+                  {events.map((event) => (
+                    <EventCard key={event._id} event={event} />
                   ))}
                 </div>
               ) : (

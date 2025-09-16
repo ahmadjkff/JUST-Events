@@ -34,7 +34,6 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
       return { success: false, message, data: [] };
     } finally {
       setIsLoading(false);
-      console.log(events);
     }
   };
 
