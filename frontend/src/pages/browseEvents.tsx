@@ -1,9 +1,10 @@
-import { Badge, Bell, Calendar, Clock, Filter, MapPin, Search, Sidebar, User, Users } from "lucide-react";
+import { Badge, Bell, Calendar, Clock, Filter, MapPin, Search, User, Users } from "lucide-react";
 import { useTitle } from "../hooks/useTitle";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import Sidebar from "../components/Sidebar";
 
 
 function BrowseEvents() {
