@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "../../protectedRoutes";
 import Events from "./pages/Events";
 import Settings from "./pages/Settings";
+import NotFound from "../../pages/NotFound";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -32,6 +33,7 @@ const SupervisorRoutes: React.FC = () => (
         </ProtectedRoute>
       }
     />
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 

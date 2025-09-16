@@ -6,6 +6,7 @@ import ProtectedRoute from "../../protectedRoutes";
 import BrowseEvents from "../../pages/browseEvents";
 import Profile from "../../pages/profile";
 import Setting from "../../pages/setting";
+import NotFound from "../../pages/NotFound";
 
 const StudentRoutes: React.FC = () => (
   <Routes>
@@ -41,6 +42,7 @@ const StudentRoutes: React.FC = () => (
         </ProtectedRoute>
       }
     />
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 

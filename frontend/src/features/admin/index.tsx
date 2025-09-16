@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "../../protectedRoutes";
+import NotFound from "../../pages/NotFound";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
@@ -14,6 +15,7 @@ const AdminRoutes: React.FC = () => (
         </ProtectedRoute>
       }
     />
+    <Route path="*" element={<NotFound />} />
   </Routes>
 );
 
