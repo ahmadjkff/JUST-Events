@@ -1,11 +1,31 @@
-import { Badge, Bell, Calendar, Clock, Filter, MapPin, Search, User, Users } from "lucide-react";
+import {
+  Badge,
+  Bell,
+  Calendar,
+  ChartBarStacked,
+  Clock,
+  Filter,
+  MapPin,
+  Search,
+  User,
+  Users,
+} from "lucide-react";
 import { useTitle } from "../hooks/useTitle";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
 import Sidebar from "../components/Sidebar";
-
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
@@ -19,7 +39,8 @@ function BrowseEvents() {
       location: "Innovation Center",
       category: "Technology",
       attendees: 150,
-      description: "Discover the latest trends in AI and Machine Learning with industry experts.",
+      description:
+        "Discover the latest trends in AI and Machine Learning with industry experts.",
     },
     {
       id: 2,
@@ -29,7 +50,8 @@ function BrowseEvents() {
       location: "Business Hub",
       category: "Business",
       attendees: 80,
-      description: "Enhance your marketing skills with hands-on sessions and expert guidance.",
+      description:
+        "Enhance your marketing skills with hands-on sessions and expert guidance.",
     },
   ];
 
@@ -42,17 +64,23 @@ function BrowseEvents() {
       location: "Main Auditorium",
       category: "Career",
       attendees: 200,
-      description: "Learn effective leadership and teamwork strategies from successful leaders.",
+      description:
+        "Learn effective leadership and teamwork strategies from successful leaders.",
     },
   ];
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      Technology: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-      Business: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      Career: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      Technology:
+        "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+      Business:
+        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+      Career:
+        "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
     };
-    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return (
+      colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
+    );
   };
 
   const EventCard = ({ event }: { event: any }) => (
@@ -61,7 +89,9 @@ function BrowseEvents() {
         <div className="flex items-start justify-between">
           <div className="space-y-2">
             <CardTitle className="text-lg">{event.title}</CardTitle>
-            <Badge className={getCategoryColor(event.category)}>{event.category}</Badge>
+            <Badge className={getCategoryColor(event.category)}>
+              {event.category}
+            </Badge>
           </div>
           <div className="flex gap-2">
             <Button size="sm">Register</Button>
@@ -106,15 +136,23 @@ function BrowseEvents() {
         <header className="bg-card border-b border-border p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Browse Events</h1>
-              <p className="text-muted-foreground">Explore and register for upcoming events</p>
+              <h1 className="text-2xl font-bold text-foreground">
+                Browse Events
+              </h1>
+              <p className="text-muted-foreground">
+                Explore and register for upcoming events
+              </p>
             </div>
 
             <div className="flex items-center gap-3">
               <Button variant="outline" size="sm">
                 <Search className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" className="relative bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                className="relative bg-transparent"
+              >
                 <Bell className="h-4 w-4" />
                 <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
               </Button>
@@ -132,19 +170,30 @@ function BrowseEvents() {
             <div className="flex items-center gap-4 mb-6">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search available events..." className="pl-10" />
+                <Input
+                  placeholder="Search available events..."
+                  className="pl-10"
+                />
               </div>
               <Button variant="outline">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
+              </Button>
+              <Button variant="outline">
+                <ChartBarStacked className="h-4 w-4 mr-2" />
+                Category
               </Button>
             </div>
 
             {/* Events Tabs */}
             <Tabs defaultValue="available" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="available">Available Events ({availableEvents.length})</TabsTrigger>
-                <TabsTrigger value="featured">Featured Events ({featuredEvents.length})</TabsTrigger>
+                <TabsTrigger value="available">
+                  Available Events ({availableEvents.length})
+                </TabsTrigger>
+                <TabsTrigger value="featured">
+                  Featured Events ({featuredEvents.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="available" className="space-y-4">
@@ -158,9 +207,12 @@ function BrowseEvents() {
                   <Card className="text-center py-12">
                     <CardContent>
                       <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No available events</h3>
+                      <h3 className="text-lg font-semibold mb-2">
+                        No available events
+                      </h3>
                       <p className="text-muted-foreground mb-4">
-                        Currently, there are no events to display. Please check back later.
+                        Currently, there are no events to display. Please check
+                        back later.
                       </p>
                     </CardContent>
                   </Card>
@@ -178,8 +230,12 @@ function BrowseEvents() {
                   <Card className="text-center py-12">
                     <CardContent>
                       <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No featured events</h3>
-                      <p className="text-muted-foreground">Featured events will appear here.</p>
+                      <h3 className="text-lg font-semibold mb-2">
+                        No featured events
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Featured events will appear here.
+                      </p>
                     </CardContent>
                   </Card>
                 )}
