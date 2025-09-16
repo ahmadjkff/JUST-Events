@@ -25,7 +25,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import Sidebar from "../components/Sidebar";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
@@ -126,124 +125,118 @@ function BrowseEvents() {
   );
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-card border-b border-border p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Browse Events
-              </h1>
-              <p className="text-muted-foreground">
-                Explore and register for upcoming events
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm">
-                <Search className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="relative bg-transparent"
-              >
-                <Bell className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-              </Button>
-              <Button variant="outline" size="sm">
-                <User className="h-4 w-4" />
-              </Button>
-            </div>
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Header */}
+      <header className="bg-card border-b border-border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Browse Events
+            </h1>
+            <p className="text-muted-foreground">
+              Explore and register for upcoming events
+            </p>
           </div>
-        </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-auto p-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Search and Filter Bar */}
-            <div className="flex items-center gap-4 mb-6">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search available events..."
-                  className="pl-10"
-                />
-              </div>
-              <Button variant="outline">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-              <Button variant="outline">
-                <ChartBarStacked className="h-4 w-4 mr-2" />
-                Category
-              </Button>
-            </div>
-
-            {/* Events Tabs */}
-            <Tabs defaultValue="available" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="available">
-                  Available Events ({availableEvents.length})
-                </TabsTrigger>
-                <TabsTrigger value="featured">
-                  Featured Events ({featuredEvents.length})
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="available" className="space-y-4">
-                {availableEvents.length > 0 ? (
-                  <div className="grid gap-4">
-                    {availableEvents.map((event) => (
-                      <EventCard key={event.id} event={event} />
-                    ))}
-                  </div>
-                ) : (
-                  <Card className="text-center py-12">
-                    <CardContent>
-                      <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">
-                        No available events
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
-                        Currently, there are no events to display. Please check
-                        back later.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-
-              <TabsContent value="featured" className="space-y-4">
-                {featuredEvents.length > 0 ? (
-                  <div className="grid gap-4">
-                    {featuredEvents.map((event) => (
-                      <EventCard key={event.id} event={event} />
-                    ))}
-                  </div>
-                ) : (
-                  <Card className="text-center py-12">
-                    <CardContent>
-                      <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">
-                        No featured events
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Featured events will appear here.
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-            </Tabs>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="relative bg-transparent"
+            >
+              <Bell className="h-4 w-4" />
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+            </Button>
+            <Button variant="outline" size="sm">
+              <User className="h-4 w-4" />
+            </Button>
           </div>
-        </main>
-      </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-auto p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Search and Filter Bar */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search available events..."
+                className="pl-10"
+              />
+            </div>
+            <Button variant="outline">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+            <Button variant="outline">
+              <ChartBarStacked className="h-4 w-4 mr-2" />
+              Category
+            </Button>
+          </div>
+
+          {/* Events Tabs */}
+          <Tabs defaultValue="available" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2 max-w-md">
+              <TabsTrigger value="available">
+                Available Events ({availableEvents.length})
+              </TabsTrigger>
+              <TabsTrigger value="featured">
+                Featured Events ({featuredEvents.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="available" className="space-y-4">
+              {availableEvents.length > 0 ? (
+                <div className="grid gap-4">
+                  {availableEvents.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="text-center py-12">
+                  <CardContent>
+                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">
+                      No available events
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Currently, there are no events to display. Please check
+                      back later.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="featured" className="space-y-4">
+              {featuredEvents.length > 0 ? (
+                <div className="grid gap-4">
+                  {featuredEvents.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="text-center py-12">
+                  <CardContent>
+                    <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">
+                      No featured events
+                    </h3>
+                    <p className="text-muted-foreground">
+                      Featured events will appear here.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
     </div>
   );
 }

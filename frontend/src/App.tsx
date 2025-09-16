@@ -9,27 +9,32 @@ import Home from "./pages/Home";
 import ProtectedRoute from "./protectedRoutes";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   return (
     <Router>
       <Header />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/admin/*" element={<AdminRoutes />} />
-        <Route path="/supervisor/*" element={<SupervisorRoutes />} />
-        <Route path="/student/*" element={<StudentRoutes />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <div className="flex ">
+        <Sidebar />
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin/*" element={<AdminRoutes />} />
+          <Route path="/supervisor/*" element={<SupervisorRoutes />} />
+          <Route path="/student/*" element={<StudentRoutes />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
       <Footer />
     </Router>
   );

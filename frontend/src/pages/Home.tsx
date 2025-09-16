@@ -1,6 +1,5 @@
 import { useTitle } from "../hooks/useTitle";
 import { Search, Bell, User } from "lucide-react";
-import Sidebar from "../components/Sidebar";
 import StudentDashboardCards from "../components/DashboardCards";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
@@ -9,72 +8,66 @@ function Home() {
   useTitle("Home - JUST Events");
 
   return (
-    <div className="flex bg-background" dir="ltr">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-card border-b border-border p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
-                Welcome back, Ahmed!
-              </h1>
-              <p className="text-muted-foreground">
-                Here's what's happening at your university today
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm">
-                <Search className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="relative bg-transparent"
-              >
-                <Bell className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs"></span>
-              </Button>
-              <Button variant="outline" size="sm">
-                <User className="h-4 w-4" />
-              </Button>
-            </div>
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Header */}
+      <header className="bg-card border-b border-border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Welcome back, Ahmed!
+            </h1>
+            <p className="text-muted-foreground">
+              Here's what's happening at your university today
+            </p>
           </div>
-        </header>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-auto p-6">
-          <div className="max-w-7xl mx-auto">
-            {/* Welcome Message */}
-            <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold mb-2">
-                      Welcome to Jordan University of Science and Technology
-                      Events Platform
-                    </h2>
-                    <p className="text-muted-foreground">
-                      Discover new events, connect with your peers, and develop
-                      your skills through our interactive platform
-                    </p>
-                  </div>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
-                    Explore Events
-                  </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="relative bg-transparent"
+            >
+              <Bell className="h-4 w-4" />
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs"></span>
+            </Button>
+            <Button variant="outline" size="sm">
+              <User className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-auto p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Welcome Message */}
+          <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">
+                    Welcome to Jordan University of Science and Technology
+                    Events Platform
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Discover new events, connect with your peers, and develop
+                    your skills through our interactive platform
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
+                <Button className="bg-blue-600 hover:bg-blue-700">
+                  Explore Events
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Dashboard Cards */}
-            <StudentDashboardCards />
-          </div>
-        </main>
-      </div>
+          {/* Dashboard Cards */}
+          <StudentDashboardCards />
+        </div>
+      </main>
     </div>
   );
 }

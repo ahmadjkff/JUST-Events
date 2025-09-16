@@ -26,7 +26,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const navigationItems = [
-    { icon: Home, label: "Home", href: "/student/home", active: true },
+    { icon: Home, label: "Home", href: "/", active: true },
     {
       icon: Calendar,
       label: "Events",
