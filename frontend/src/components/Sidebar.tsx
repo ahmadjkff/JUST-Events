@@ -16,6 +16,7 @@ import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 import { Badge } from "./ui/badge";
+import { Link } from "react-router-dom";
 
 interface SidebarProps {
   className?: string;
@@ -26,7 +27,12 @@ export default function Sidebar({ className }: SidebarProps) {
 
   const navigationItems = [
     { icon: Home, label: "Home", href: "/student/home", active: true },
-    { icon: Calendar, label: "Events", href: "/student/events", badge: "3" },
+    {
+      icon: Calendar,
+      label: "Events",
+      href: "/student/browse-events",
+      badge: "3",
+    },
     { icon: Users, label: "Community", href: "/student/community" },
     { icon: BookOpen, label: "Courses", href: "/student/courses" },
     { icon: Trophy, label: "Achievements", href: "/student/achievements" },
@@ -86,19 +92,21 @@ export default function Sidebar({ className }: SidebarProps) {
                   : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
             >
-              <item.icon
-                className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
-              />
-              {!isCollapsed && (
-                <>
-                  <span className="flex-1">{item.label}</span>
-                  {item.badge && (
-                    <Badge variant="secondary" className="text-xs">
-                      {item.badge}
-                    </Badge>
-                  )}
-                </>
-              )}
+              <Link to={item.href} className="flex items-center w-full">
+                <item.icon
+                  className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
+                />
+                {!isCollapsed && (
+                  <>
+                    <span className="flex-1">{item.label}</span>
+                    {item.badge && (
+                      <Badge variant="secondary" className="text-xs">
+                        {item.badge}
+                      </Badge>
+                    )}
+                  </>
+                )}
+              </Link>
             </Button>
           ))}
         </nav>
