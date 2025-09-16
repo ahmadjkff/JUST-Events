@@ -43,7 +43,7 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <Card
       className={cn(
-        "h-screen transition-all duration-300 border-r bg-sidebar",
+        "h-screen sticky top-0 transition-all duration-300 border-r bg-sidebar",
         isCollapsed ? "w-16" : "w-64",
         className
       )}

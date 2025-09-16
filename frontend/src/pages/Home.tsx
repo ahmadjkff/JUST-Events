@@ -9,7 +9,7 @@ function Home() {
   useTitle("Home - JUST Events");
 
   return (
-    <div className="flex h-screen bg-background" dir="ltr">
+    <div className="flex bg-background" dir="ltr">
       {/* Sidebar */}
       <Sidebar />
 
