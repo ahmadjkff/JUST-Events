@@ -16,7 +16,7 @@ import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 import { Badge } from "./ui/badge";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth/AuthContext";
 
 interface SidebarProps {
@@ -25,18 +25,23 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
   const navigationItems = [
-    { icon: Home, label: "Home", href: "/", active: true },
+    { icon: Home, label: "Home", href: "/" },
     {
       icon: Calendar,
       label: "Events",
-      href: "/student/browse-events",
+      href: "/browse-events",
       badge: "3",
     },
     { icon: Users, label: "Community", href: "/student/community" },
@@ -48,7 +53,7 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/student/notifications",
       badge: "5",
     },
-    { icon: User, label: "Profile", href: "/student/profile" },
+    { icon: User, label: "Profile", href: "/profile" },
     { icon: Settings, label: "Settings", href: "/student/settings" },
   ];
 
@@ -86,35 +91,41 @@ export default function Sidebar({ className }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 p-2 space-y-1">
-          {navigationItems.map((item) => (
-            <Button
-              key={item.href}
-              variant={item.active ? "default" : "ghost"}
-              className={cn(
-                "w-full justify-start text-left",
-                isCollapsed ? "px-2" : "px-3",
-                item.active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              )}
-            >
-              <Link to={item.href} className="flex items-center w-full">
-                <item.icon
-                  className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
-                />
-                {!isCollapsed && (
-                  <>
-                    <span className="flex-1">{item.label}</span>
-                    {item.badge && (
-                      <Badge variant="secondary" className="text-xs">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </>
+          {navigationItems.map((item) => {
+            const isActive =
+              item.href === "/"
+                ? currentPath === "/"
+                : currentPath.startsWith(item.href);
+            return (
+              <Button
+                key={item.href}
+                variant={isActive ? "default" : "ghost"}
+                className={cn(
+                  "w-full justify-start text-left",
+                  isCollapsed ? "px-2" : "px-3",
+                  isActive
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 )}
-              </Link>
-            </Button>
-          ))}
+              >
+                <Link to={item.href} className="flex items-center w-full">
+                  <item.icon
+                    className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
+                  />
+                  {!isCollapsed && (
+                    <>
+                      <span className="flex-1">{item.label}</span>
+                      {item.badge && (
+                        <Badge variant="secondary" className="text-xs">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                </Link>
+              </Button>
+            );
+          })}
         </nav>
 
         {/* Footer */}

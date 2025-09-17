@@ -10,6 +10,8 @@ import ProtectedRoute from "./protectedRoutes";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
 import Sidebar from "./components/Sidebar";
+import BrowseEvents from "./pages/browseEvents";
+import Profile from "./pages/profile";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
               }
             />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="browse-events" element={<BrowseEvents />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/admin/*" element={<AdminRoutes />} />
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
             <Route path="/student/*" element={<StudentRoutes />} />
