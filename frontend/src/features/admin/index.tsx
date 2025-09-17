@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
+import ControlEvents from "./pages/ControlEvents";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
@@ -12,6 +13,14 @@ const AdminRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["admin"]}>
           <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="control-events"
+      element={
+        <ProtectedRoute>
+          <ControlEvents />
         </ProtectedRoute>
       }
     />
