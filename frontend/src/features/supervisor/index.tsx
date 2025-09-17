@@ -6,6 +6,7 @@ import ProtectedRoute from "../../protectedRoutes";
 import Events from "./pages/Events";
 import Settings from "./pages/Settings";
 import NotFound from "../../pages/NotFound";
+import EventForm from "./pages/CreateEvent";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -14,6 +15,14 @@ const SupervisorRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["supervisor"]}>
           <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="create-event"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <EventForm />
         </ProtectedRoute>
       }
     />
