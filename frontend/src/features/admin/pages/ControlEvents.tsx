@@ -204,7 +204,7 @@ function ControlEvents() {
 
           {/* Events Tabs */}
           <Tabs defaultValue="pending" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 max-w-md">
+            <TabsList className="flex md:grid w-full grid-cols-3 max-w-md">
               <TabsTrigger value="approved">
                 Approved Events ({eventsByStatus.approved.length})
               </TabsTrigger>
