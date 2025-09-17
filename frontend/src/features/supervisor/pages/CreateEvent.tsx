@@ -1,29 +1,50 @@
 import React, { useState } from "react";
 import { Calendar, MapPin, FileText, Type } from "lucide-react";
+import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
+import { useNavigate } from "react-router-dom";
 
 const EventForm: React.FC = () => {
+  const { createEvent } = useSupervisor();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     description: "",
     location: "",
     date: "",
   });
-
+  const handleCreateEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const result = await createEvent(
+      form.title,
+      form.description,
+      form.location,
+      new Date(form.date)
+    );
+    console.log("Create event result:", result);
+    if (!result.success) {
+      console.log("Error creating event:", result.message);
+      setLoading(false);
+      setError(result.message || "Failed to create event");
+      return;
+    }
+    console.log("Event created successfully:", result.data);
+    setLoading(false);
+    setError(null);
+    navigate("/student/browse-events");
+  };
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form Submitted:", form);
-  };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleCreateEvent}
         className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 space-y-6"
       >
         <h2 className="text-2xl font-bold text-gray-800 text-center">
@@ -108,6 +129,7 @@ const EventForm: React.FC = () => {
         >
           Create Event
         </button>
+        {error && <p className="text-red-500 text-center">{error}</p>}
       </form>
     </div>
   );
