@@ -27,11 +27,14 @@ import {
 } from "../components/ui/tabs";
 import { useEvent } from "../context/event/EventContext";
 import { useEffect } from "react";
+import { useAuth } from "../context/auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { events, fetchEvents } = useEvent();
-
+  const { user } = useAuth();
+  const navigate = useNavigate();
   //   {
   //     id: 1,
   //     title: "AI & Machine Learning Summit",
@@ -168,6 +171,14 @@ function BrowseEvents() {
         <div className="max-w-7xl mx-auto">
           {/* Search and Filter Bar */}
           <div className="flex items-center gap-4 mb-6">
+            {user?.role === "supervisor" && (
+              <Button
+                size="lg"
+                onClick={() => navigate("/supervisor/create-event")}
+              >
+                Create Event
+              </Button>
+            )}
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input

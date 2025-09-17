@@ -16,7 +16,8 @@ import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 import { Badge } from "./ui/badge";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/auth/AuthContext";
 
 interface SidebarProps {
   className?: string;
@@ -24,8 +25,16 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   const navigationItems = [
     { icon: Home, label: "Home", href: "/" },
@@ -122,9 +131,10 @@ export default function Sidebar({ className }: SidebarProps) {
         {/* Footer */}
         <div className="p-2 border-t border-sidebar-border">
           <Button
+            onClick={() => handleLogout()}
             variant="ghost"
             className={cn(
-              "w-full justify-start text-left text-sidebar-foreground hover:bg-sidebar-accent",
+              "w-full justify-start text-left text-sidebar-foreground hover:bg-sidebar-accent cursor-pointer",
               isCollapsed ? "px-2" : "px-3"
             )}
           >
