@@ -19,7 +19,7 @@ router.post(
   isSupervisor,
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, date } = req.body;
+      const { title, description, location, date } = req.body; // To-Do recieve category and department from req.body (important)
 
       if (!title || !description || !location || !date) {
         return res.status(400).json({ message: "All fields are required" });
@@ -34,6 +34,7 @@ router.post(
           message: "Description must be at least 10 characters long",
         });
       }
+
       const supervisorId = req.user._id;
       const { data, statusCode, message, success } = await createEvent({
         title,

@@ -1,5 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { EventStatus } from "../types/eventTypes";
+import {
+  EventCategory,
+  EventDepartment,
+  EventStatus,
+} from "../types/eventTypes";
 
 export interface IEvent extends Document {
   title: string;
@@ -8,7 +12,8 @@ export interface IEvent extends Document {
   date: Date;
   createdBy: mongoose.Types.ObjectId;
   status: EventStatus;
-
+  category: EventCategory;
+  department: EventDepartment;
   feedback: {
     student: mongoose.Types.ObjectId;
     rating: number;
@@ -37,6 +42,17 @@ const eventSchema = new Schema<IEvent>(
       type: String,
       enum: Object.values(EventStatus),
       default: EventStatus.PENDING,
+    },
+    category: {
+      type: String,
+      enum: Object.values(EventCategory),
+      required: true,
+      default: EventCategory.OTHER,
+    },
+    department: {
+      type: String,
+      enum: EventDepartment,
+      required: true,
     },
     feedback: [feedbackSchema],
     volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }],
