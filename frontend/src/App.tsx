@@ -15,25 +15,27 @@ function App() {
   return (
     <Router>
       <Header />
-      <div className="flex ">
+      <div className="flex">
         <Sidebar />
 
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/admin/*" element={<AdminRoutes />} />
-          <Route path="/supervisor/*" element={<SupervisorRoutes />} />
-          <Route path="/student/*" element={<StudentRoutes />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="flex-grow p-4">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin/*" element={<AdminRoutes />} />
+            <Route path="/supervisor/*" element={<SupervisorRoutes />} />
+            <Route path="/student/*" element={<StudentRoutes />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </div>
       <Footer />
     </Router>
