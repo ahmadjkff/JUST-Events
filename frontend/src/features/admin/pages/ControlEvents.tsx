@@ -2,9 +2,7 @@ import {
   Bell,
   Calendar,
   Clock,
-  Filter,
   MapPin,
-  Plus,
   Search,
   User,
   Users,
@@ -27,21 +25,31 @@ import {
 } from "../../../components/ui/tabs";
 import { Input } from "../../../components/ui/input";
 import { useEvent } from "../../../context/event/EventContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { changeEventStatus } from "../services/APIRequests";
+import Menu from "../../../components/ui/Menu";
+import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 
 function ControlEvents() {
   useTitle("Control Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
+  const [category, setCategory] = useState<string | null>(null);
+  const [department, setDepartment] = useState<string | null>(null);
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      Technology:
+      [EventCategory.Tech]:
         "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-      Business:
+      [EventCategory.Health]:
         "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      Career:
+      [EventCategory.Education]:
         "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      [EventCategory.Community]:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+      [EventCategory.Arts]:
+        "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
+      [EventCategory.Other]:
+        "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
     };
     return (
       colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
@@ -55,7 +63,7 @@ function ControlEvents() {
           <div className="space-y-2">
             <CardTitle className="text-lg">{event.title}</CardTitle>
             <Badge className={getCategoryColor(event.category)}>
-              {event.category}
+              {event.category.toUpperCase()}
             </Badge>
           </div>
         </div>
@@ -142,6 +150,7 @@ function ControlEvents() {
     await fetchEvents("rejected");
   };
 
+  // fetch events on component mount
   useEffect(() => {
     const fetchAll = async () => {
       await fetchEvents("approved");
@@ -151,6 +160,24 @@ function ControlEvents() {
 
     fetchAll();
   }, []);
+
+  // Filter events based on category and department
+  const filteredEvents = (status: string) => {
+    let events = eventsByStatus[status as keyof typeof eventsByStatus] || [];
+    if (category) {
+      events = events.filter(
+        (e: any) => e.category.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    if (department) {
+      events = events.filter(
+        (e: any) => e.department.toLowerCase() === department.toLowerCase()
+      );
+    }
+
+    return events;
+  };
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -192,14 +219,26 @@ function ControlEvents() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input placeholder="Search your events..." className="pl-10" />
             </div>
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Browse Events
-            </Button>
+
+            <Menu
+              title="Category"
+              items={[
+                "Tech",
+                "Health",
+                "Education",
+                "Community",
+                "Arts",
+                "Other",
+              ]}
+              selected={category || "Category"}
+              setSelected={setCategory}
+            />
+            <Menu
+              title="Department"
+              items={["IT", "Engineering", "Medical", "Science"]}
+              selected={department || "Department"}
+              setSelected={setDepartment}
+            />
           </div>
 
           {/* Events Tabs */}
@@ -217,12 +256,20 @@ function ControlEvents() {
             </TabsList>
 
             <TabsContent value="approved" className="space-y-4">
+              <h1 className="text-2xl font-bold text-green-500 border-b-2 pb-2 mb-4">
+                Approved
+              </h1>
               {eventsByStatus.approved.length > 0 ? (
                 <div className="grid gap-4">
-                  {eventsByStatus.approved.length &&
-                    eventsByStatus.approved.map((event: any) => (
+                  {filteredEvents("approved").length ? (
+                    filteredEvents("approved").map((event: any) => (
                       <EventCard key={event._id} event={event} />
-                    ))}
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No events found for the selected filters.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <Card className="text-center py-12">
@@ -241,15 +288,20 @@ function ControlEvents() {
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-4">
+              <h1 className="text-2xl font-bold text-gray-500 border-b-2 pb-2 mb-4">
+                Pending
+              </h1>
               {eventsByStatus.pending.length > 0 ? (
                 <div className="grid gap-4">
-                  {eventsByStatus.pending.map((event: any) => (
-                    <EventCard
-                      key={event._id}
-                      event={event}
-                      showActions={true}
-                    />
-                  ))}
+                  {filteredEvents("pending").length ? (
+                    filteredEvents("pending").map((event: any) => (
+                      <EventCard key={event._id} event={event} />
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No events found for the selected filters.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <Card className="text-center py-12">
@@ -267,15 +319,20 @@ function ControlEvents() {
             </TabsContent>
 
             <TabsContent value="rejected" className="space-y-4">
+              <h1 className="text-2xl font-bold text-red-500 border-b-2 pb-2 mb-4">
+                Rejected
+              </h1>
               {eventsByStatus.rejected.length > 0 ? (
                 <div className="grid gap-4">
-                  {eventsByStatus.rejected.map((event: any) => (
-                    <EventCard
-                      key={event._id}
-                      event={event}
-                      showActions={true}
-                    />
-                  ))}
+                  {filteredEvents("rejected").length ? (
+                    filteredEvents("rejected").map((event: any) => (
+                      <EventCard key={event._id} event={event} />
+                    ))
+                  ) : (
+                    <p className="text-muted-foreground">
+                      No events found for the selected filters.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <Card className="text-center py-12">

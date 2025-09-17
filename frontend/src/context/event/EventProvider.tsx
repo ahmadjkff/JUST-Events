@@ -28,8 +28,6 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
         throw new Error(data.message || "Failed to fetch events");
       }
 
-      console.log("Fetched events:", data.data);
-
       if (status) {
         setEventsByStatus((prev) => ({ ...prev, [status]: data.data }));
       } else {
