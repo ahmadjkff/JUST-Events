@@ -3,6 +3,11 @@ import { EventContext } from "./EventContext";
 
 const EventProvider: FC<PropsWithChildren> = ({ children }) => {
   const [events, setEvents] = useState<any[]>([]); // To-Do Replace 'any' with your actual event type
+  const [eventsByStatus, setEventsByStatus] = useState<{
+    approved: any[];
+    pending: any[];
+    rejected: any[];
+  }>({ approved: [], pending: [], rejected: [] });
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchEvents = async (status?: string) => {
@@ -23,14 +28,21 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
         throw new Error(data.message || "Failed to fetch events");
       }
 
-      setEvents(data.data);
+      console.log("Fetched events:", data.data);
 
-      return { success: true, data: data };
+      if (status) {
+        setEventsByStatus((prev) => ({ ...prev, [status]: data.data }));
+      } else {
+        setEvents(data.data);
+      }
+
+      return { success: true, data: data.data };
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to fetch events";
       console.error("Error fetching events:", error);
       setEvents([]);
+      setEventsByStatus({ approved: [], pending: [], rejected: [] });
       return { success: false, message, data: [] };
     } finally {
       setIsLoading(false);
@@ -38,7 +50,9 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   return (
-    <EventContext.Provider value={{ events, isLoading, fetchEvents }}>
+    <EventContext.Provider
+      value={{ events, eventsByStatus, isLoading, fetchEvents }}
+    >
       {children}
     </EventContext.Provider>
   );
