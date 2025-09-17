@@ -3,8 +3,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
-import BrowseEvents from "../../pages/browseEvents";
-import Profile from "../../pages/profile";
 import Setting from "../../pages/setting";
 import NotFound from "../../pages/NotFound";
 
@@ -15,22 +13,6 @@ const StudentRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["student", "supervisor"]}>
           <Setting />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="profile"
-      element={
-        <ProtectedRoute allowedRoles={["student", "supervisor"]}>
-          <Profile />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="browse-events"
-      element={
-        <ProtectedRoute allowedRoles={["student", "supervisor"]}>
-          <BrowseEvents />
         </ProtectedRoute>
       }
     />
