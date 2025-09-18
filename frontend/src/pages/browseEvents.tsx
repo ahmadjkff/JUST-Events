@@ -29,11 +29,24 @@ import { useEvent } from "../context/event/EventContext";
 import { useEffect } from "react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "../components/ui/AlertDialog";
+import { useSupervisor } from "../context/supervisor/SupervisorContext";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { events, fetchEvents } = useEvent();
   const { user } = useAuth();
+  const { deleteEvent } = useSupervisor();
   const navigate = useNavigate();
   //   {
   //     id: 1,
@@ -77,6 +90,12 @@ function BrowseEvents() {
     fetchEvents();
   }, []);
 
+  const handleDeleteEvent = async (eventId: string) => {
+    const result = await deleteEvent(eventId);
+    if (result.success) {
+      fetchEvents();
+    }
+  };
   const getCategoryColor = (category: string) => {
     const colors = {
       Technology:
@@ -103,6 +122,46 @@ function BrowseEvents() {
           </div>
           <div className="flex gap-2">
             <Button size="sm">Register</Button>
+            {event.createdBy === user?._id && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    className="bg-red-500 hover:bg-red-600 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="max-w-md">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-xl font-bold text-red-600">
+                      Delete Event
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-gray-600">
+                      Are you sure you want to Delete <b>{event.title} Event</b>
+                      ? <br />
+                      This action{" "}
+                      <span className="text-red-500 font-semibold">
+                        cannot be undone
+                      </span>{" "}
+                      and attendees will lose access.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md px-4 py-2 transition-colors">
+                      Close
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDeleteEvent(event._id)}
+                      className="bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md px-4 py-2 shadow-sm hover:shadow-md transition-all"
+                    >
+                      Yes, Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+
             <Button variant="outline" size="sm">
               Details
             </Button>

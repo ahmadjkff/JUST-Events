@@ -49,8 +49,39 @@ const SupervisorProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const deleteEvent = async (eventId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}`, // ✅ adjust path to your backend
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete event");
+      }
+      console.log("Deleted event:", data.message);
+      return { success: true, data: data.data };
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete event";
+      console.error("Error deleting event:", error);
+      return { success: false, message, data: [] };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <SupervisorContext.Provider value={{ event, createEvent, isLoading }}>
+    <SupervisorContext.Provider
+      value={{ event, isLoading, createEvent, deleteEvent }}
+    >
       {children}
     </SupervisorContext.Provider>
   );
