@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Calendar, MapPin, FileText, Type } from "lucide-react";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { useNavigate } from "react-router-dom";
+import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 
 const EventForm: React.FC = () => {
   const { createEvent } = useSupervisor();
@@ -12,31 +13,54 @@ const EventForm: React.FC = () => {
     title: "",
     description: "",
     location: "",
+    category: "" as EventCategory | "",
+    department: "" as EventDepartment | "",
     date: "",
   });
+
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const result = await createEvent(
-      form.title,
-      form.description,
-      form.location,
-      new Date(form.date)
-    );
-    console.log("Create event result:", result);
-    if (!result.success) {
-      console.log("Error creating event:", result.message);
+
+    // Validate category & department
+    if (!form.category || !form.department) {
+      setError("Please select a category and department");
       setLoading(false);
-      setError(result.message || "Failed to create event");
       return;
     }
-    console.log("Event created successfully:", result.data);
-    setLoading(false);
-    setError(null);
-    navigate("/student/browse-events");
+
+    try {
+      const result = await createEvent(
+        form.title,
+        form.description,
+        form.location,
+        form.department,
+        form.category,
+        new Date(form.date)
+      );
+
+      console.log("Create event result:", result);
+
+      if (!result.success) {
+        setError(result.message || "Failed to create event");
+        setLoading(false);
+        return;
+      }
+
+      setError(null);
+      setLoading(false);
+      navigate("/browse-events");
+    } catch (err) {
+      console.log("Error in handleCreateEvent:", err);
+      setError("Unexpected error occurred");
+      setLoading(false);
+    }
   };
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -106,6 +130,52 @@ const EventForm: React.FC = () => {
           </div>
         </div>
 
+        {/* Category */}
+        <div>
+          <label className="block text-gray-700 mb-1 font-medium">
+            Category
+          </label>
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          >
+            <option value="" disabled>
+              Select category
+            </option>
+            {Object.values(EventCategory).map((cat) => (
+              <option key={cat} value={cat}>
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Department */}
+        <div>
+          <label className="block text-gray-700 mb-1 font-medium">
+            Department
+          </label>
+          <select
+            name="department"
+            value={form.department}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          >
+            <option value="" disabled>
+              Select department
+            </option>
+            {Object.values(EventDepartment).map((dep) => (
+              <option key={dep} value={dep}>
+                {dep.charAt(0).toUpperCase() + dep.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Date */}
         <div>
           <label className="block text-gray-700 mb-1 font-medium">Date</label>
@@ -126,9 +196,11 @@ const EventForm: React.FC = () => {
         <button
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md transition"
+          disabled={loading}
         >
-          Create Event
+          {loading ? "Creating..." : "Create Event"}
         </button>
+
         {error && <p className="text-red-500 text-center">{error}</p>}
       </form>
     </div>

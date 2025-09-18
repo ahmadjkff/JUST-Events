@@ -1,5 +1,6 @@
 import { useState, type FC, type PropsWithChildren } from "react";
 import { SupervisorContext } from "./SupervisorContext";
+import type { EventCategory, EventDepartment } from "../../types/eventTypes";
 
 const SupervisorProvider: FC<PropsWithChildren> = ({ children }) => {
   const [event, setEvent] = useState<any>(null); // TODO: Replace 'any' with Event type
@@ -9,6 +10,8 @@ const SupervisorProvider: FC<PropsWithChildren> = ({ children }) => {
     title: string,
     description: string,
     location: string,
+    department: EventDepartment,
+    category: EventCategory,
     date: Date
   ) => {
     setIsLoading(true);
@@ -25,6 +28,8 @@ const SupervisorProvider: FC<PropsWithChildren> = ({ children }) => {
             title,
             description,
             location,
+            department,
+            category,
             date: date.toISOString(), // ✅ ensure string format
           }),
         }

@@ -19,9 +19,17 @@ router.post(
   isSupervisor,
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, date } = req.body; // To-Do recieve category and department from req.body (important)
+      const { title, description, location, department, category, date } =
+        req.body;
 
-      if (!title || !description || !location || !date) {
+      if (
+        !title ||
+        !description ||
+        !location ||
+        !department ||
+        !category ||
+        !date
+      ) {
         return res.status(400).json({ message: "All fields are required" });
       }
       if (title.length < 3) {
@@ -40,6 +48,8 @@ router.post(
         title,
         description,
         location,
+        department,
+        category,
         date,
         supervisorId,
       });
