@@ -13,12 +13,18 @@ interface SupervisorContextType {
     message?: string;
     data?: any[];
   }>;
+  deleteEvent: (eventId: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: any[];
+  }>;
 }
 
 export const SupervisorContext = createContext<SupervisorContextType>({
   event: null,
   isLoading: false,
   createEvent: async () => ({ success: false }),
+  deleteEvent: async () => ({ success: false }),
 });
 
 export const useSupervisor = () => useContext(SupervisorContext);
