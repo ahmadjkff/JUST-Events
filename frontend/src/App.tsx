@@ -12,13 +12,15 @@ import Unauthorized from "./pages/Unauthorized";
 import Sidebar from "./components/Sidebar";
 import BrowseEvents from "./pages/browseEvents";
 import Profile from "./pages/profile";
+import { useAuth } from "./context/auth/AuthContext";
 
 function App() {
+  const { isAuthenticated } = useAuth();
   return (
     <Router>
       <Header />
       <div className="flex">
-        <Sidebar />
+        {isAuthenticated && <Sidebar />}
 
         <div className="flex-grow p-4">
           <Routes>
