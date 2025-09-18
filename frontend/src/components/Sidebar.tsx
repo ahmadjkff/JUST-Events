@@ -25,19 +25,23 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const location = useLocation();
   const currentPath = location.pathname;
-
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
   const navigationItems = [
-    { icon: Home, label: "Home", href: "/" },
+    {
+      icon: Home,
+      label: "Home",
+      href: "/",
+      allowedUsers: ["student", "supervisor"],
+    },
     {
       icon: Calendar,
       label: "Events",
@@ -92,6 +96,9 @@ export default function Sidebar({ className }: SidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 p-2 space-y-1">
           {navigationItems.map((item) => {
+            if (item.allowedUsers && !item.allowedUsers.includes(user?.role!)) {
+              return null;
+            }
             const isActive =
               item.href === "/"
                 ? currentPath === "/"
