@@ -2,6 +2,14 @@ export enum EventStatus {
   PENDING = "pending",
   APPROVED = "approved",
   REJECTED = "rejected",
+  COMPLETED = "completed",
+}
+
+export enum RegistrationStatus {
+  NOTREGISTERED = "not-registered",
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
 }
 
 export enum EventCategory {
