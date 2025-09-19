@@ -4,9 +4,9 @@ import type { IEvent } from "../../types/eventTypes";
 interface EventContextType {
   events: IEvent[];
   eventsByStatus: {
-    approved: any[];
-    pending: any[];
-    rejected: any[];
+    approved: IEvent[];
+    pending: IEvent[];
+    rejected: IEvent[];
   };
   isLoading: boolean;
   fetchEvents: (status?: string) => Promise<{

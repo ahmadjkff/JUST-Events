@@ -5,9 +5,9 @@ import type { IEvent } from "../../types/eventTypes";
 const EventProvider: FC<PropsWithChildren> = ({ children }) => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [eventsByStatus, setEventsByStatus] = useState<{
-    approved: any[];
-    pending: any[];
-    rejected: any[];
+    approved: IEvent[];
+    pending: IEvent[];
+    rejected: IEvent[];
   }>({ approved: [], pending: [], rejected: [] });
   const [isLoading, setIsLoading] = useState(false);
 
