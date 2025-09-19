@@ -1,8 +1,9 @@
 import { useState, type FC, type PropsWithChildren } from "react";
 import { EventContext } from "./EventContext";
+import type { IEvent } from "../../types/eventTypes";
 
 const EventProvider: FC<PropsWithChildren> = ({ children }) => {
-  const [events, setEvents] = useState<any[]>([]); // To-Do Replace 'any' with your actual event type
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [eventsByStatus, setEventsByStatus] = useState<{
     approved: any[];
     pending: any[];

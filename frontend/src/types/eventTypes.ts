@@ -1,3 +1,27 @@
+export interface IEvent {
+  _id: string;
+  title: string;
+  description: string;
+  location: string;
+  date: string; // ISO string
+  createdBy: string; // User ID
+  status: EventStatus;
+  volunteers: string[]; // Array of User IDs
+  registeredStudents: string[]; // Array of User IDs
+  feedback: string[];
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+  category: EventCategory;
+  department: EventDepartment;
+}
+
+export enum EventStatus {
+  Approved = "approved",
+  Pending = "pending",
+  Rejected = "rejected",
+  Completed = "completed",
+}
+
 export enum EventCategory {
   Tech = "tech",
   Health = "health",

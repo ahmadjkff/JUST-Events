@@ -1,7 +1,8 @@
 import { createContext, useContext } from "react";
+import type { IEvent } from "../../types/eventTypes";
 
 interface EventContextType {
-  events: any[]; // To-Do Replace 'any' with your actual event type
+  events: IEvent[];
   eventsByStatus: {
     approved: any[];
     pending: any[];
