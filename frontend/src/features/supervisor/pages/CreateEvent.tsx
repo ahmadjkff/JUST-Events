@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Calendar, MapPin, FileText, Type } from "lucide-react";
-import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
+import { createEvent } from "../services/supervisorRequests";
 
 const EventForm: React.FC = () => {
-  const { createEvent } = useSupervisor();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();

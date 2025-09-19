@@ -40,13 +40,12 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../components/ui/AlertDialog";
-import { useSupervisor } from "../context/supervisor/SupervisorContext";
+import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { events, fetchEvents } = useEvent();
   const { user } = useAuth();
-  const { deleteEvent } = useSupervisor();
   const navigate = useNavigate();
   //   {
   //     id: 1,
