@@ -25,10 +25,10 @@ import {
 } from "../../../components/ui/tabs";
 import { Input } from "../../../components/ui/input";
 import { useEvent } from "../../../context/event/EventContext";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { changeEventStatus } from "../services/APIRequests";
 import Menu from "../../../components/ui/Menu";
-import { EventCategory } from "../../../types/eventTypes";
+import { EventCategory, type IEvent } from "../../../types/eventTypes";
 
 function ControlEvents() {
   useTitle("Control Events - JUST Events");
@@ -56,7 +56,7 @@ function ControlEvents() {
     );
   };
 
-  const EventCard = ({ event }: { event: any; showActions?: boolean }) => (
+  const EventCard = ({ event }: { event: IEvent; showActions?: boolean }) => (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between">
@@ -101,7 +101,7 @@ function ControlEvents() {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.time}
+            {event.createdAt}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
@@ -110,12 +110,80 @@ function ControlEvents() {
 
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            {event.attendees} attendees
+            {event.volunteers?.length} attendees
           </div>
         </div>
       </CardContent>
     </Card>
   );
+
+  // Reusable function to render table content for each tab
+  const tableContent = (
+    value: string,
+    status: string,
+    color: string,
+    icon: any
+  ) => {
+    return (
+      <TabsContent value={value} className="space-y-4">
+        <div className="flex items-center justify-between border-b-2 pb-2 mb-4">
+          <h1 className={`text-2xl font-bold text-${color}-500`}>{status}</h1>
+          <div className="flex gap-2 items-center">
+            {category && (
+              <Badge className="bg-gray-100 text-gray-800">
+                Category:
+                <strong className="text-orange-700">{category}</strong>
+              </Badge>
+            )}
+            {department && (
+              <Badge className="bg-gray-100 text-gray-800">
+                Department:
+                <strong className="text-orange-700">{department}</strong>
+              </Badge>
+            )}
+            {(category || department) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setCategory(null);
+                  setDepartment(null);
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        </div>
+        {eventsByStatus[value as keyof typeof eventsByStatus].length > 0 ? (
+          <div className="grid gap-4">
+            {filteredEvents(value).length ? (
+              filteredEvents(value).map((event: any) => (
+                <EventCard key={event._id} event={event} />
+              ))
+            ) : (
+              <p className="text-muted-foreground">
+                No events found for the selected filters.
+              </p>
+            )}
+          </div>
+        ) : (
+          <Card className="text-center py-12">
+            <CardContent>
+              {React.createElement(icon, {
+                className: "h-12 w-12 mx-auto text-muted-foreground mb-4",
+              })}
+              <h3 className="text-lg font-semibold mb-2">No {value} events</h3>
+              <p className="text-muted-foreground mb-4">
+                {value} events will appear here.
+              </p>
+              <Button>Browse Available Events</Button>
+            </CardContent>
+          </Card>
+        )}
+      </TabsContent>
+    );
+  };
 
   const handleApprove = async (event: any) => {
     const { success, message } = await changeEventStatus(event._id, "approved");
@@ -255,125 +323,9 @@ function ControlEvents() {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="approved" className="space-y-4">
-              <h1 className="text-2xl font-bold text-green-500 border-b-2 pb-2 mb-4">
-                Approved
-              </h1>
-              {eventsByStatus.approved.length > 0 ? (
-                <div className="grid gap-4">
-                  {filteredEvents("approved").length ? (
-                    filteredEvents("approved").map((event: any) => (
-                      <EventCard key={event._id} event={event} />
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No events found for the selected filters.
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <Card className="text-center py-12">
-                  <CardContent>
-                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No approved events
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      The events you approve will appear here.
-                    </p>
-                    <Button>Browse Available Events</Button>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="pending" className="space-y-4">
-              <div className="flex items-center justify-between border-b-2 pb-2 mb-4">
-                <h1 className="text-2xl font-bold text-gray-500">Pending</h1>
-                <div className="flex gap-2 items-center">
-                  {category && (
-                    <Badge className="bg-gray-100 text-gray-800">
-                      Category:
-                      <strong className="text-orange-700">{category}</strong>
-                    </Badge>
-                  )}
-                  {department && (
-                    <Badge className="bg-gray-100 text-gray-800">
-                      Department:
-                      <strong className="text-orange-700">{department}</strong>
-                    </Badge>
-                  )}
-                  {(category || department) && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setCategory(null);
-                        setDepartment(null);
-                      }}
-                    >
-                      Clear Filters
-                    </Button>
-                  )}
-                </div>
-              </div>
-              {eventsByStatus.pending.length > 0 ? (
-                <div className="grid gap-4">
-                  {filteredEvents("pending").length ? (
-                    filteredEvents("pending").map((event: any) => (
-                      <EventCard key={event._id} event={event} />
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No events found for the selected filters.
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <Card className="text-center py-12">
-                  <CardContent>
-                    <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No pending events
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Pending events will appear here.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="rejected" className="space-y-4">
-              <h1 className="text-2xl font-bold text-red-500 border-b-2 pb-2 mb-4">
-                Rejected
-              </h1>
-              {eventsByStatus.rejected.length > 0 ? (
-                <div className="grid gap-4">
-                  {filteredEvents("rejected").length ? (
-                    filteredEvents("rejected").map((event: any) => (
-                      <EventCard key={event._id} event={event} />
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground">
-                      No events found for the selected filters.
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <Card className="text-center py-12">
-                  <CardContent>
-                    <X className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
-                      No rejected events
-                    </h3>
-                    <p className="text-muted-foreground">
-                      The events you rejected will appear here.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
+            {tableContent("approved", "Approved", "green", Calendar)}
+            {tableContent("pending", "Pending", "gray", Clock)}
+            {tableContent("rejected", "Rejected", "red", X)}
           </Tabs>
         </div>
       </main>
