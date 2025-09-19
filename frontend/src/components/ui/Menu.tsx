@@ -7,11 +7,13 @@ function Menu({
   items,
   selected,
   setSelected,
+  className,
 }: {
   title: string;
   items: string[];
   selected: string;
   setSelected: (item: string | null) => void;
+  className?: string;
 }) {
   const handleSelect = (item: string) => {
     item === title ? setSelected(null) : setSelected(item);
@@ -19,10 +21,7 @@ function Menu({
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button
-          variant="destructive"
-          className="bg-gray-100 border-gray-800 text-black hover:bg-gray-200 focus:ring-2 focus:ring-gray-300"
-        >
+        <Button variant="outline" className={className}>
           {selected || title}
           <ChevronDown className="h-4 w-4 ml-2" />
         </Button>
