@@ -68,3 +68,47 @@ export const deleteEvent = async (eventId: string) => {
     return { success: false, message };
   }
 };
+
+export const editEvent = async (
+  eventId: string,
+  title: string,
+  description: string,
+  location: string,
+  department: EventDepartment,
+  category: EventCategory,
+  date: Date
+) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          location,
+          department,
+          category,
+          date: date.toISOString(),
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to Edit event");
+    }
+
+    console.log("Edited event:", data.data);
+    return { success: true, data: data.data, message: data.message };
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Failed to edit event";
+    console.error("Error edit event:", error);
+    return { success: false, message };
+  }
+};
