@@ -44,7 +44,7 @@ import { useSupervisor } from "../context/supervisor/SupervisorContext";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
-  const { events, fetchEvents } = useEvent();
+  const { eventsByStatus, fetchEvents } = useEvent();
   const { user } = useAuth();
   const { deleteEvent } = useSupervisor();
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ function BrowseEvents() {
   // ];
 
   useEffect(() => {
-    fetchEvents();
+    fetchEvents("approved");
   }, []);
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -259,17 +259,17 @@ function BrowseEvents() {
           <Tabs defaultValue="available" className="space-y-6">
             <TabsList className="grid w-full grid-cols-2 max-w-md">
               <TabsTrigger value="available">
-                Available Events ({events.length})
+                Available Events ({eventsByStatus.approved.length})
               </TabsTrigger>
               <TabsTrigger value="featured">
-                Featured Events ({events.length})
+                Featured Events ({eventsByStatus.approved.length})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="available" className="space-y-4">
-              {events.length > 0 ? (
+              {eventsByStatus.approved.length > 0 ? (
                 <div className="grid gap-4">
-                  {events.map((event) => (
+                  {eventsByStatus.approved.map((event) => (
                     <EventCard key={event._id} event={event} />
                   ))}
                 </div>
@@ -290,9 +290,9 @@ function BrowseEvents() {
             </TabsContent>
 
             <TabsContent value="featured" className="space-y-4">
-              {events.length > 0 ? (
+              {eventsByStatus.approved.length > 0 ? (
                 <div className="grid gap-4">
-                  {events.map((event) => (
+                  {eventsByStatus.approved.map((event) => (
                     <EventCard key={event._id} event={event} />
                   ))}
                 </div>
