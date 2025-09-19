@@ -1,5 +1,14 @@
 import { eventModel } from "../../models/eventModel";
-import { EventStatus, RegistrationStatus } from "../../types/eventTypes";
+
+import {
+  EventCategory,
+  EventDepartment,
+  EventStatus,
+  RegistrationStatus
+} from "../../types/eventTypes";
+
+
+
 import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
 import ExcelJS from "exceljs";
@@ -7,6 +16,8 @@ interface IBody {
   title: string;
   description: string;
   location: string;
+  department: EventDepartment;
+  category: EventCategory;
   date: Date;
   supervisorId: string;
 }
@@ -15,6 +26,8 @@ export const createEvent = async ({
   title,
   description,
   location,
+  department,
+  category,
   date,
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
@@ -43,6 +56,8 @@ export const createEvent = async ({
       title,
       description,
       location,
+      department,
+      category,
       date,
       createdBy: supervisorId,
       status: "pending",

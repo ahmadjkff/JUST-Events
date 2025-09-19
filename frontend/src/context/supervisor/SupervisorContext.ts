@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { EventCategory, EventDepartment } from "../../types/eventTypes";
 
 interface SupervisorContextType {
   event: any; // To-Do Replace 'any' with your actual event type
@@ -7,6 +8,8 @@ interface SupervisorContextType {
     title: string,
     description: string,
     location: string,
+    department: EventDepartment,
+    category: EventCategory,
     date: Date
   ) => Promise<{
     success: boolean;
