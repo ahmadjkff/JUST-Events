@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Calendar, MapPin, FileText, Type } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
-import { createEvent } from "../services/supervisorRequests";
+import { editEvent } from "../services/supervisorRequests";
 
-const EventForm: React.FC = () => {
+const EditForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { eventId } = useParams<{ eventId: string }>();
+
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -17,7 +19,7 @@ const EventForm: React.FC = () => {
     date: "",
   });
 
-  const handleCreateEvent = async (e: React.FormEvent) => {
+  const handleEditEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -29,7 +31,8 @@ const EventForm: React.FC = () => {
     }
 
     try {
-      const result = await createEvent(
+      const result = await editEvent(
+        eventId || "",
         form.title,
         form.description,
         form.location,
@@ -67,11 +70,11 @@ const EventForm: React.FC = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6">
       <form
-        onSubmit={handleCreateEvent}
+        onSubmit={handleEditEvent}
         className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 space-y-6"
       >
         <h2 className="text-2xl font-bold text-gray-800 text-center">
-          Create New Event
+          Edit Event
         </h2>
 
         {/* Title */}
@@ -197,7 +200,7 @@ const EventForm: React.FC = () => {
           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md transition"
           disabled={loading}
         >
-          {loading ? "Creating..." : "Create Event"}
+          {loading ? "Editing..." : "Edit Event"}
         </button>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
@@ -206,4 +209,4 @@ const EventForm: React.FC = () => {
   );
 };
 
-export default EventForm;
+export default EditForm;

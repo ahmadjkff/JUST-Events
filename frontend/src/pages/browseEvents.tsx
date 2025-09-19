@@ -40,13 +40,12 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "../components/ui/AlertDialog";
-import { useSupervisor } from "../context/supervisor/SupervisorContext";
+import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
   const { user } = useAuth();
-  const { deleteEvent } = useSupervisor();
   const navigate = useNavigate();
   //   {
   //     id: 1,
@@ -122,6 +121,9 @@ function BrowseEvents() {
           </div>
           <div className="flex gap-2">
             <Button size="sm">Register</Button>
+            <Button variant="outline" size="sm">
+              Details
+            </Button>
             {event.createdBy === user?._id && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -161,10 +163,15 @@ function BrowseEvents() {
                 </AlertDialogContent>
               </AlertDialog>
             )}
-
-            <Button variant="outline" size="sm">
-              Details
-            </Button>
+            {event.createdBy === user?._id && (
+              <Button
+                size="sm"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                onClick={() => navigate(`/supervisor/edit-event/${event._id}`)}
+              >
+                Edit
+              </Button>
+            )}
           </div>
         </div>
       </CardHeader>
