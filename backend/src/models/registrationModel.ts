@@ -1,10 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
-import { EventStatus } from "../types/eventTypes";
+import { EventStatus, RegistrationStatus } from "../types/eventTypes";
 
 export interface IRegistration extends Document {
   student: mongoose.Types.ObjectId;
   event: mongoose.Types.ObjectId;
-  status: EventStatus;
+  status: RegistrationStatus;
   isVolunteer: boolean;
 
 }
@@ -15,8 +15,8 @@ const registrationSchema = new Schema<IRegistration>(
     event: { type: Schema.Types.ObjectId, ref: "Event", required: true },
     status: {
       type: String,
-      enum: Object.values(EventStatus),
-      default: EventStatus.PENDING,
+      enum: Object.values(RegistrationStatus),
+      default: RegistrationStatus.PENDING,
     },
     isVolunteer: { type: Boolean, default: false },
   },

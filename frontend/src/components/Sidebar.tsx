@@ -2,8 +2,7 @@ import { useState } from "react";
 import {
   Home,
   Calendar,
-  Users,
-  BookOpen,
+  Gauge,
   Trophy,
   Settings,
   Bell,
@@ -25,36 +24,67 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   const location = useLocation();
   const currentPath = location.pathname;
-
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  const navigationItems = [
-    { icon: Home, label: "Home", href: "/" },
+  type NavigationItem = {
+    icon: React.ElementType;
+    label: string;
+    href: string;
+    allowedUsers?: string[];
+    badge?: string;
+  };
+
+  const navigationItems: NavigationItem[] = [
+    {
+      icon: Home,
+      label: "Home",
+      href: "/",
+      allowedUsers: ["student", "supervisor"],
+    },
+    {
+      icon: Gauge,
+      label: "Dashboard",
+      href: "/",
+      allowedUsers: ["admin"],
+    },
     {
       icon: Calendar,
       label: "Events",
       href: "/browse-events",
-      badge: "3",
+      allowedUsers: ["student", "supervisor", "admin"],
+      // badge: "3", //Example: If we want a number next to the button
     },
-    { icon: Users, label: "Community", href: "/student/community" },
-    { icon: BookOpen, label: "Courses", href: "/student/courses" },
-    { icon: Trophy, label: "Achievements", href: "/student/achievements" },
+    {
+      icon: Trophy, label: "Achievements",
+      href: "/student/achievements",
+      allowedUsers: ["student", "supervisor"],
+    },
     {
       icon: Bell,
       label: "Notifications",
       href: "/student/notifications",
-      badge: "5",
+      allowedUsers: ["student", "supervisor", "admin"],
     },
-    { icon: User, label: "Profile", href: "/profile" },
-    { icon: Settings, label: "Settings", href: "/student/settings" },
+    {
+      icon: User,
+      label: "Profile",
+      href: "/profile",
+      allowedUsers: ["student", "supervisor", "admin"],
+    },
+    {
+      icon: Settings,
+      label: "Settings",
+      href: "/student/settings",
+      allowedUsers: ["student", "supervisor", "admin"],
+    },
   ];
 
   return (
@@ -90,8 +120,11 @@ export default function Sidebar({ className }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-2 space-y-1">
+        <nav className="flex-0 p-2 space-y-1">
           {navigationItems.map((item) => {
+            if (item.allowedUsers && !item.allowedUsers.includes(user?.role!)) {
+              return null;
+            }
             const isActive =
               item.href === "/"
                 ? currentPath === "/"
