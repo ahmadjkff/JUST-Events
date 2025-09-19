@@ -1,9 +1,14 @@
 import { eventModel } from "../../models/eventModel";
+
 import {
   EventCategory,
   EventDepartment,
   EventStatus,
+  RegistrationStatus
 } from "../../types/eventTypes";
+
+
+
 import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
 import ExcelJS from "exceljs";
@@ -168,7 +173,7 @@ export const editEvent = async ({
 interface IApproveOrReject {
   studentId: string;
   eventId: string;
-  action: EventStatus;
+  action: RegistrationStatus;
   supervisorId: string;
 }
 export const approveOrRejectStudentApplacition = async ({
@@ -202,9 +207,9 @@ export const approveOrRejectStudentApplacition = async ({
     }
 
     isRegistered.status =
-      action === EventStatus.APPROVED
-        ? EventStatus.APPROVED
-        : EventStatus.REJECTED;
+      action === RegistrationStatus.APPROVED
+        ? RegistrationStatus.APPROVED
+        : RegistrationStatus.REJECTED;
 
     await isRegistered.save();
 

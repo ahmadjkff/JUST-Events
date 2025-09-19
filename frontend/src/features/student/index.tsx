@@ -5,7 +5,7 @@ import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
 import Setting from "../../pages/setting";
 import NotFound from "../../pages/NotFound";
-import EventDetails from "../../pages/eventDetails";
+
 
 const StudentRoutes: React.FC = () => (
   <Routes>

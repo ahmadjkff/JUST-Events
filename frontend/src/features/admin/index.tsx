@@ -1,10 +1,11 @@
 // src/pages/admin/index.tsx
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
 import ControlEvents from "./pages/ControlEvents";
+import Dashboard from "../../pages/dashboard";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
