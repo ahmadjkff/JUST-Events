@@ -28,7 +28,7 @@ import { useEvent } from "../../../context/event/EventContext";
 import { useEffect, useState } from "react";
 import { changeEventStatus } from "../services/APIRequests";
 import Menu from "../../../components/ui/Menu";
-import { EventCategory, EventDepartment } from "../../../types/eventTypes";
+import { EventCategory } from "../../../types/eventTypes";
 
 function ControlEvents() {
   useTitle("Control Events - JUST Events");
@@ -288,9 +288,35 @@ function ControlEvents() {
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-4">
-              <h1 className="text-2xl font-bold text-gray-500 border-b-2 pb-2 mb-4">
-                Pending
-              </h1>
+              <div className="flex items-center justify-between border-b-2 pb-2 mb-4">
+                <h1 className="text-2xl font-bold text-gray-500">Pending</h1>
+                <div className="flex gap-2 items-center">
+                  {category && (
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Category:
+                      <strong className="text-orange-700">{category}</strong>
+                    </Badge>
+                  )}
+                  {department && (
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Department:
+                      <strong className="text-orange-700">{department}</strong>
+                    </Badge>
+                  )}
+                  {(category || department) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setCategory(null);
+                        setDepartment(null);
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
               {eventsByStatus.pending.length > 0 ? (
                 <div className="grid gap-4">
                   {filteredEvents("pending").length ? (
