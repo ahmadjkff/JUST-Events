@@ -1,14 +1,11 @@
 import express from "express";
 import validateJWT from "../../middlewares/validateJWT";
-import { IExtendRequest } from "../../types/extendedRequest";
 import { isAdmin } from "../../middlewares/validateUserRole";
-import { editRole } from "../../services/authServices/adminService";
-import { Roles } from "../../types/userTypes";
 import userModel from "../../models/userModel";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", validateJWT, isAdmin, async (req, res) => {
   try {
     const users = await userModel.find({});
     res.status(200).json({
@@ -21,32 +18,52 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.put(
-  "/edit-role/:userId",
-  validateJWT,
-  isAdmin,
-  async (req: IExtendRequest, res) => {
-    try {
-      const { newRole } = req.body;
-      if (!newRole || !Object.values(Roles).includes(newRole as Roles)) {
-        return res.status(400).json({ message: "Invalid role specified" });
-      }
+router.put("/:id", validateJWT, isAdmin, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id);
 
-      const userId = req.params.userId;
-      if (!userId) {
-        return res.status(400).json({ message: "User ID is required" });
-      }
-
-      const { statusCode, data, message, success } = await editRole(
-        userId,
-        newRole
-      );
-
-      res.status(statusCode).json({ success, message, data });
-    } catch (error: any) {
-      res.status(500).json({ message: "Server error", error: error.message });
+    if (!user || !user.email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
     }
+
+    const response = await fetch(
+      `http://localhost:5000/api/admin/${user.email}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req.body),
+      }
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+      return res
+        .status(response.status)
+        .json({ success: false, message: errorData.message });
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedUser)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
   }
-);
+});
 
 export default router;
