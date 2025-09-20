@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import AuthProvider from "./context/auth/AuthProvider.tsx";
 import EventProvider from "./context/event/EventProvider";
 import "./main.css";
+import "@radix-ui/themes/styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
