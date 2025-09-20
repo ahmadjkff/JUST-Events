@@ -42,6 +42,15 @@ function ManageRoles() {
       )
       .slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
+  const lastPage = Math.ceil(
+    users.filter((item) =>
+      Object.values(item)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+    ).length / itemsPerPage
+  );
+
   return (
     <div className="container mx-auto p-4">
       <Card>
@@ -92,7 +101,12 @@ function ManageRoles() {
             <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
               Prev
             </Button>
-            <Button onClick={() => setPage(page + 1)}>Next</Button>
+            <Button
+              onClick={() => setPage(page + 1)}
+              disabled={page === lastPage}
+            >
+              Next
+            </Button>
           </div>
         </CardContent>
       </Card>
