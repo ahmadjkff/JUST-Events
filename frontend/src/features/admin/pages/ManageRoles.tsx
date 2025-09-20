@@ -10,6 +10,7 @@ import { Input } from "../../../components/ui/input";
 import type { User } from "../../../types/userTypes";
 import { getAllUsers } from "../services/APIRequests";
 import Dialog from "../../../components/ui/Dialog";
+import toast from "react-hot-toast";
 
 function ManageRoles() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,12 +20,10 @@ function ManageRoles() {
   useEffect(() => {
     const fetchUsers = async () => {
       const { success, users, message } = await getAllUsers();
-      if (success) {
-        setUsers(users);
-
-        console.log(users);
-      } else {
+      if (success) setUsers(users);
+      else {
         console.error("Failed to fetch users:", message);
+        toast.error(message || "Failed to fetch users");
       }
     };
     fetchUsers();
@@ -80,13 +79,7 @@ function ManageRoles() {
                   <td className="border p-2">{user.firstName}</td>
                   <td className="border p-2">{user.role}</td>
                   <td className="flex gap-5 border p-2 space-x-2">
-                    <Button
-                      size={"sm"}
-                      variant="outline"
-                      className="border border-black"
-                    >
-                      <Dialog user={user} />
-                    </Button>
+                    <Dialog user={user} />
 
                     <Button size="sm" variant="destructive">
                       Delete

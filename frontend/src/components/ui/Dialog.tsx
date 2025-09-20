@@ -1,8 +1,9 @@
-import { TextField, Dialog as Dialog2, Button, Text } from "@radix-ui/themes";
+import { TextField, Dialog as Dialog2, Text } from "@radix-ui/themes";
 import type { User } from "../../types/userTypes";
 import Menu from "./Menu";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "./Button";
 
 function Dialog({ user }: { user: User }) {
   const [form, setForm] = useState<{
@@ -54,14 +55,19 @@ function Dialog({ user }: { user: User }) {
     }
 
     const response = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/admin/edit-role/${user._id}`,
+      `${import.meta.env.VITE_BASE_URL}/admin/${user._id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ newRole: form.role }),
+        body: JSON.stringify({
+          firstName: form.firstName,
+          lastName: form.lastName,
+          email: form.email,
+          role: form.role,
+        }),
       }
     );
     const data = await response.json();
@@ -72,12 +78,12 @@ function Dialog({ user }: { user: User }) {
     }
   };
 
-  console.log(form);
-
   return (
     <Dialog2.Root>
       <Dialog2.Trigger>
-        <Button variant="outline">Edit</Button>
+        <Button size={"sm"} variant="outline" className="border border-black">
+          Edit
+        </Button>
       </Dialog2.Trigger>
 
       <Dialog2.Content
@@ -97,7 +103,7 @@ function Dialog({ user }: { user: User }) {
 
         <div className="grid gap-2 grid-rows-5">
           {LABELES.map(({ label, defaultValue, placeholder, key }) => (
-            <label>
+            <label key={key}>
               <Text as="div" size="2" mb="1" weight="bold">
                 {label}
               </Text>
@@ -126,7 +132,7 @@ function Dialog({ user }: { user: User }) {
         <div className="flex gap-3 mt-4 justify-end">
           <Dialog2.Close>
             <Button
-              variant="soft"
+              variant="destructive"
               color="gray"
               onClick={() => handleSave(false)}
             >
