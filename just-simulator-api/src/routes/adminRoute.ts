@@ -24,6 +24,31 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:email", async (req, res) => {
+  try {
+    const updatedUser = await userModel.findOneAndUpdate(
+      { email: req.params.email },
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedUser)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 router.put("/edit-role", async (req, res) => {
   try {
     const { email, newRole } = req.body;

@@ -7,6 +7,7 @@ export interface IUser extends Document {
   email: string;
   role: Roles;
   faculty: string;
+  // TO-Do: add university Id field
 }
 
 const userSchema = new Schema<IUser>({
