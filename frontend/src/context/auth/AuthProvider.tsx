@@ -1,6 +1,7 @@
 import { useEffect, useState, type FC, type PropsWithChildren } from "react";
 import type { User } from "../../types/userTypes";
 import { AuthContext } from "./AuthContext";
+import toast from "react-hot-toast";
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
@@ -23,18 +24,23 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           if (data.success) {
             setUser(data.user);
             localStorage.setItem("user", JSON.stringify(data.user)); // keep in sync
+            toast.success("session restored");
           } else {
             console.log("Token validation failed:", data.message);
 
             setUser(null);
+            setToken(null);
             localStorage.removeItem("token");
             localStorage.removeItem("user");
+            toast.error("Session expired, please log in again");
           }
         })
         .catch(() => {
           setUser(null);
+          setToken(null);
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+          toast.error("Session expired, please log in again");
         })
         .finally(() => setIsLoading(false));
     } else {
@@ -65,13 +71,14 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       setUser(user);
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-
+      toast.success("Login successful");
       return {
         success: true,
         message: "Login successful",
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";
+      toast.error(message);
       return { success: false, message };
     }
   };
@@ -81,6 +88,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     localStorage.removeItem("user");
     setUser(null);
     setToken(null);
+    toast.success("Logged out successfully");
   };
 
   const isAuthenticated = !!token && !!user;

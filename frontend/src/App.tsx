@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import LoginPage from "./pages/LoginPage";
 import AdminRoutes from "./features/admin";
 import SupervisorRoutes from "./features/supervisor";
@@ -44,6 +45,7 @@ function App() {
         </div>
       </div>
       <Footer />
+      <Toaster position="top-center" />
     </Router>
   );
 }
