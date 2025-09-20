@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import validateJWT from "../../middlewares/validateJWT";
 import { IExtendRequest } from "../../types/extendedRequest";
 import { isSupervisor } from "../../middlewares/validateUserRole";
@@ -8,6 +8,7 @@ import {
   deleteEvent,
   editEvent,
   exportRegisteredStudent,
+  getSupervisorAppliactions,
 } from "../../services/eventServices/supervisorService";
 
 const router = express.Router();
@@ -191,6 +192,28 @@ router.get(
       res.end();
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message });
+    }
+  }
+);
+
+router.get(
+  "/appliactions",
+  validateJWT,
+  isSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const supervisorId = req.user._id;
+      if (!supervisorId) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
+      }
+      const appliactions = await getSupervisorAppliactions(supervisorId);
+      res.status(200).json({ success: true, data: appliactions });
+    } catch (error: any) {
+      res
+        .status(500)
+        .json({ success: false, message: `Server error ${error.message}` });
     }
   }
 );
