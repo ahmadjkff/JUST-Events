@@ -24,7 +24,6 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           if (data.success) {
             setUser(data.user);
             localStorage.setItem("user", JSON.stringify(data.user)); // keep in sync
-            toast.success("session restored");
           } else {
             console.log("Token validation failed:", data.message);
 
