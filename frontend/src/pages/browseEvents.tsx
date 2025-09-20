@@ -92,7 +92,7 @@ function BrowseEvents() {
   const handleDeleteEvent = async (eventId: string) => {
     const result = await deleteEvent(eventId);
     if (result.success) {
-      fetchEvents();
+      fetchEvents("approved");
     }
   };
   const getCategoryColor = (category: string) => {

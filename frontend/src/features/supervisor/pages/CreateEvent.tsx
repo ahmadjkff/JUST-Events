@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Calendar, MapPin, FileText, Type } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  FileText,
+  Type,
+  Search,
+  Bell,
+  User,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
+import { Button } from "../../../components/ui/Button";
 
 const EventForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -65,143 +74,177 @@ const EventForm: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6">
-      <form
-        onSubmit={handleCreateEvent}
-        className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 space-y-6"
-      >
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          Create New Event
-        </h2>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* ✅ Header pinned at top */}
+      <header className="bg-card border-b border-border p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Create Event Form
+            </h1>
+            <p className="text-muted-foreground">Manage Events</p>
+          </div>
 
-        {/* Title */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">Title</label>
-          <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-            <Type className="text-gray-400" size={18} />
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              placeholder="Enter event title"
-              className="w-full outline-none"
-              required
-            />
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="relative bg-transparent"
+            >
+              <Bell className="h-4 w-4" />
+              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+            </Button>
+            <Button variant="outline" size="sm">
+              <User className="h-4 w-4" />
+            </Button>
           </div>
         </div>
+      </header>
 
-        {/* Description */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">
-            Description
-          </label>
-          <div className="flex items-start gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-            <FileText className="text-gray-400 mt-1" size={18} />
-            <textarea
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Enter event description"
-              className="w-full outline-none resize-none"
-              rows={3}
-              required
-            />
-          </div>
-        </div>
-
-        {/* Location */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">
-            Location
-          </label>
-          <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-            <MapPin className="text-gray-400" size={18} />
-            <input
-              type="text"
-              name="location"
-              value={form.location}
-              onChange={handleChange}
-              placeholder="Enter event location"
-              className="w-full outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">
-            Category
-          </label>
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          >
-            <option value="" disabled>
-              Select category
-            </option>
-            {Object.values(EventCategory).map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Department */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">
-            Department
-          </label>
-          <select
-            name="department"
-            value={form.department}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          >
-            <option value="" disabled>
-              Select department
-            </option>
-            {Object.values(EventDepartment).map((dep) => (
-              <option key={dep} value={dep}>
-                {dep.charAt(0).toUpperCase() + dep.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Date */}
-        <div>
-          <label className="block text-gray-700 mb-1 font-medium">Date</label>
-          <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-            <Calendar className="text-gray-400" size={18} />
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="w-full outline-none"
-              required
-            />
-          </div>
-        </div>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md transition"
-          disabled={loading}
+      {/* ✅ Form centered below header */}
+      <main className="flex flex-1 justify-center items-center p-6">
+        <form
+          onSubmit={handleCreateEvent}
+          className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 space-y-6"
         >
-          {loading ? "Creating..." : "Create Event"}
-        </button>
+          <h2 className="text-2xl font-bold text-gray-800 text-center">
+            Create New Event
+          </h2>
 
-        {error && <p className="text-red-500 text-center">{error}</p>}
-      </form>
+          {/* Title */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Title
+            </label>
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+              <Type className="text-gray-400" size={18} />
+              <input
+                type="text"
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                placeholder="Enter event title"
+                className="w-full outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Description
+            </label>
+            <div className="flex items-start gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+              <FileText className="text-gray-400 mt-1" size={18} />
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Enter event description"
+                className="w-full outline-none resize-none"
+                rows={3}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Location */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Location
+            </label>
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+              <MapPin className="text-gray-400" size={18} />
+              <input
+                type="text"
+                name="location"
+                value={form.location}
+                onChange={handleChange}
+                placeholder="Enter event location"
+                className="w-full outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Category */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Category
+            </label>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            >
+              <option value="" disabled>
+                Select category
+              </option>
+              {Object.values(EventCategory).map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Department */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">
+              Department
+            </label>
+            <select
+              name="department"
+              value={form.department}
+              onChange={handleChange}
+              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            >
+              <option value="" disabled>
+                Select department
+              </option>
+              {Object.values(EventDepartment).map((dep) => (
+                <option key={dep} value={dep}>
+                  {dep.charAt(0).toUpperCase() + dep.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-gray-700 mb-1 font-medium">Date</label>
+            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+              <Calendar className="text-gray-400" size={18} />
+              <input
+                type="date"
+                name="date"
+                value={form.date}
+                onChange={handleChange}
+                className="w-full outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md transition"
+            disabled={loading}
+          >
+            {loading ? "Creating..." : "Create Event"}
+          </button>
+
+          {error && <p className="text-red-500 text-center">{error}</p>}
+        </form>
+      </main>
     </div>
   );
 };

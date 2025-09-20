@@ -4,10 +4,8 @@ import {
   EventCategory,
   EventDepartment,
   EventStatus,
-  RegistrationStatus
+  RegistrationStatus,
 } from "../../types/eventTypes";
-
-
 
 import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
@@ -186,6 +184,14 @@ export const approveOrRejectStudentApplacition = async ({
     const event = await eventModel.findById(eventId);
     if (!event)
       return { message: "Event not found", statusCode: 403, success: false };
+
+    if (event.status !== EventStatus.APPROVED) {
+      return {
+        message: "You can only manage applications for approved events",
+        statusCode: 400,
+        success: false,
+      };
+    }
 
     if (event.createdBy.toString() !== supervisorId.toString()) {
       return { message: "Not authorized", statusCode: 404, success: false };
