@@ -7,12 +7,14 @@ function Menu({
   items,
   selected,
   setSelected,
+  nullItem = true,
   className,
 }: {
   title: string;
   items: string[];
   selected: string;
   setSelected: (item: string | null) => void;
+  nullItem?: boolean;
   className?: string;
 }) {
   const handleSelect = (item: string) => {
@@ -31,13 +33,15 @@ function Menu({
         sideOffset={5}
         className="min-w-[160px]"
       >
-        <DropdownMenu.Item
-          key={0}
-          className="bg-accent p-2 hover:bg-gray-200 cursor-pointer"
-          onClick={() => handleSelect(title)}
-        >
-          {title}
-        </DropdownMenu.Item>
+        {nullItem && (
+          <DropdownMenu.Item
+            key={0}
+            className="bg-accent p-2 hover:bg-gray-200 cursor-pointer"
+            onClick={() => handleSelect(title)}
+          >
+            {title}
+          </DropdownMenu.Item>
+        )}
         {items.map((item, index) => (
           <DropdownMenu.Item
             key={index}

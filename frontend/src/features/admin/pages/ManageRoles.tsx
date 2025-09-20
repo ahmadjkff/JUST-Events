@@ -9,7 +9,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import type { User } from "../../../types/userTypes";
 import { getAllUsers } from "../services/APIRequests";
-import DialogComponent from "../../../components/ui/DialogComponent";
+import Dialog from "../../../components/ui/Dialog";
 
 function ManageRoles() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,6 +42,15 @@ function ManageRoles() {
       )
       .slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
+  const lastPage = Math.ceil(
+    users.filter((item) =>
+      Object.values(item)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+    ).length / itemsPerPage
+  );
+
   return (
     <div className="container mx-auto p-4">
       <Card>
@@ -70,14 +79,17 @@ function ManageRoles() {
                   <td className="border p-2">{user._id}</td>
                   <td className="border p-2">{user.firstName}</td>
                   <td className="border p-2">{user.role}</td>
-                  <td className="flex gap-2 border p-2 space-x-2">
-                    <DialogComponent user={user} />
+                  <td className="flex gap-5 border p-2 space-x-2">
+                    <Button
+                      size={"sm"}
+                      variant="outline"
+                      className="border border-black"
+                    >
+                      <Dialog user={user} />
+                    </Button>
 
                     <Button size="sm" variant="destructive">
                       Delete
-                    </Button>
-                    <Button size="sm" variant="secondary">
-                      Promote
                     </Button>
                   </td>
                 </tr>
@@ -89,7 +101,12 @@ function ManageRoles() {
             <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
               Prev
             </Button>
-            <Button onClick={() => setPage(page + 1)}>Next</Button>
+            <Button
+              onClick={() => setPage(page + 1)}
+              disabled={page === lastPage}
+            >
+              Next
+            </Button>
           </div>
         </CardContent>
       </Card>

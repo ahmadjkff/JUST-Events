@@ -1,105 +1,136 @@
-import { Card } from "../../../components/ui/Card";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent } from "../../../components/ui/Card";
+import { Calendar, CalendarCheck, User, Users, UserStar } from "lucide-react";
+
+const DASHBOARD_ITEMS = [
+  {
+    title: "Control Events",
+    icon: CalendarCheck,
+    description:
+      "Manage and oversee all events happening within the university.",
+    link: "/admin/control-events",
+    color: "green",
+  },
+  {
+    title: "Manage User Roles",
+    icon: User,
+    description: "Assign and modify roles for users in the system.",
+    link: "/admin/manage-roles",
+    color: "blue",
+  },
+  {
+    title: "Volunteers Management",
+    icon: UserStar,
+    description: "Oversee volunteer activities and assignments.",
+    link: "/admin/volunteers",
+    color: "orange",
+  },
+  {
+    title: "Statistics",
+    icon: Calendar,
+    description: "View detailed statistics and reports.",
+    link: "/admin/statistics",
+    color: "purple",
+  },
+];
+const SYSTEM_SUMMARY = [
+  {
+    title: "Number Of Users",
+    subtitle: "1500",
+    icon: Users,
+    description:
+      "Total registered users including students, supervisors, and admins.",
+    color: "blue",
+  },
+  {
+    title: "Active Events",
+    subtitle: "45",
+    icon: CalendarCheck,
+    description: "Events currently active or upcoming in the university.",
+    color: "green",
+  },
+  {
+    title: "Supervisors",
+    subtitle: "25",
+    icon: User,
+    description: "Total number of supervisors managing various events.",
+    color: "orange",
+  },
+  {
+    title: "Volunteers",
+    subtitle: "300",
+    icon: UserStar,
+    description: "Students actively volunteering in different events.",
+    color: "purple",
+  },
+  {
+    title: "Pending Requests",
+    subtitle: "12",
+    icon: Calendar,
+    description: "Requests awaiting approval from the admin.",
+    color: "red",
+  },
+];
 
 function Dashboard() {
-  // const handleSubmit = async () => {
-  //   try {
-  //     const action = "supervisor";
-  //     const userId = "68b7055d69f2be7d8ad9ec5f";
-
-  //     doFetch(`/admin/edit-role/${userId}`, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //       },
-  //       body: { newRole: action },
-  //     });
-  //   } catch (error) {
-  //     const message = error instanceof Error ? error.message : "Login failed";
-  //     console.log("message: ", message);
-
-  //     return { success: false, message };
-  //   }
-  // };
-
-  const mockData = {
-    event1: {
-      title: "Annual Science Fair 2024",
-      description:
-        "Showcasing the best science projects from students across the university.",
-      category: "academic",
-      date: "4/15/2024",
-      time: "09:00 AM",
-      location: "University Science Building",
-      participants: "120/150 participants",
-      registrationDeadline: "4/11/2024",
-      onViewDetails: () => console.log("View details clicked"),
-      isRegistrationOpen: false,
-      imageUrl: "../../../public/placeholder.svg",
-    },
-    event2: {
-      title: "Annual Science Fair 2024",
-      description:
-        "Showcasing the best science projects from students across the university.",
-      category: "academic",
-      date: "4/15/2024",
-      time: "09:00 AM",
-      location: "University Science Building",
-      participants: "120/150 participants",
-      registrationDeadline: "4/11/2024",
-      onViewDetails: () => console.log("View details clicked"),
-      isRegistrationOpen: false,
-      imageUrl: "../../../public/placeholder.svg",
-    },
-    event3: {
-      title: "Annual Science Fair 2024",
-      description:
-        "Showcasing the best science projects from students across the university.",
-      category: "academic",
-      date: "4/15/2024",
-      time: "09:00 AM",
-      location: "University Science Building",
-      participants: "120/150 participants",
-      registrationDeadline: "4/11/2024",
-      onViewDetails: () => console.log("View details clicked"),
-      isRegistrationOpen: true,
-      imageUrl: "../../../public/placeholder.svg",
-    },
-    event4: {
-      title: "Annual Science Fair 2024",
-      description:
-        "Showcasing the best science projects from students across the university.",
-      category: "academic",
-      date: "4/15/2024",
-      time: "09:00 AM",
-      location: "University Science Building",
-      participants: "120/150 participants",
-      registrationDeadline: "4/11/2024",
-      onViewDetails: () => console.log("View details clicked"),
-      isRegistrationOpen: false,
-      imageUrl: "../../../public/placeholder.svg",
-    },
-    event5: {
-      title: "Annual Science Fair 2024",
-      description:
-        "Showcasing the best science projects from students across the university.",
-      category: "academic",
-      date: "4/15/2024",
-      time: "09:00 AM",
-      location: "University Science Building",
-      participants: "120/150 participants",
-      registrationDeadline: "4/11/2024",
-      onViewDetails: () => console.log("View details clicked"),
-      isRegistrationOpen: true,
-      imageUrl: "/placeholder.svg",
-    },
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="flex justify-start items-start gap-4 flex-wrap mx-40 my-10">
-      {Object.values(mockData).map((event: any, index: number) => (
-        <Card key={index} {...event} />
-      ))}
+    <div className="p-8">
+      <header className="mb-8">
+        <h1 className="text-4xl font-extrabold">Admin Dashboard</h1>
+        <p className="text-muted-foreground">
+          Manage university events and user roles efficiently
+        </p>
+      </header>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-center">System Summary</h2>
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
+          {SYSTEM_SUMMARY.map((item) => (
+            <Card
+              key={item.title}
+              className="hover:shadow-lg transition-shadow"
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <item.icon className={`h-8 w-8 text-${item.color}-500`} />
+                  <div>
+                    <p className="text-2xl font-bold">{item.subtitle}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.title}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {item.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <h2 className="text-2xl font-bold text-center">System Management</h2>
+        <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
+          {DASHBOARD_ITEMS.map((item) => (
+            <Card
+              onClick={() => navigate(item.link)}
+              key={item.title}
+              className="cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <item.icon className={`h-8 w-8 text-${item.color}-500`} />
+                  <div>
+                    <p className="text-xl font-bold">{item.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
