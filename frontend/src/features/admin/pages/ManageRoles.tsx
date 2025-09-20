@@ -9,7 +9,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import type { User } from "../../../types/userTypes";
 import { getAllUsers } from "../services/APIRequests";
-import DialogComponent from "../../../components/ui/DialogComponent";
+import Dialog from "../../../components/ui/Dialog";
 
 function ManageRoles() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,14 +70,17 @@ function ManageRoles() {
                   <td className="border p-2">{user._id}</td>
                   <td className="border p-2">{user.firstName}</td>
                   <td className="border p-2">{user.role}</td>
-                  <td className="flex gap-2 border p-2 space-x-2">
-                    <DialogComponent user={user} />
+                  <td className="flex gap-5 border p-2 space-x-2">
+                    <Button
+                      size={"sm"}
+                      variant="outline"
+                      className="border border-black"
+                    >
+                      <Dialog user={user} />
+                    </Button>
 
                     <Button size="sm" variant="destructive">
                       Delete
-                    </Button>
-                    <Button size="sm" variant="secondary">
-                      Promote
                     </Button>
                   </td>
                 </tr>
