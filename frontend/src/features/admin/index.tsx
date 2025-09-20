@@ -4,8 +4,8 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
 import ControlEvents from "./pages/ControlEvents";
-import Dashboard from "../../pages/dashboard";
 import ManageRoles from "./pages/ManageRoles";
+import Dashboard from "./pages/Dashboard";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
