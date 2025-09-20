@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import NotFound from "../../pages/NotFound";
 import EventForm from "./pages/CreateEvent";
 import EditForm from "./pages/EditEvents";
+import SupervisorApplications from "./pages/SupervisorApplications";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -32,6 +33,14 @@ const SupervisorRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["supervisor"]}>
           <EditForm />
+        </ProtectedRoute>
+      }
+    />
+      <Route
+      path="control-applications"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <SupervisorApplications />
         </ProtectedRoute>
       }
     />

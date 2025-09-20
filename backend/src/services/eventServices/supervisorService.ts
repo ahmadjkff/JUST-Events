@@ -212,10 +212,15 @@ export const approveOrRejectStudentApplacition = async ({
       }
     }
 
-    isRegistered.status =
-      action === RegistrationStatus.APPROVED
-        ? RegistrationStatus.APPROVED
-        : RegistrationStatus.REJECTED;
+    if (!Object.values(RegistrationStatus).includes(action)) {
+      return {
+        success: false,
+        statusCode: 400,
+        message: "Invalid action",
+      };
+    }
+
+    isRegistered.status = action;
 
     await isRegistered.save();
 
@@ -295,4 +300,32 @@ export const exportRegisteredStudent = async ({
     statusCode: 200,
     data: workbook,
   };
+};
+
+export const getSupervisorAppliactions = async (supervisorId: string) => {
+  try {
+    const events = await eventModel
+      .find({ createdBy: supervisorId })
+      .select("_id");
+    const eventsIds = events.map((event) => event._id);
+
+    const applications = await RegistrationModel.find({
+      event: { $in: eventsIds },
+    })
+      .populate("student", "firstName lastName email")
+      .populate("event", "title description location");
+
+    return {
+      success: true,
+      message: "Applications fetched successfully",
+      statusCode: 200,
+      data: applications,
+    };
+  } catch (error: any) {
+    return {
+      message: `Server error ${error.message}`,
+      statusCode: 500,
+      success: false,
+    };
+  }
 };
