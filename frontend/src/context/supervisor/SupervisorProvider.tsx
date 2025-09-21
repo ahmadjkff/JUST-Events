@@ -4,7 +4,7 @@ import { SupervisorContext } from "./SupervisorContext";
 const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [applications, setApplications] = useState<any[]>([]);
-
+  const [applicationsByStatus, setApplicationsByStatus] = useState({approved: [], rejected: [], pending: []});
   const fetchApplications = async () => {
     setIsLoading(true);
     try {
@@ -22,6 +22,12 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
       if (!response.ok) {
         throw new Error(data.message || "Failed to fetch applications");
       }
+      const grouped = {
+        approved: data.data.data.filter((app: any) => app.status === 'approved'),
+        rejected: data.data.data.filter((app: any) => app.status === 'rejected'),
+        pending: data.data.data.filter((app: any) => app.status === 'pending'),
+      };
+      setApplicationsByStatus(grouped);
       console.log("fetched applications:", data.data.data);
       setApplications(data.data.data);
 
@@ -38,7 +44,7 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
   console.log("applications state:", applications);
   return (
     <SupervisorContext.Provider
-      value={{ isLoading, applications, fetchApplications }}
+      value={{ isLoading, applications, applicationsByStatus,fetchApplications }}
     >
       {children}
     </SupervisorContext.Provider>

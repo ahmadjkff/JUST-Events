@@ -112,3 +112,33 @@ export const editEvent = async (
     return { success: false, message };
   }
 };
+
+export const updateApplicationStatus = async (
+eventId :string,
+studentId : string,
+action :"approved" | "rejected"| "pending") => {
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}/registration/${studentId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({action}),
+    })
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update application status");
+    }
+    console.log("Updated application status:", data.data);
+    return { success: true, data: data.data, message: data.message };
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Failed to update application status";
+    console.error("Error updating application status:", error);
+    return { success: false, message}
+  }
+}
