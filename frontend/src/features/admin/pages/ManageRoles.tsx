@@ -9,13 +9,15 @@ import {
 import { Input } from "../../../components/ui/input";
 import type { User } from "../../../types/userTypes";
 import { getAllUsers } from "../services/APIRequests";
-import Dialog from "../../../components/ui/Dialog";
 import toast from "react-hot-toast";
+import EditDialog from "../../../components/ui/EditDialog";
+import Menu from "../../../components/ui/Menu";
 
 function ManageRoles() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -79,7 +81,67 @@ function ManageRoles() {
                   <td className="border p-2">{user.firstName}</td>
                   <td className="border p-2">{user.role}</td>
                   <td className="flex gap-5 border p-2 space-x-2">
-                    <Dialog user={user} />
+                    <EditDialog<User>
+                      title="Edit User"
+                      description="Make changes to this user’s profile."
+                      initialData={user}
+                      fields={[
+                        {
+                          key: "firstName",
+                          label: "First Name",
+                          placeholder: "Enter first name",
+                        },
+                        {
+                          key: "lastName",
+                          label: "Last Name",
+                          placeholder: "Enter last name",
+                        },
+                        {
+                          key: "email",
+                          label: "Email",
+                          placeholder: "Enter email",
+                          type: "email",
+                        },
+                      ]}
+                      extraContent={
+                        <label>
+                          <span className="font-bold text-sm">Role</span>
+                          <Menu
+                            className="w-full"
+                            title="Select Role"
+                            items={["student", "supervisor", "admin"]}
+                            selected={role || user.role}
+                            setSelected={(role) => setRole(role)}
+                            nullItem={false}
+                          />
+                        </label>
+                      }
+                      onSave={async (updatedUser) => {
+                        // Exclude _id field from the update payload to avoid MongoDB error
+                        const { _id, ...updateData } = updatedUser;
+
+                        const response = await fetch(
+                          `${import.meta.env.VITE_BASE_URL}/admin/${user._id}`,
+                          {
+                            method: "PUT",
+                            headers: {
+                              "Content-Type": "application/json",
+                              Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            },
+                            body: JSON.stringify({
+                              ...updateData,
+                              role: role || user.role,
+                            }),
+                          }
+                        );
+                        const data = await response.json();
+                        if (response.ok) {
+                          toast.success("User updated successfully");
+                        } else {
+                          toast.error(data.message || "Failed to update user");
+                        }
+                      }}
+                    />
 
                     <Button size="sm" variant="destructive">
                       Delete
