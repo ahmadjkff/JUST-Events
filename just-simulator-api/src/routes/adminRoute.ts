@@ -6,8 +6,24 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   try {
-    const { email, password, firstName, lastName, faculty, role } = req.body;
-    if (!email || !password || !firstName || !lastName || !faculty || !role) {
+    const {
+      email,
+      password,
+      firstName,
+      lastName,
+      faculty,
+      role,
+      universityId,
+    } = req.body;
+    if (
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !faculty ||
+      !role ||
+      !universityId
+    ) {
       return res.status(400).json("All fields are required");
     }
     await userModel.create({
@@ -17,6 +33,7 @@ router.post("/", async (req, res) => {
       lastName,
       faculty,
       role,
+      universityId,
     });
     res.status(201).json("User created successfully");
   } catch (error) {

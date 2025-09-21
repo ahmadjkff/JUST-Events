@@ -6,6 +6,7 @@ export interface IUser extends Document {
   lastName: string;
   email: string;
   role: Roles;
+  universityId: string;
   faculty: string;
   // TO-Do: add university Id field
 }
@@ -15,6 +16,7 @@ const userSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   role: { type: String, enum: Object.values(Roles), required: true },
+  universityId: { type: String, required: true, unique: true },
   faculty: { type: String, required: true },
 });
 

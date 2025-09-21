@@ -25,6 +25,7 @@ router.post("/login", async (req, res) => {
       lastName: user.lastName,
       faculty: user.faculty,
       role: user.role,
+      universityId: user.universityId,
     },
   });
 });

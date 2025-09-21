@@ -52,7 +52,6 @@ function EditDialog<T extends Record<string, any>>({
       setForm(initialData); // reset
       return;
     }
-    console.log(form);
 
     await onSave(form);
   };
@@ -99,7 +98,7 @@ function EditDialog<T extends Record<string, any>>({
           {extraContent}
         </div>
 
-        <div className="flex gap-3 mt-4 justify-end">
+        <div className="mt-4 flex justify-end gap-3">
           <RadixDialog.Close>
             <Button
               variant="destructive"

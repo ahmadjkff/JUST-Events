@@ -1,4 +1,3 @@
-import IResponseStructure from "../../types/responseStructure";
 import jwt from "jsonwebtoken";
 import userModel from "../../models/userModel";
 import AppError from "../../types/AppError";
@@ -30,6 +29,7 @@ export const login = async (email: string, password: string) => {
     user.lastName = data.user.lastName;
     user.role = data.user.role;
     user.faculty = data.user.faculty;
+    user.universityId = data.user.universityId;
     await user.save();
   } else {
     user = await userModel.create({
@@ -38,6 +38,7 @@ export const login = async (email: string, password: string) => {
       email,
       role: data.user.role,
       faculty: data.user.faculty,
+      universityId: data.user.universityId,
     });
   }
 
@@ -48,6 +49,7 @@ export const login = async (email: string, password: string) => {
     email: user.email,
     role: user.role,
     faculty: user.faculty,
+    universityId: user.universityId,
   });
 
   return {
@@ -59,6 +61,7 @@ export const login = async (email: string, password: string) => {
       email: user.email,
       role: user.role,
       faculty: user.faculty,
+      universityId: user.universityId,
     },
   };
 };

@@ -43,7 +43,6 @@ router.get("/", validateJWT, async (req: IExtendRequest, res) => {
     const cachedUser = cache.get(cacheKey);
 
     if (cachedUser) {
-      console.log("Returning cached user");
       return res.status(200).json({ success: true, user: cachedUser });
     }
 

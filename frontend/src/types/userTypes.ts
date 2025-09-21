@@ -5,6 +5,7 @@ export interface User {
   role: Roles;
   faculty: string;
   _id: string;
+  universityId: string;
 }
 
 export enum Roles {

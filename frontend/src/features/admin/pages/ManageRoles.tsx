@@ -74,9 +74,9 @@ function ManageRoles() {
             </tr>
           </thead>
           <tbody>
-            {paginate(users).map((user) => (
+            {paginate(users).map((user: User) => (
               <tr key={user._id}>
-                <td className="border p-2">{user._id}</td>
+                <td className="border p-2">{user.universityId}</td>
                 <td className="border p-2">{user.firstName}</td>
                 <td className="border p-2">{user.role}</td>
                 <td className="flex gap-5 space-x-2 border p-2">
