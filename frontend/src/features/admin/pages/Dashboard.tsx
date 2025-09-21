@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { Calendar, CalendarCheck, User, Users, UserStar } from "lucide-react";
+import { useEvent } from "../../../context/event/EventContext";
+
+import { useEffect, useState } from "react";
 
 const DASHBOARD_ITEMS = [
   {
@@ -33,47 +36,81 @@ const DASHBOARD_ITEMS = [
     color: "purple",
   },
 ];
-const SYSTEM_SUMMARY = [
-  {
-    title: "Number Of Users",
-    subtitle: "1500",
-    icon: Users,
-    description:
-      "Total registered users including students, supervisors, and admins.",
-    color: "blue",
-  },
-  {
-    title: "Active Events",
-    subtitle: "45",
-    icon: CalendarCheck,
-    description: "Events currently active or upcoming in the university.",
-    color: "green",
-  },
-  {
-    title: "Supervisors",
-    subtitle: "25",
-    icon: User,
-    description: "Total number of supervisors managing various events.",
-    color: "orange",
-  },
-  {
-    title: "Volunteers",
-    subtitle: "300",
-    icon: UserStar,
-    description: "Students actively volunteering in different events.",
-    color: "purple",
-  },
-  {
-    title: "Pending Requests",
-    subtitle: "12",
-    icon: Calendar,
-    description: "Requests awaiting approval from the admin.",
-    color: "red",
-  },
-];
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { eventsByStatus, fetchEvents } = useEvent();
+  const [userCount, setUserCount] = useState<number>(0);
+
+  useEffect(() => {
+    fetchEvents();
+    fetchEvents("approved");
+    fetchEvents("pending");
+    fetchEvents("rejected");
+
+    // fetch users once
+    const getUsers = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.message || "Failed to fetch users");
+        setUserCount(data.data.length);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Failed to fetch users";
+        console.error("Error fetching users:", message);
+        setUserCount(0);
+      }
+    };
+
+    getUsers();
+  }, []);
+
+  const SYSTEM_SUMMARY = [
+    {
+      title: "Number Of Users",
+      subtitle: userCount,
+      icon: Users,
+      description:
+        "Total registered users including students, supervisors, and admins.",
+      color: "blue",
+    },
+    {
+      title: "Active Events",
+      subtitle: eventsByStatus.approved.length,
+      icon: CalendarCheck,
+      description: "Events currently active or upcoming in the university.",
+      color: "green",
+    },
+    {
+      title: "Supervisors",
+      subtitle: "25",
+      icon: User,
+      description: "Total number of supervisors managing various events.",
+      color: "orange",
+    },
+    {
+      title: "Volunteers",
+      subtitle: "300",
+      icon: UserStar,
+      description: "Students actively volunteering in different events.",
+      color: "purple",
+    },
+    {
+      title: "Pending Requests",
+      subtitle: eventsByStatus.pending.length,
+      icon: Calendar,
+      description: "Requests awaiting approval from the admin.",
+      color: "red",
+    },
+  ];
 
   return (
     <div className="p-8">
