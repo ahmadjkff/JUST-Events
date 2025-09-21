@@ -1,3 +1,5 @@
+import type { User } from "./userTypes";
+
 export interface IEvent {
   _id: string;
   title: string;
@@ -6,7 +8,7 @@ export interface IEvent {
   date: string; // ISO string
   createdBy: string; // User ID
   status: EventStatus;
-  volunteers: string[]; // Array of User IDs
+  volunteers: User[]; // Array of User IDs
   registeredStudents: string[]; // Array of User IDs
   feedback: string[];
   createdAt: string; // ISO string
@@ -36,4 +38,19 @@ export enum EventDepartment {
   Engineering = "engineering",
   Medical = "medical",
   Science = "science",
+}
+
+export interface IVolunteer {
+  _id: string;
+  event: IEvent;
+  student: User;
+  createdAt: string; // ISO string
+  status: VolunteerStatus;
+  isVolunteer: boolean;
+  updatedAt: string; // ISO string
+}
+export enum VolunteerStatus {
+  Approved = "approved",
+  Pending = "pending",
+  Rejected = "rejected",
 }

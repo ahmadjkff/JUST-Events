@@ -9,6 +9,11 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     pending: IEvent[];
     rejected: IEvent[];
   }>({ approved: [], pending: [], rejected: [] });
+  const [volunteersByStatus, setVolunteersByStatus] = useState<{
+    assigned: any[];
+    pending: any[];
+    removed: any[];
+  }>({ assigned: [], pending: [], removed: [] });
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchEvents = async (status?: string) => {
@@ -21,7 +26,7 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       const data = await response.json();
@@ -48,9 +53,53 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const fetchVolunteers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/admin/volunteers`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch volunteers");
+      }
+
+      // Assuming the API returns volunteers with a 'status' field
+      const assigned = data.data.filter((v: any) => v.status === "approved");
+      const pending = data.data.filter((v: any) => v.status === "pending");
+      const removed = data.data.filter((v: any) => v.status === "rejected");
+
+      setVolunteersByStatus({ assigned, pending, removed });
+
+      return { success: true, data: data.data };
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Failed to fetch volunteers";
+      console.error("Error fetching volunteers:", message);
+      setVolunteersByStatus({ assigned: [], pending: [], removed: [] });
+      return { success: false, message, data: [] };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <EventContext.Provider
-      value={{ events, eventsByStatus, isLoading, fetchEvents }}
+      value={{
+        events,
+        eventsByStatus,
+        volunteersByStatus,
+        isLoading,
+        fetchEvents,
+        fetchVolunteers,
+      }}
     >
       {children}
     </EventContext.Provider>
