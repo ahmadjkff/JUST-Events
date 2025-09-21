@@ -8,7 +8,7 @@ const SupervisorApplications = () => {
   }, []);
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Supervisor Applications</h1>
+      <h1 className="mb-4 text-2xl font-bold">Supervisor Applications</h1>
     </div>
   );
 };

@@ -57,7 +57,7 @@ function ControlEvents() {
   };
 
   const EventCard = ({ event }: { event: IEvent; showActions?: boolean }) => (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -67,24 +67,24 @@ function ControlEvents() {
             </Badge>
           </div>
         </div>
-        <div className="px-6 flex justify-end gap-2">
+        <div className="flex justify-end gap-2 px-6">
           <Button
             variant={"outline"}
-            className={`bg-green-100 text-green-800 border-green-100 ${event.status === "approved" ? "hidden" : ""}`}
+            className={`border-green-100 bg-green-100 text-green-800 ${event.status === "approved" ? "hidden" : ""}`}
             onClick={() => handleApprove(event)}
           >
             Approve
           </Button>
           <Button
             variant={"outline"}
-            className={`bg-gray-100 text-gray-800 border-gray-100 ${event.status === "pending" ? "hidden" : ""}`}
+            className={`border-gray-100 bg-gray-100 text-gray-800 ${event.status === "pending" ? "hidden" : ""}`}
             onClick={() => handlePending(event)}
           >
             Set To Pending
           </Button>
           <Button
             variant={"outline"}
-            className={`bg-red-100 text-red-800 border-red-100 ${event.status === "rejected" ? "hidden" : ""}`}
+            className={`border-red-100 bg-red-100 text-red-800 ${event.status === "rejected" ? "hidden" : ""}`}
             onClick={() => handleReject(event)}
           >
             Reject
@@ -94,7 +94,7 @@ function ControlEvents() {
 
       <CardContent>
         <p className="text-muted-foreground mb-4">{event.description}</p>
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             {event.date}
@@ -122,13 +122,13 @@ function ControlEvents() {
     value: string,
     status: string,
     color: string,
-    icon: any
+    icon: any,
   ) => {
     return (
       <TabsContent value={value} className="space-y-4">
-        <div className="flex items-center justify-between border-b-2 pb-2 mb-4">
+        <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
           <h1 className={`text-2xl font-bold text-${color}-500`}>{status}</h1>
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             {category && (
               <Badge className="bg-gray-100 text-gray-800">
                 Category:
@@ -168,12 +168,12 @@ function ControlEvents() {
             )}
           </div>
         ) : (
-          <Card className="text-center py-12">
+          <Card className="py-12 text-center">
             <CardContent>
               {React.createElement(icon, {
                 className: "h-12 w-12 mx-auto text-muted-foreground mb-4",
               })}
-              <h3 className="text-lg font-semibold mb-2">No {value} events</h3>
+              <h3 className="mb-2 text-lg font-semibold">No {value} events</h3>
               <p className="text-muted-foreground mb-4">
                 {value} events will appear here.
               </p>
@@ -234,13 +234,13 @@ function ControlEvents() {
     let events = eventsByStatus[status as keyof typeof eventsByStatus] || [];
     if (category) {
       events = events.filter(
-        (e: any) => e.category.toLowerCase() === category.toLowerCase()
+        (e: any) => e.category.toLowerCase() === category.toLowerCase(),
       );
     }
 
     if (department) {
       events = events.filter(
-        (e: any) => e.department.toLowerCase() === department.toLowerCase()
+        (e: any) => e.department.toLowerCase() === department.toLowerCase(),
       );
     }
 
@@ -248,43 +248,41 @@ function ControlEvents() {
   };
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-card border-b border-border p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Approve / Reject Events
-            </h1>
-            <p className="text-muted-foreground">Manage Events</p>
-          </div>
+      <header className="bg-card border-border flex items-center justify-between border-b p-4">
+        <div>
+          <h1 className="text-foreground text-2xl font-bold">
+            Approve / Reject Events
+          </h1>
+          <p className="text-muted-foreground">Manage Events</p>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative bg-transparent"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-            </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="sm">
+            <Search className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="relative bg-transparent"
+          >
+            <Bell className="h-4 w-4" />
+            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
+          </Button>
+          <Button variant="outline" size="sm">
+            <User className="h-4 w-4" />
+          </Button>
         </div>
       </header>
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           {/* Search and Filter Bar */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="mb-6 flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input placeholder="Search your events..." className="pl-10" />
             </div>
 
@@ -311,7 +309,7 @@ function ControlEvents() {
 
           {/* Events Tabs */}
           <Tabs defaultValue="pending" className="space-y-6">
-            <TabsList className="flex md:grid w-full grid-cols-3 max-w-md">
+            <TabsList className="flex w-full max-w-md grid-cols-3 md:grid">
               <TabsTrigger value="approved">
                 Approved Events ({eventsByStatus.approved.length})
               </TabsTrigger>

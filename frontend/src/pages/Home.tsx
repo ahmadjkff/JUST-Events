@@ -8,12 +8,12 @@ function Home() {
   useTitle("Home - JUST Events");
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-card border-b border-border p-4">
+      <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-foreground text-2xl font-bold">
               Welcome back, Ahmed!
             </h1>
             <p className="text-muted-foreground">
@@ -31,7 +31,7 @@ function Home() {
               className="relative bg-transparent"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 text-xs"></span>
             </Button>
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
@@ -42,13 +42,13 @@ function Home() {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           {/* Welcome Message */}
           <Card className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold mb-2">
+                  <h2 className="mb-2 text-xl font-semibold">
                     Welcome to Jordan University of Science and Technology
                     Events Platform
                   </h2>

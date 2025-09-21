@@ -11,10 +11,10 @@ function Setting() {
   useTitle("Settings - JUST Events");
 
   return (
-    <div className="flex-1 flex justify-center items-center">
-      <Card className="w-[420px] shadow-xl border border-muted">
+    <div className="flex flex-1 items-center justify-center">
+      <Card className="border-muted w-[420px] border shadow-xl">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold text-center tracking-tight">
+          <CardTitle className="text-center text-3xl font-bold tracking-tight">
             ⚙️ Settings
           </CardTitle>
         </CardHeader>
@@ -23,7 +23,7 @@ function Setting() {
           {/* زر دارك / لايت */}
           <Button
             variant="outline"
-            className="w-60 h-12 rounded-full text-lg flex items-center gap-2 hover:bg-accent hover:text-accent-foreground transition-all"
+            className="hover:bg-accent hover:text-accent-foreground flex h-12 w-60 items-center gap-2 rounded-full text-lg transition-all"
           >
             <span>Toggle Dark / Light Mode</span>
           </Button>
@@ -31,7 +31,7 @@ function Setting() {
           {/* زر تبديل اللغة */}
           <Button
             variant="outline"
-            className="w-60 h-12 rounded-full text-lg flex items-center gap-2 hover:bg-accent hover:text-accent-foreground transition-all"
+            className="hover:bg-accent hover:text-accent-foreground flex h-12 w-60 items-center gap-2 rounded-full text-lg transition-all"
           >
             <span>Switch Language (AR / EN)</span>
           </Button>
@@ -39,7 +39,7 @@ function Setting() {
           {/* زر تسجيل الخروج */}
           <Button
             variant="destructive"
-            className="w-60 h-12 rounded-full text-lg flex items-center gap-2 shadow-md hover:shadow-lg transition-all"
+            className="flex h-12 w-60 items-center gap-2 rounded-full text-lg shadow-md transition-all hover:shadow-lg"
           >
             🚪 <span>Logout</span>
           </Button>

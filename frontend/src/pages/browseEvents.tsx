@@ -110,7 +110,7 @@ function BrowseEvents() {
   };
 
   const EventCard = ({ event }: { event: any }) => (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -129,7 +129,7 @@ function BrowseEvents() {
                 <AlertDialogTrigger asChild>
                   <Button
                     size="sm"
-                    className="bg-red-500 hover:bg-red-600 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                    className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
                   >
                     Delete
                   </Button>
@@ -143,19 +143,19 @@ function BrowseEvents() {
                       Are you sure you want to Delete <b>{event.title} Event</b>
                       ? <br />
                       This action{" "}
-                      <span className="text-red-500 font-semibold">
+                      <span className="font-semibold text-red-500">
                         cannot be undone
                       </span>{" "}
                       and attendees will lose access.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel className="bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md px-4 py-2 transition-colors">
+                    <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
                       Close
                     </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={() => handleDeleteEvent(event._id)}
-                      className="bg-red-600 hover:bg-red-700 text-white font-semibold rounded-md px-4 py-2 shadow-sm hover:shadow-md transition-all"
+                      className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
                     >
                       Yes, Delete
                     </AlertDialogAction>
@@ -166,7 +166,7 @@ function BrowseEvents() {
             {event.createdBy === user?._id && (
               <Button
                 size="sm"
-                className="bg-blue-500 hover:bg-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-all duration-200"
+                className="bg-blue-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-blue-600 hover:shadow-lg"
                 onClick={() => navigate(`/supervisor/edit-event/${event._id}`)}
               >
                 Edit
@@ -177,7 +177,7 @@ function BrowseEvents() {
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4">{event.description}</p>
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             {event.date}
@@ -200,12 +200,12 @@ function BrowseEvents() {
   );
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-card border-b border-border p-4">
+      <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-foreground text-2xl font-bold">
               Browse Events
             </h1>
             <p className="text-muted-foreground">
@@ -223,7 +223,7 @@ function BrowseEvents() {
               className="relative bg-transparent"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
             </Button>
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
@@ -234,9 +234,9 @@ function BrowseEvents() {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           {/* Search and Filter Bar */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="mb-6 flex items-center gap-4">
             {user?.role === "supervisor" && (
               <Button
                 size="lg"
@@ -245,26 +245,26 @@ function BrowseEvents() {
                 Create Event
               </Button>
             )}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
                 placeholder="Search available events..."
                 className="pl-10"
               />
             </div>
             <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="mr-2 h-4 w-4" />
               Filter
             </Button>
             <Button variant="outline">
-              <ChartBarStacked className="h-4 w-4 mr-2" />
+              <ChartBarStacked className="mr-2 h-4 w-4" />
               Category
             </Button>
           </div>
 
           {/* Events Tabs */}
           <Tabs defaultValue="available" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
               <TabsTrigger value="available">
                 Available Events ({eventsByStatus.approved.length})
               </TabsTrigger>
@@ -281,10 +281,10 @@ function BrowseEvents() {
                   ))}
                 </div>
               ) : (
-                <Card className="text-center py-12">
+                <Card className="py-12 text-center">
                   <CardContent>
-                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
+                    <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                    <h3 className="mb-2 text-lg font-semibold">
                       No available events
                     </h3>
                     <p className="text-muted-foreground mb-4">
@@ -304,10 +304,10 @@ function BrowseEvents() {
                   ))}
                 </div>
               ) : (
-                <Card className="text-center py-12">
+                <Card className="py-12 text-center">
                   <CardContent>
-                    <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
+                    <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                    <h3 className="mb-2 text-lg font-semibold">
                       No featured events
                     </h3>
                     <p className="text-muted-foreground">

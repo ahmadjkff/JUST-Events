@@ -44,7 +44,7 @@ const EventForm: React.FC = () => {
         form.location,
         form.department,
         form.category,
-        new Date(form.date)
+        new Date(form.date),
       );
 
       console.log("Create event result:", result);
@@ -68,18 +68,18 @@ const EventForm: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       {/* ✅ Header pinned at top */}
-      <header className="bg-card border-b border-border p-4">
+      <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-foreground text-2xl font-bold">
               Create Event Form
             </h1>
             <p className="text-muted-foreground">Manage Events</p>
@@ -95,7 +95,7 @@ const EventForm: React.FC = () => {
               className="relative bg-transparent"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
             </Button>
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
@@ -105,21 +105,21 @@ const EventForm: React.FC = () => {
       </header>
 
       {/* ✅ Form centered below header */}
-      <main className="flex flex-1 justify-center items-center p-6">
+      <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleCreateEvent}
-          className="w-full max-w-lg bg-white shadow-xl rounded-2xl p-8 space-y-6"
+          className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 shadow-xl"
         >
-          <h2 className="text-2xl font-bold text-gray-800 text-center">
+          <h2 className="text-center text-2xl font-bold text-gray-800">
             Create New Event
           </h2>
 
           {/* Title */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">
+            <label className="mb-1 block font-medium text-gray-700">
               Title
             </label>
-            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Type className="text-gray-400" size={18} />
               <input
                 type="text"
@@ -135,17 +135,17 @@ const EventForm: React.FC = () => {
 
           {/* Description */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">
+            <label className="mb-1 block font-medium text-gray-700">
               Description
             </label>
-            <div className="flex items-start gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <FileText className="text-gray-400 mt-1" size={18} />
+            <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+              <FileText className="mt-1 text-gray-400" size={18} />
               <textarea
                 name="description"
                 value={form.description}
                 onChange={handleChange}
                 placeholder="Enter event description"
-                className="w-full outline-none resize-none"
+                className="w-full resize-none outline-none"
                 rows={3}
                 required
               />
@@ -154,10 +154,10 @@ const EventForm: React.FC = () => {
 
           {/* Location */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">
+            <label className="mb-1 block font-medium text-gray-700">
               Location
             </label>
-            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <MapPin className="text-gray-400" size={18} />
               <input
                 type="text"
@@ -173,14 +173,14 @@ const EventForm: React.FC = () => {
 
           {/* Category */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">
+            <label className="mb-1 block font-medium text-gray-700">
               Category
             </label>
             <select
               name="category"
               value={form.category}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
               <option value="" disabled>
@@ -196,14 +196,14 @@ const EventForm: React.FC = () => {
 
           {/* Department */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">
+            <label className="mb-1 block font-medium text-gray-700">
               Department
             </label>
             <select
               name="department"
               value={form.department}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
               <option value="" disabled>
@@ -219,8 +219,8 @@ const EventForm: React.FC = () => {
 
           {/* Date */}
           <div>
-            <label className="block text-gray-700 mb-1 font-medium">Date</label>
-            <div className="flex items-center gap-2 border rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <label className="mb-1 block font-medium text-gray-700">Date</label>
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Calendar className="text-gray-400" size={18} />
               <input
                 type="date"
@@ -236,13 +236,13 @@ const EventForm: React.FC = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-xl font-semibold shadow-md transition"
+            className="w-full rounded-xl bg-blue-500 py-3 font-semibold text-white shadow-md transition hover:bg-blue-600"
             disabled={loading}
           >
             {loading ? "Creating..." : "Create Event"}
           </button>
 
-          {error && <p className="text-red-500 text-center">{error}</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
         </form>
       </main>
     </div>

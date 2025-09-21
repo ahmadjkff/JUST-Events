@@ -102,7 +102,7 @@ function MyEvents() {
     event: any;
     showActions?: boolean;
   }) => (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="space-y-2">
@@ -127,7 +127,7 @@ function MyEvents() {
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground mb-4">{event.description}</p>
-        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             {event.date}
@@ -150,12 +150,12 @@ function MyEvents() {
   );
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
-      <header className="bg-card border-b border-border p-4">
+      <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">My Events</h1>
+            <h1 className="text-foreground text-2xl font-bold">My Events</h1>
             <p className="text-muted-foreground">
               Manage your registered events and explore new opportunities
             </p>
@@ -171,7 +171,7 @@ function MyEvents() {
               className="relative bg-transparent"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
             </Button>
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
@@ -182,26 +182,26 @@ function MyEvents() {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="mx-auto max-w-7xl">
           {/* Search and Filter Bar */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="mb-6 flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input placeholder="Search your events..." className="pl-10" />
             </div>
             <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
+              <Filter className="mr-2 h-4 w-4" />
               Filter
             </Button>
             <Button>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Browse Events
             </Button>
           </div>
 
           {/* Events Tabs */}
           <Tabs defaultValue="upcoming" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
               <TabsTrigger value="upcoming">
                 Upcoming Events ({registeredEvents.length})
               </TabsTrigger>
@@ -218,10 +218,10 @@ function MyEvents() {
                   ))}
                 </div>
               ) : (
-                <Card className="text-center py-12">
+                <Card className="py-12 text-center">
                   <CardContent>
-                    <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
+                    <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                    <h3 className="mb-2 text-lg font-semibold">
                       No upcoming events
                     </h3>
                     <p className="text-muted-foreground mb-4">
@@ -245,10 +245,10 @@ function MyEvents() {
                   ))}
                 </div>
               ) : (
-                <Card className="text-center py-12">
+                <Card className="py-12 text-center">
                   <CardContent>
-                    <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">
+                    <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                    <h3 className="mb-2 text-lg font-semibold">
                       No past events
                     </h3>
                     <p className="text-muted-foreground">

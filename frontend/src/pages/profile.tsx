@@ -17,12 +17,12 @@ function Profile() {
   };
 
   return (
-    <div className="flex-1 flex justify-center items-center">
+    <div className="flex flex-1 items-center justify-center">
       <Card className="w-[400px] shadow-xl">
         <CardHeader>
           <div className="flex flex-col items-center gap-4">
             {/* صورة المستخدم */}
-            <Avatar className="w-24 h-24">
+            <Avatar className="h-24 w-24">
               <AvatarImage src={user.image} alt={user.name} />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
@@ -33,9 +33,9 @@ function Profile() {
         </CardHeader>
 
         <CardContent className="flex justify-center">
-          <p className="text-lg text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             ✅ Attended Events:{" "}
-            <span className="font-semibold text-foreground">
+            <span className="text-foreground font-semibold">
               {user.eventsAttended}
             </span>
           </p>

@@ -1,12 +1,16 @@
-import { Badge } from "../components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
-import { Textarea } from "../components/ui/textarea"
-import { Star } from "lucide-react"
-import { Button } from "../components/ui/Button"
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card"
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Textarea } from "../components/ui/textarea";
+import { Star } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
 
 function EventDetails() {
-
   const event = {
     title: "Advanced Programming Workshop",
     date: "2024-01-15",
@@ -37,25 +41,24 @@ function EventDetails() {
         comment: "Amazing workshop with excellent speakers.",
       },
     ],
-  }
+  };
 
   return (
-    <div className="flex h-screen bg-background">
-
+    <div className="bg-background flex h-screen">
       {/* Main Content */}
       <div className="flex-1 overflow-auto p-6">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="mx-auto max-w-4xl space-y-6">
           {/* صورة الحدث */}
           <img
             src={event.image}
             alt={event.title}
-            className="w-full h-64 object-cover rounded-xl shadow-md"
+            className="h-64 w-full rounded-xl object-cover shadow-md"
           />
 
           {/* تفاصيل الحدث */}
           <Card>
             <CardHeader>
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <CardTitle className="text-3xl font-bold">
                   {event.title}
                 </CardTitle>
@@ -63,7 +66,7 @@ function EventDetails() {
               </div>
               <p className="text-muted-foreground">{event.department}</p>
             </CardHeader>
-            <CardContent className="space-y-3 text-muted-foreground">
+            <CardContent className="text-muted-foreground space-y-3">
               <p>
                 📅 <span className="font-medium">Date:</span> {event.date} at{" "}
                 {event.time}
@@ -84,10 +87,10 @@ function EventDetails() {
                     event.status === "PENDING"
                       ? "bg-yellow-100 text-yellow-800"
                       : event.status === "APPROVED"
-                      ? "bg-green-100 text-green-800"
-                      : event.status === "REJECTED"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-gray-100 text-gray-800"
+                        ? "bg-green-100 text-green-800"
+                        : event.status === "REJECTED"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-gray-100 text-gray-800"
                   }`}
                 >
                   {event.status}
@@ -114,9 +117,9 @@ function EventDetails() {
                     </Avatar>
                     <div>
                       <p className="font-semibold">{fb.user}</p>
-                      <div className="flex text-yellow-500 mb-1">
+                      <div className="mb-1 flex text-yellow-500">
                         {Array.from({ length: fb.rating }).map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-current" />
+                          <Star key={i} className="h-4 w-4 fill-current" />
                         ))}
                       </div>
                       <p className="text-muted-foreground">{fb.comment}</p>
@@ -132,7 +135,7 @@ function EventDetails() {
                 <p className="font-semibold">Add your feedback</p>
                 <div className="flex gap-2 text-yellow-500">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-6 h-6 cursor-pointer" />
+                    <Star key={i} className="h-6 w-6 cursor-pointer" />
                   ))}
                 </div>
                 <Textarea placeholder="Write your comment..." />
@@ -143,7 +146,7 @@ function EventDetails() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default EventDetails
+export default EventDetails;

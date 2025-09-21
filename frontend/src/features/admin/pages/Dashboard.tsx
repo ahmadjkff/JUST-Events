@@ -84,44 +84,44 @@ function Dashboard() {
         </p>
       </header>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">System Summary</h2>
-        <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
+        <h2 className="text-center text-2xl font-bold">System Summary</h2>
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
           {SYSTEM_SUMMARY.map((item) => (
             <Card
               key={item.title}
-              className="hover:shadow-lg transition-shadow"
+              className="transition-shadow hover:shadow-lg"
             >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2">
                   <item.icon className={`h-8 w-8 text-${item.color}-500`} />
                   <div>
                     <p className="text-2xl font-bold">{item.subtitle}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       {item.title}
                     </p>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-muted-foreground mt-2 text-sm">
                   {item.description}
                 </p>
               </CardContent>
             </Card>
           ))}
         </div>
-        <h2 className="text-2xl font-bold text-center">System Management</h2>
-        <div className="flex flex-col md:grid md:grid-cols-3 gap-4">
+        <h2 className="text-center text-2xl font-bold">System Management</h2>
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
           {DASHBOARD_ITEMS.map((item) => (
             <Card
               onClick={() => navigate(item.link)}
               key={item.title}
-              className="cursor-pointer hover:shadow-lg transition-shadow"
+              className="cursor-pointer transition-shadow hover:shadow-lg"
             >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2">
                   <item.icon className={`h-8 w-8 text-${item.color}-500`} />
                   <div>
                     <p className="text-xl font-bold">{item.title}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       {item.description}
                     </p>
                   </div>
