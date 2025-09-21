@@ -9,7 +9,7 @@ export const changeEventStatus = async (eventId: string, action: string) => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ action }),
-      }
+      },
     );
     const data = await response.json();
     if (!response.ok) {
@@ -24,21 +24,26 @@ export const changeEventStatus = async (eventId: string, action: string) => {
   }
 };
 
-export const assignVolunteer = async (eventId: string, userId: string) => {
+export const controlVolunteerApplication = async (
+  eventId: string,
+  userId: string,
+  action: "assign" | "remove",
+) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/event/admin/add-volunteer/${userId}/${eventId}`,
+      `${import.meta.env.VITE_BASE_URL}/event/admin/control-volunteer/${userId}/${eventId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+        body: JSON.stringify({ action }),
+      },
     );
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || "Failed to assign volunteer");
+      throw new Error(data.message || `Failed to ${action} volunteer`);
     }
     return { success: true, message: data.message };
   } catch (error) {

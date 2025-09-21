@@ -13,7 +13,7 @@ export const getEventsByStatus = async (status?: string) => {
 
   const query = normalizedStatus ? { status: normalizedStatus } : {};
 
-  const events = await eventModel.find(query);
+  const events = await eventModel.find(query).populate("volunteers");
 
   return events;
 };

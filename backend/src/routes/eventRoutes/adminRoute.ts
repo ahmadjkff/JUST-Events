@@ -4,8 +4,9 @@ import validateJWT from "../../middlewares/validateJWT";
 import { isAdmin } from "../../middlewares/validateUserRole";
 
 import {
-  addVolunteer,
+  controlVolunteerApplication,
   changeEventStatus,
+  fetchVolunteers,
 } from "../../services/eventServices/adminService";
 import AppError from "../../types/AppError";
 
@@ -48,22 +49,40 @@ router.put(
   }
 );
 
+router.get("/volunteers", validateJWT, isAdmin, async (req, res) => {
+  try {
+    // Assuming you have a function to fetch volunteers
+    const volunteers = await fetchVolunteers(); // Implement this function as needed
+    return res.status(200).json({
+      success: true,
+      message: " Volunteers fetched successfully",
+      data: volunteers,
+    });
+  } catch (error: any) {
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+});
+
 router.put(
-  "/add-volunteer/:userId/:eventId",
+  "/control-volunteer/:userId/:eventId",
   validateJWT,
   isAdmin,
   async (req, res) => {
     try {
       const { eventId, userId } = req.params;
+      const { action } = req.body;
 
-      if (!eventId || !userId) {
+      if (!eventId || !userId || !action) {
         return res.status(400).json({
           success: false,
-          message: "Event ID and User ID are required",
+          message: "Event ID, User ID, and Action are required",
         });
       }
 
-      const event = await addVolunteer(eventId, userId);
+      const event = await controlVolunteerApplication(eventId, userId, action);
       return res.status(200).json({
         success: true,
         message: "Volunteer added successfully",
