@@ -52,7 +52,7 @@ export default function Sidebar({ className }: SidebarProps) {
     {
       icon: Gauge,
       label: "Dashboard",
-      href: "/",
+      href: "/admin/dashboard",
       allowedUsers: ["admin"],
     },
     {
@@ -62,16 +62,17 @@ export default function Sidebar({ className }: SidebarProps) {
       allowedUsers: ["student", "supervisor", "admin"],
       // badge: "3", //Example: If we want a number next to the button
     },
-    {
-      icon: Trophy, label: "Achievements",
-      href: "/student/achievements",
-      allowedUsers: ["student", "supervisor"],
-    },
+    // {
+    //   icon: Trophy, label: "Achievements",
+    //   href: "/student/achievements",
+    //   allowedUsers: ["student", "supervisor"],
+    // },
     {
       icon: Bell,
       label: "Notifications",
       href: "/student/notifications",
       allowedUsers: ["student", "supervisor", "admin"],
+      badge: "5", 
     },
     {
       icon: User,
@@ -82,7 +83,7 @@ export default function Sidebar({ className }: SidebarProps) {
     {
       icon: Settings,
       label: "Settings",
-      href: "/student/settings",
+      href: "settings",
       allowedUsers: ["student", "supervisor", "admin"],
     },
   ];
