@@ -25,7 +25,7 @@ const DASHBOARD_ITEMS = [
     title: "Volunteers Management",
     icon: UserStar,
     description: "Oversee volunteer activities and assignments.",
-    link: "/admin/volunteers",
+    link: "/admin/volunteer-control",
     color: "orange",
   },
   {

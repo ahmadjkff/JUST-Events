@@ -1,4 +1,3 @@
-// src/pages/admin/index.tsx
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../../protectedRoutes";
@@ -6,6 +5,7 @@ import NotFound from "../../pages/NotFound";
 import ControlEvents from "./pages/ControlEvents";
 import ManageRoles from "./pages/ManageRoles";
 import Dashboard from "./pages/Dashboard";
+import VolunteerControl from "./pages/VolunteerControl";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
@@ -30,6 +30,14 @@ const AdminRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["admin"]}>
           <ManageRoles />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="volunteer-control"
+      element={
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <VolunteerControl />
         </ProtectedRoute>
       }
     />

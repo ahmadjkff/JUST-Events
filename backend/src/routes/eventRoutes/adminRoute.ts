@@ -1,14 +1,16 @@
+import { IVolunteer } from "./../../../../frontend/src/types/eventTypes";
 import express from "express";
 
 import validateJWT from "../../middlewares/validateJWT";
 import { isAdmin } from "../../middlewares/validateUserRole";
 
 import {
-  controlVolunteerApplication,
   changeEventStatus,
   fetchVolunteers,
 } from "../../services/eventServices/adminService";
 import AppError from "../../types/AppError";
+import eventModel from "../../models/eventModel";
+import userModel from "../../models/userModel";
 
 const router = express.Router();
 
@@ -66,41 +68,51 @@ router.get("/volunteers", validateJWT, isAdmin, async (req, res) => {
   }
 });
 
-router.put(
-  "/control-volunteer/:userId/:eventId",
-  validateJWT,
-  isAdmin,
-  async (req, res) => {
-    try {
-      const { eventId, userId } = req.params;
-      const { action } = req.body;
+// router.put(
+//   "/control-volunteer/:studentId/:eventId",
+//   validateJWT,
+//   isAdmin,
+//   async (req, res, next) => {
+//     try {
+//       const { eventId, studentId } = req.params;
+//       const { action } = req.body; // "assign" or "remove"
 
-      if (!eventId || !userId || !action) {
-        return res.status(400).json({
-          success: false,
-          message: "Event ID, User ID, and Action are required",
-        });
-      }
+//       const event = await eventModel
+//         .findById(eventId)
+//         .populate("volunteers.student");
+//       if (!event) throw new AppError("Event not found", 404);
 
-      const event = await controlVolunteerApplication(eventId, userId, action);
-      return res.status(200).json({
-        success: true,
-        message: "Volunteer added successfully",
-        data: { event },
-      });
-    } catch (error: any) {
-      if (error instanceof AppError) {
-        return res
-          .status(error.statusCode)
-          .json({ success: false, message: error.message });
-      }
+//       const student = await userModel.findById(studentId);
+//       if (!student) throw new AppError("Student not found", 404);
 
-      return res.status(500).json({
-        success: false,
-        message: error.message || "Something went wrong",
-      });
-    }
-  }
-);
+//       if (action === "assign") {
+//         // mark as approved
+//         const volunteer = event.volunteers.find(
+//           (v: any) => v.student.toString() === studentId
+//         );
+//         if (volunteer) {
+//           volunteer.status = "approved";
+//         } else {
+//           event.volunteers.push({ student: studentId, status: "approved" });
+//         }
+//       }
+
+//       if (action === "remove") {
+//         // mark as rejected
+//         const volunteer = event.volunteers.find(
+//           (v: any) => v.student.toString() === studentId
+//         );
+//         if (volunteer) {
+//           volunteer.status = "rejected";
+//         }
+//       }
+
+//       await event.save();
+//       res.status(200).json({ success: true, data: event });
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 
 export default router;
