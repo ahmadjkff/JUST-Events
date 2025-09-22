@@ -14,6 +14,7 @@ import Sidebar from "./components/Sidebar";
 import BrowseEvents from "./pages/browseEvents";
 import Profile from "./pages/profile";
 import { useAuth } from "./context/auth/AuthContext";
+import Setting from "./pages/setting";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -36,6 +37,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="browse-events" element={<BrowseEvents />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Setting />} />
             <Route path="/admin/*" element={<AdminRoutes />} />
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
             <Route path="/student/*" element={<StudentRoutes />} />
