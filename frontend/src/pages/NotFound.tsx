@@ -1,6 +1,9 @@
 import { Button } from "../components/ui/Button";
+import { useAuth } from "../context/auth/AuthContext";
 
 function NotFound() {
+  const { user } = useAuth();
+
   return (
     <div className="bg-background flex h-screen flex-col items-center justify-center px-4 text-center">
       {/* Number 404 */}
@@ -18,15 +21,25 @@ function NotFound() {
         Oops! The page you're looking for doesn't exist or was moved.
       </p>
 
-      {/* Back button */}
-      <Button
-        variant="default"
-        size="lg"
-        className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
-        onClick={() => (window.location.href = "/")}
-      >
-        ⬅ Back to Home
-      </Button>
+      {user?.role === "admin" ? (
+        <Button
+          variant="default"
+          size="lg"
+          className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
+          onClick={() => (window.location.href = "/admin/dashboard")}
+        >
+          ⬅ Back to Dashboard
+        </Button>
+      ) : (
+        <Button
+          variant="default"
+          size="lg"
+          className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
+          onClick={() => (window.location.href = "/")}
+        >
+          ⬅ Back to Home
+        </Button>
+      )}
     </div>
   );
 }
