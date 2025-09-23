@@ -9,9 +9,9 @@ interface EventContextType {
     rejected: IEvent[];
   };
   volunteersByStatus: {
-    assigned: IVolunteer[];
+    approved: IVolunteer[];
     pending: IVolunteer[];
-    removed: IVolunteer[];
+    rejected: IVolunteer[];
   };
   isLoading: boolean;
   fetchEvents: (status?: string) => Promise<{
@@ -29,7 +29,7 @@ interface EventContextType {
 export const EventContext = createContext<EventContextType>({
   events: [],
   eventsByStatus: { approved: [], pending: [], rejected: [] },
-  volunteersByStatus: { assigned: [], pending: [], removed: [] },
+  volunteersByStatus: { approved: [], pending: [], rejected: [] },
   isLoading: false,
   fetchEvents: async () => Promise.resolve({ success: false }),
   fetchVolunteers: async () => Promise.resolve({ success: false }),

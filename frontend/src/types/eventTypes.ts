@@ -41,14 +41,20 @@ export enum EventDepartment {
 }
 
 export interface IVolunteer {
+  student: string; // User ID
+  status: VolunteerStatus;
+}
+
+export interface IVolunteerApplication {
   _id: string;
-  event: IEvent;
-  student: User;
-  createdAt: string; // ISO string
+  student: User; // Populated User object
+  event: IEvent; // Populated Event object
   status: VolunteerStatus;
   isVolunteer: boolean;
+  createdAt: string; // ISO string
   updatedAt: string; // ISO string
 }
+
 export enum VolunteerStatus {
   Approved = "approved",
   Pending = "pending",

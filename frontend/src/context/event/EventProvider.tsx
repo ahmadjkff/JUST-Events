@@ -10,10 +10,10 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     rejected: IEvent[];
   }>({ approved: [], pending: [], rejected: [] });
   const [volunteersByStatus, setVolunteersByStatus] = useState<{
-    assigned: any[];
+    approved: any[];
     pending: any[];
-    removed: any[];
-  }>({ assigned: [], pending: [], removed: [] });
+    rejected: any[];
+  }>({ approved: [], pending: [], rejected: [] });
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchEvents = async (status?: string) => {
@@ -72,18 +72,18 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       // Assuming the API returns volunteers with a 'status' field
-      const assigned = data.data.filter((v: any) => v.status === "approved");
+      const approved = data.data.filter((v: any) => v.status === "approved");
       const pending = data.data.filter((v: any) => v.status === "pending");
-      const removed = data.data.filter((v: any) => v.status === "rejected");
+      const rejected = data.data.filter((v: any) => v.status === "rejected");
 
-      setVolunteersByStatus({ assigned, pending, removed });
+      setVolunteersByStatus({ approved, pending, rejected });
 
       return { success: true, data: data.data };
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to fetch volunteers";
       console.error("Error fetching volunteers:", message);
-      setVolunteersByStatus({ assigned: [], pending: [], removed: [] });
+      setVolunteersByStatus({ approved: [], pending: [], rejected: [] });
       return { success: false, message, data: [] };
     } finally {
       setIsLoading(false);

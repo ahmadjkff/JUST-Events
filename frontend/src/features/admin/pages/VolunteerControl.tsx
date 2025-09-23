@@ -8,7 +8,6 @@ import {
   User,
   X,
 } from "lucide-react";
-import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/Button";
 import {
   Card,
@@ -25,91 +24,121 @@ import {
 } from "../../../components/ui/tabs";
 import { Input } from "../../../components/ui/input";
 import { useEvent } from "../../../context/event/EventContext";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { controlVolunteerApplication } from "../services/APIRequests";
 import Menu from "../../../components/ui/Menu";
-import { type IEvent, type IVolunteer } from "../../../types/eventTypes";
+import {
+  VolunteerStatus,
+  type IVolunteerApplication,
+} from "../../../types/eventTypes";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Badge } from "../../../components/ui/badge";
+
+//To-Do: add unfound filter rsults (no results found for the selected filter)
 
 function VolunteerControl() {
   useTitle("Control Volunteers - JUST Events");
-  const { volunteersByStatus, eventsByStatus, fetchVolunteers, fetchEvents } =
-    useEvent();
+  const { volunteersByStatus, fetchVolunteers, fetchEvents } = useEvent();
   const [department, setDepartment] = useState<string | null>(null);
 
-  const VolunteerCard = ({
-    volunteer,
-  }: {
-    volunteer: IVolunteer;
-    showActions?: boolean;
-  }) => (
-    <Card className="transition-shadow hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
+  interface VolunteerCardProps {
+    volunteer: IVolunteerApplication;
+  }
+
+  const VolunteerCard = ({ volunteer }: VolunteerCardProps) => {
+    const { student, status, event, createdAt } = volunteer;
+
+    const isApproved = status === VolunteerStatus.Approved;
+    const isRejected = status === VolunteerStatus.Rejected;
+
+    return (
+      <Card className="transition-shadow hover:shadow-md">
+        <CardHeader>
+          <div className="flex items-start justify-between">
             <CardTitle className="text-lg">
-              "{volunteer.student.firstName} {volunteer.student.lastName}" wants
-              to become a volunteer on{" "}
+              "{student.firstName} {student.lastName}"
+              {isApproved ? " is " : " wants to become "}a volunteer on
               <Link
-                to={"/admin/control-events"}
+                to="/admin/control-events"
                 className="text-blue-600 hover:underline"
               >
-                "{volunteer.event.title}"
-              </Link>{" "}
+                {` ${event.title} `}
+              </Link>
               event
             </CardTitle>
           </div>
-        </div>
-        <div className="flex justify-end gap-2 px-6">
-          <Button
-            variant={"outline"}
-            className={`border-green-100 bg-green-100 text-green-800 ${volunteer.status === "approved" ? "hidden" : ""}`}
-            onClick={() => handleStatus(volunteer, "assign")}
-          >
-            Approve
-          </Button>
-          <Button
-            variant={"outline"}
-            className={`border-red-100 bg-red-100 text-red-800 ${volunteer.status === "rejected" ? "hidden" : ""}`}
-            onClick={() => handleStatus(volunteer, "remove")}
-          >
-            Reject
-          </Button>
-        </div>
-      </CardHeader>
 
-      <CardContent>
-        <p className="text-muted-foreground mb-4">
-          {volunteer.student.firstName}
-        </p>
-        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            {volunteer.createdAt.toString().split("T")[0]}
+          <div className="flex justify-end gap-2 px-6">
+            {!isApproved && (
+              <Button
+                variant="outline"
+                className="border-green-100 bg-green-100 text-green-800"
+                onClick={() => handleStatus(volunteer, "assign")}
+              >
+                Approve
+              </Button>
+            )}
+            {!isRejected && (
+              <Button
+                variant="outline"
+                className="border-red-100 bg-red-100 text-red-800"
+                onClick={() => handleStatus(volunteer, "remove")}
+              >
+                Reject
+              </Button>
+            )}
           </div>
-          <div className="flex items-center gap-1">
-            <IdCard className="h-4 w-4" />
-            {volunteer.student.universityId}
+        </CardHeader>
+
+        <CardContent>
+          <p className="text-muted-foreground mb-4">{student.firstName}</p>
+
+          <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
+            <VolunteerInfo icon={<Calendar className="h-4 w-4" />}>
+              {createdAt.toString().split("T")[0]}
+            </VolunteerInfo>
+            <VolunteerInfo icon={<IdCard className="h-4 w-4" />}>
+              {student.universityId}
+            </VolunteerInfo>
+            <VolunteerInfo icon={<University className="h-4 w-4" />}>
+              {student.faculty}
+            </VolunteerInfo>
           </div>
-          <div className="flex items-center gap-1">
-            <University className="h-4 w-4" />
-            {volunteer.student.faculty}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const VolunteerInfo = ({
+    icon,
+    children,
+  }: {
+    icon: React.ReactNode;
+    children: React.ReactNode;
+  }) => (
+    <div className="flex items-center gap-1">
+      {icon}
+      {children}
+    </div>
   );
 
   const handleStatus = async (
-    volunteer: IVolunteer,
+    volunteer: IVolunteerApplication,
     action: "assign" | "remove",
   ) => {
+    console.log(volunteer);
+
     await controlVolunteerApplication(
       volunteer.event._id,
       volunteer.student._id,
       action,
     );
     await fetchVolunteers!();
+
+    toast.success(
+      `Volunteer ${action === "assign" ? "approved" : "rejected"} successfully`,
+    );
   };
 
   // fetch volunteer on component mount
@@ -130,7 +159,7 @@ function VolunteerControl() {
 
     if (department) {
       volunteers = volunteers.filter(
-        (e: IVolunteer) =>
+        (e: any) =>
           e.student.faculty.toLowerCase() === department.toLowerCase(),
       );
     }
@@ -138,17 +167,9 @@ function VolunteerControl() {
     return volunteers;
   };
 
-  const calcApprovedVolunteers = () => {
-    let count = 0;
-    eventsByStatus.approved.forEach((event: IEvent) => {
-      count += event.volunteers.length;
-    });
-    return count;
-  };
-
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Header */}
+      Header
       <header className="bg-card border-border flex items-center justify-between border-b p-4">
         <div>
           <h1 className="text-foreground text-2xl font-bold">
@@ -176,7 +197,6 @@ function VolunteerControl() {
           </Button>
         </div>
       </header>
-
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-7xl">
@@ -199,80 +219,148 @@ function VolunteerControl() {
           <Tabs defaultValue="pending" className="space-y-6">
             <TabsList className="flex w-full max-w-lg grid-cols-3 md:grid">
               <TabsTrigger value="assigned">
-                Assigned Volunteers ({calcApprovedVolunteers()})
+                Assigned Volunteers ({volunteersByStatus.approved.length})
               </TabsTrigger>
               <TabsTrigger value="pending">
                 Pending Volunteers ({volunteersByStatus.pending.length})
               </TabsTrigger>
               <TabsTrigger value="removed">
-                Removed Volunteers ({volunteersByStatus.removed.length})
+                Removed Volunteers ({volunteersByStatus.rejected.length})
               </TabsTrigger>
             </TabsList>
 
             {/* Pending Volunteers */}
             <TabsContent value="pending" className="space-y-4">
-              {filteredVolunteers("pending").map((volunteer: IVolunteer) => (
-                <VolunteerCard key={volunteer._id} volunteer={volunteer} />
-              ))}
+              <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
+                <h1 className={`text-2xl font-bold text-gray-500`}>Pending</h1>
+                <div className="flex items-center gap-2">
+                  {department && (
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Department:
+                      <strong className="text-orange-700">{department}</strong>
+                    </Badge>
+                  )}
+                  {department && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDepartment(null);
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+              {volunteersByStatus.pending.length > 0 ? (
+                filteredVolunteers("pending").map((volunteer: any) => (
+                  <VolunteerCard key={volunteer._id} volunteer={volunteer} />
+                ))
+              ) : (
+                <Card className="py-12 text-center">
+                  <CardContent>
+                    <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+
+                    <h3 className="mb-2 text-lg font-semibold">
+                      No pending applications
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Pending applications will appear here.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             {/* Assigned Volunteers */}
             <TabsContent value="assigned" className="space-y-4">
-              {eventsByStatus.approved.length > 0 &&
-                eventsByStatus.approved.map(
-                  (event: IEvent) =>
-                    event.volunteers.length > 0 && (
-                      <Card
-                        className="transition-shadow hover:shadow-md"
-                        key={event._id}
-                      >
-                        {event.volunteers.map((v: any) => (
-                          <CardHeader key={v._id}>
-                            <div className="flex items-start justify-between">
-                              <div className="space-y-2">
-                                <CardTitle className="text-lg">
-                                  student {v.firstName} {v.lastName} volunteered
-                                  for {event.title}
-                                </CardTitle>
-                              </div>
-                            </div>
-                            <div className="flex justify-end gap-2 px-6">
-                              <Button
-                                variant={"outline"}
-                                className="border-red-100 bg-red-100 text-red-800"
-                                onClick={() => handleStatus(v, "remove")}
-                              >
-                                Remove
-                              </Button>
-                            </div>
-                          </CardHeader>
-                        ))}
+              <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
+                <h1 className={`text-2xl font-bold text-green-500`}>
+                  Approved
+                </h1>
+                <div className="flex items-center gap-2">
+                  {department && (
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Department:
+                      <strong className="text-orange-700">{department}</strong>
+                    </Badge>
+                  )}
+                  {department && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDepartment(null);
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+              {volunteersByStatus.approved.length > 0 ? (
+                filteredVolunteers("approved").map((volunteer: any) => (
+                  <VolunteerCard key={volunteer} volunteer={volunteer} />
+                ))
+              ) : (
+                <Card className="py-12 text-center">
+                  <CardContent>
+                    <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
 
-                        <CardContent>
-                          <p className="text-muted-foreground mb-4">
-                            {event.category}
-                          </p>
-                          <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {event.volunteers.length}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <IdCard className="h-4 w-4" />
-                              {event.createdAt}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ),
-                )}
+                    <h3 className="mb-2 text-lg font-semibold">
+                      No approved applications
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Pending approved will appear here.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             {/* Removed Volunteers */}
             <TabsContent value="removed" className="space-y-4">
-              {filteredVolunteers("removed").map((volunteer: IVolunteer) => (
-                <VolunteerCard key={volunteer._id} volunteer={volunteer} />
-              ))}
+              <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
+                <h1 className={`text-2xl font-bold text-red-500`}>Rejected</h1>
+                <div className="flex items-center gap-2">
+                  {department && (
+                    <Badge className="bg-gray-100 text-gray-800">
+                      Department:
+                      <strong className="text-orange-700">{department}</strong>
+                    </Badge>
+                  )}
+                  {department && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDepartment(null);
+                      }}
+                    >
+                      Clear Filters
+                    </Button>
+                  )}
+                </div>
+              </div>
+              {volunteersByStatus.rejected.length > 0 ? (
+                filteredVolunteers("rejected").map((volunteer: any) => (
+                  <VolunteerCard key={volunteer} volunteer={volunteer} />
+                ))
+              ) : (
+                <Card className="py-12 text-center">
+                  <CardContent>
+                    <X className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+
+                    <h3 className="mb-2 text-lg font-semibold">
+                      No rejected applications
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      rejected applications will appear here.
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           </Tabs>
         </div>
