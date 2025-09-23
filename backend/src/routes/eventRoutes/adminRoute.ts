@@ -1,4 +1,4 @@
-import { IVolunteer } from "./../../../../frontend/src/types/eventTypes";
+import { RegistrationModel } from "./../../models/registrationModel";
 import express from "express";
 
 import validateJWT from "../../middlewares/validateJWT";
@@ -11,6 +11,8 @@ import {
 import AppError from "../../types/AppError";
 import eventModel from "../../models/eventModel";
 import userModel from "../../models/userModel";
+import { VolunteerStatus } from "../../types/eventTypes";
+import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -68,51 +70,56 @@ router.get("/volunteers", validateJWT, isAdmin, async (req, res) => {
   }
 });
 
-// router.put(
-//   "/control-volunteer/:studentId/:eventId",
-//   validateJWT,
-//   isAdmin,
-//   async (req, res, next) => {
-//     try {
-//       const { eventId, studentId } = req.params;
-//       const { action } = req.body; // "assign" or "remove"
+router.put(
+  "/control-volunteer/:studentId/:eventId",
+  validateJWT,
+  isAdmin,
+  async (req, res, next) => {
+    try {
+      const { eventId, studentId } = req.params;
+      const { action } = req.body; // "assign" or "remove"
 
-//       const event = await eventModel
-//         .findById(eventId)
-//         .populate("volunteers.student");
-//       if (!event) throw new AppError("Event not found", 404);
+      const event = await eventModel
+        .findById(eventId)
+        .populate("volunteers.student");
 
-//       const student = await userModel.findById(studentId);
-//       if (!student) throw new AppError("Student not found", 404);
+      if (!event) throw new AppError("Event not found", 404);
 
-//       if (action === "assign") {
-//         // mark as approved
-//         const volunteer = event.volunteers.find(
-//           (v: any) => v.student.toString() === studentId
-//         );
-//         if (volunteer) {
-//           volunteer.status = "approved";
-//         } else {
-//           event.volunteers.push({ student: studentId, status: "approved" });
-//         }
-//       }
+      const student = await userModel.findById(studentId);
+      if (!student) throw new AppError("Student not found", 404);
 
-//       if (action === "remove") {
-//         // mark as rejected
-//         const volunteer = event.volunteers.find(
-//           (v: any) => v.student.toString() === studentId
-//         );
-//         if (volunteer) {
-//           volunteer.status = "rejected";
-//         }
-//       }
+      if (action === "assign") {
+        const volunteer = event.volunteers.find(
+          (v: any) => (v.student._id || v.student).toString() === studentId
+        );
 
-//       await event.save();
-//       res.status(200).json({ success: true, data: event });
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
+        event.volunteers.push({
+          student: new mongoose.Types.ObjectId(studentId),
+        });
+
+        await RegistrationModel.findOneAndUpdate(
+          { student: studentId, event: eventId },
+          { status: VolunteerStatus.APPROVED }
+        );
+      }
+
+      if (action === "remove") {
+        event.volunteers = event.volunteers.filter(
+          (v: any) => (v.student._id || v.student).toString() !== studentId
+        );
+
+        await RegistrationModel.findOneAndUpdate(
+          { student: studentId, event: eventId },
+          { status: VolunteerStatus.REJECTED }
+        );
+      }
+
+      await event.save();
+      res.status(200).json({ success: true, data: event });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

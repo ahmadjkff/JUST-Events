@@ -27,3 +27,9 @@ export enum EventDepartment {
   MEDICAL = "medical",
   SCIENCE = "science",
 }
+
+export enum VolunteerStatus {
+  APPROVED = "approved",
+  PENDING = "pending",
+  REJECTED = "rejected",
+}

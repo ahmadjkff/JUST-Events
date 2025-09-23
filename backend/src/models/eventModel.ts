@@ -5,6 +5,10 @@ import {
   EventStatus,
 } from "../types/eventTypes";
 
+export interface IVolunteer {
+  student: mongoose.Types.ObjectId;
+}
+
 export interface IEvent extends Document {
   title: string;
   description: string;
@@ -19,7 +23,7 @@ export interface IEvent extends Document {
     rating: number;
     comment?: string;
   }[];
-  volunteers: mongoose.Types.ObjectId[];
+  volunteers: IVolunteer[];
 }
 
 const feedbackSchema = new Schema(
@@ -30,6 +34,10 @@ const feedbackSchema = new Schema(
   },
   { timestamps: true }
 );
+
+const volunteerSchema = new Schema<IVolunteer>({
+  student: { type: Schema.Types.ObjectId, ref: "User", required: true },
+});
 
 const eventSchema = new Schema<IEvent>(
   {
@@ -51,11 +59,11 @@ const eventSchema = new Schema<IEvent>(
     },
     department: {
       type: String,
-      enum: EventDepartment,
+      enum: Object.values(EventDepartment),
       required: true,
     },
     feedback: [feedbackSchema],
-    volunteers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    volunteers: [volunteerSchema],
   },
   { timestamps: true }
 );

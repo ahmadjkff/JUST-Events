@@ -5,7 +5,7 @@ import RegistrationModel, {
 import { certificateModel, ICertificate } from "../../models/certificateModel";
 import PDFDocument from "pdfkit";
 import { Response } from "express";
-
+import userModel from "../../models/userModel";
 
 export const generateCertificate = async (
   res: Response,
@@ -63,7 +63,10 @@ export const generateCertificate = async (
   doc.end();
 };
 
-export const register = async (eventId: string, studentId: string): Promise<IRegistration> => {
+export const register = async (
+  eventId: string,
+  studentId: string
+): Promise<IRegistration> => {
   const event = await eventModel.findById(eventId);
   if (!event) throw new Error("Event not found");
 
@@ -78,30 +81,59 @@ export const register = async (eventId: string, studentId: string): Promise<IReg
     event: eventId,
     isVolunteer: false,
   });
-}
+};
 
-export const cancel = async (eventId: string, studentId: string): Promise<IRegistration> => {
+export const cancel = async (
+  eventId: string,
+  studentId: string
+): Promise<IRegistration> => {
   const deleted = await RegistrationModel.findOneAndDelete({
     student: studentId,
     event: eventId,
   });
   if (!deleted) throw new Error("Registration not found");
   return deleted;
-}
+};
 
-export const volunteer = async (eventId: string, studentId: string): Promise<IRegistration> => {
-  return await RegistrationModel.findOneAndUpdate(
-    { student: studentId, event: eventId },
-    { isVolunteer: true },
-    { new: true, upsert: true }
-  );
-}
+export const volunteer = async (
+  eventId: string,
+  studentId: string
+): Promise<IRegistration> => {
+  const event = await eventModel.findById(eventId);
+  if (!event) throw new Error("Event not found");
 
-export const certificate = async (eventId: string, studentId: string): Promise<ICertificate> => {
+  if (event.status !== "approved")
+    throw new Error("Cannot volunteer for an unapproved event");
+
+  const user = await userModel.findById(studentId);
+  if (!user) throw new Error("User not found");
+
+  const existing = await RegistrationModel.findOne({
+    student: studentId,
+    event: eventId,
+  });
+  if (existing && existing.isVolunteer)
+    throw new Error("Already a volunteer for this event");
+  if (existing) {
+    existing.isVolunteer = true;
+    return await existing.save();
+  }
+
+  return await RegistrationModel.create({
+    student: studentId,
+    event: eventId,
+    isVolunteer: true,
+  });
+};
+
+export const certificate = async (
+  eventId: string,
+  studentId: string
+): Promise<ICertificate> => {
   const certificate = await certificateModel.findOne({
     student: studentId,
     event: eventId,
   });
   if (!certificate) throw new Error("Certificate not found");
   return certificate;
-}
+};
