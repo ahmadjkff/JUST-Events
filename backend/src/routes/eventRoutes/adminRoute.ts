@@ -122,4 +122,50 @@ router.put(
   }
 );
 
+router.get("/statistics", async (req, res) => {
+  try {
+    const totalEvents = await eventModel.countDocuments();
+    const upcomingEvents = await eventModel.countDocuments({
+      status: "approved",
+    });
+    const completedEvents = await eventModel.countDocuments({
+      status: "completed",
+    });
+    const eventCounts = await eventModel.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]);
+
+    const totalUsers = await userModel.countDocuments();
+    const roleCounts = await userModel.aggregate([
+      { $group: { _id: "$role", count: { $sum: 1 } } },
+    ]);
+
+    const registrationsPerEvent = await eventModel.aggregate([
+      {
+        $project: {
+          title: 1,
+          registered: {
+            $size: { $ifNull: ["$registeredStudents", []] }, // if missing, use empty array
+          },
+        },
+      },
+    ]);
+
+    // const totalVolunteers = await volunteerModel.countDocuments();
+    // const feedbackStats = await feedbackModel.aggregate([
+    //   { $group: { _id: null, avgRating: { $avg: "$rating" } } },
+    // ]);
+
+    res.json({
+      events: { totalEvents, upcomingEvents, completedEvents, eventCounts },
+      users: { totalUsers, roleCounts },
+      registrations: registrationsPerEvent,
+      // volunteers: totalVolunteers,
+      // feedback: feedbackStats[0]?.avgRating || 0,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching statistics", error: err });
+  }
+});
+
 export default router;

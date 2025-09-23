@@ -6,6 +6,7 @@ import ControlEvents from "./pages/ControlEvents";
 import ManageRoles from "./pages/ManageRoles";
 import Dashboard from "./pages/Dashboard";
 import VolunteerControl from "./pages/VolunteerControl";
+import AdminStatistics from "./pages/AdminStatistics";
 
 const AdminRoutes: React.FC = () => (
   <Routes>
@@ -38,6 +39,14 @@ const AdminRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["admin"]}>
           <VolunteerControl />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="statistics"
+      element={
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminStatistics />
         </ProtectedRoute>
       }
     />
