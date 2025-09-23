@@ -305,7 +305,7 @@ export const exportRegisteredStudent = async ({
 export const getSupervisorAppliactions = async (supervisorId: string) => {
   try {
     const events = await eventModel
-      .find({ createdBy: supervisorId })
+      .find({ createdBy: supervisorId, status: EventStatus.APPROVED })
       .select("_id");
     const eventsIds = events.map((event) => event._id);
 
