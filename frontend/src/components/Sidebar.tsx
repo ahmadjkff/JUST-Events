@@ -3,13 +3,13 @@ import {
   Home,
   Calendar,
   Gauge,
-  Trophy,
   Settings,
   Bell,
   User,
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Award,
 } from "lucide-react";
 import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
@@ -70,9 +70,15 @@ export default function Sidebar({ className }: SidebarProps) {
     {
       icon: Bell,
       label: "Notifications",
-      href: "/student/notifications",
+      href: "/notifications",
       allowedUsers: ["student", "supervisor", "admin"],
-      badge: "5", 
+      badge: "5",
+    },
+    {
+      icon: Award,
+      label: "My Certificates",
+      href: "/student/my-certificates",
+      allowedUsers: ["student", "supervisor"],
     },
     {
       icon: User,
