@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { Tabs } from "@radix-ui/react-tabs";
-import { TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
+import {
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../../components/ui/tabs";
 import { Card, CardContent, CardHeader } from "../../../components/ui/Card";
 import { Button } from "../../../components/ui/Button";
 import { updateApplicationStatus } from "../services/supervisorRequests";
@@ -18,23 +22,35 @@ function SupervisorApplications() {
   const handleUpdate = async (
     eventId: string,
     studentId: string,
-    action: "approved" | "rejected" | "pending"
+    action: "approved" | "rejected" | "pending",
   ) => {
     setLoadingId(studentId); // show spinner on this student's button
     await updateApplicationStatus(eventId, studentId, action);
     await fetchApplications();
     setLoadingId(null); // reset after done
   };
-
+  const handleApproveAll = async () => {
+    try {
+      setLoadingId("all");
+      const approvePromises = applicationsByStatus.pending.map((app) =>
+        updateApplicationStatus(app.event._id, app.student._id, "approved"),
+      );
+      await Promise.all(approvePromises);
+      await fetchApplications();
+      setLoadingId(null);
+    } catch (error) {
+      console.error("Error approving all applications:", error);
+    }
+  };
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+      <h1 className="mb-6 text-2xl font-bold text-gray-800">
         Student Applications
       </h1>
 
       <Tabs defaultValue="pending" className="w-full">
         {/* Tabs Header */}
-        <TabsList className="flex gap-4 border-b border-gray-200 mb-6">
+        <TabsList className="mb-6 flex gap-4 border-b border-gray-200">
           <TabsTrigger
             value="pending"
             className="px-4 py-2 text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600"
@@ -60,10 +76,23 @@ function SupervisorApplications() {
           {applicationsByStatus.pending.length === 0 && (
             <p className="text-gray-500">No pending applications</p>
           )}
+          {applicationsByStatus.pending.length > 0 && (
+            <Button
+              className="bg-green-600 hover:bg-green-700"
+              disabled={loadingId === "all"}
+              onClick={() => handleApproveAll()}
+            >
+              {loadingId === "all" ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Approve ALL"
+              )}
+            </Button>
+          )}
           {applicationsByStatus.pending.map((app) => (
             <Card
               key={app._id}
-              className="rounded-xl shadow-sm border border-gray-200"
+              className="rounded-xl border border-gray-200 shadow-sm"
             >
               <CardHeader className="font-semibold text-gray-700">
                 {app.student.firstName} {app.student.lastName} applied for{" "}
@@ -71,7 +100,7 @@ function SupervisorApplications() {
                   {app.event.title}
                 </span>
               </CardHeader>
-              <CardContent className="flex justify-between items-center">
+              <CardContent className="flex items-center justify-between">
                 <div className="text-sm text-gray-600">
                   <p>
                     <span className="font-medium">Name:</span>{" "}
@@ -91,7 +120,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Approve"
                     )}
@@ -104,7 +133,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Reject"
                     )}
@@ -123,13 +152,13 @@ function SupervisorApplications() {
           {applicationsByStatus.approved.map((app) => (
             <Card
               key={app._id}
-              className="rounded-xl shadow border border-green-200 bg-green-50"
+              className="rounded-xl border border-green-200 bg-green-50 shadow"
             >
-              <CardHeader className="font-semibold text-green-700 flex items-center gap-2">
+              <CardHeader className="flex items-center gap-2 font-semibold text-green-700">
                 ✅ {app.student.firstName} {app.student.lastName}
                 <span className="text-gray-500">({app.student.email})</span>
               </CardHeader>
-              <CardContent className="flex justify-between items-center">
+              <CardContent className="flex items-center justify-between">
                 <p className="text-sm text-gray-600">
                   Approved for {app.event.title}
                 </p>
@@ -142,7 +171,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Set Pending"
                     )}
@@ -155,7 +184,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Reject"
                     )}
@@ -174,13 +203,13 @@ function SupervisorApplications() {
           {applicationsByStatus.rejected.map((app) => (
             <Card
               key={app._id}
-              className="rounded-xl shadow border border-red-200 bg-red-50"
+              className="rounded-xl border border-red-200 bg-red-50 shadow"
             >
-              <CardHeader className="font-semibold text-red-700 flex items-center gap-2">
+              <CardHeader className="flex items-center gap-2 font-semibold text-red-700">
                 ❌ {app.student.firstName} {app.student.lastName}
                 <span className="text-gray-500">({app.student.email})</span>
               </CardHeader>
-              <CardContent className="flex justify-between items-center">
+              <CardContent className="flex items-center justify-between">
                 <p className="text-sm text-gray-600">
                   Rejected for {app.event.title}
                 </p>
@@ -193,7 +222,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Set Pending"
                     )}
@@ -206,7 +235,7 @@ function SupervisorApplications() {
                     }
                   >
                     {loadingId === app.student._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       "Approve"
                     )}
