@@ -35,7 +35,7 @@ function App() {
               }
             />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="browse-events" element={<BrowseEvents />} />
+            <Route path="/browse-events" element={<BrowseEvents />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Setting />} />
             <Route path="/admin/*" element={<AdminRoutes />} />

@@ -1,8 +1,9 @@
 import { useTitle } from "../hooks/useTitle";
-import { Search, Bell, User } from "lucide-react";
+
 import StudentDashboardCards from "../components/DashboardCards";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
+import { Link } from "react-router-dom";
 
 function Home() {
   useTitle("Home - JUST Events");
@@ -21,7 +22,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Button variant="outline" size="sm">
               <Search className="h-4 w-4" />
             </Button>
@@ -36,7 +37,7 @@ function Home() {
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -58,8 +59,8 @@ function Home() {
                   </p>
                 </div>
                 <Button className="bg-blue-600 hover:bg-blue-700">
-                  Explore Events
-                </Button>
+                  <Link to="/browse-events">Explore Events</Link>
+                </Button> 
               </div>
             </CardContent>
           </Card>
