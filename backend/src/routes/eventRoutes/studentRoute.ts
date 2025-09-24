@@ -16,6 +16,7 @@ const router = express.Router();
  * Register for an event
  */
 
+// TO-DO : replace studentId with userId from JWT
 router.post(
   "/register/:eventId/:studentId",
   async (req: Request, res: Response) => {
@@ -45,6 +46,7 @@ router.post(
 /**
  * Cancel event registration
  */
+// TO-DO : replace studentId with userId from JWT
 router.delete(
   "/cancel/:eventId/:studentId",
   async (req: Request, res: Response) => {
@@ -73,6 +75,8 @@ router.delete(
 /**
  * Volunteer for event
  */
+
+// TO-DO : replace studentId with userId from JWT
 router.post(
   // To-Do: Check the event is approved before registration
   "/volunteer/:eventId/:studentId",
@@ -103,6 +107,7 @@ router.post(
 /**
  * Provide feedback
  */
+// TO-DO : replace studentId with userId from JWT
 router.post(
   "/feedback/:eventId/:studentId",
   async (req: Request, res: Response) => {
