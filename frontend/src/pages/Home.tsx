@@ -1,12 +1,14 @@
 import { useTitle } from "../hooks/useTitle";
-
 import StudentDashboardCards from "../components/DashboardCards";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/auth/AuthContext";
+
 
 function Home() {
   useTitle("Home - JUST Events");
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -15,7 +17,7 @@ function Home() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              Welcome back, Ahmed!
+               Welcome back, {user?.firstName || "Guest"} !
             </h1>
             <p className="text-muted-foreground">
               Here's what's happening at your university today
