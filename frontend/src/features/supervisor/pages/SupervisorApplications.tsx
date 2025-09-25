@@ -22,23 +22,27 @@ function SupervisorApplications() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
-      <h1 className="mb-4 text-2xl font-bold text-gray-800">Supervisor Events</h1>
+      <h1 className="mb-4 text-2xl font-bold text-gray-800">
+        Supervisor Events
+      </h1>
 
       {events.length === 0 && <p className="text-gray-500">No events found.</p>}
 
       {events.map(({ event, applications }) => (
         <Card
           key={event._id}
-          className="rounded-xl border border-gray-200 shadow-md cursor-pointer hover:shadow-xl transition-shadow"
+          className="cursor-pointer rounded-xl border border-gray-200 shadow-md transition-shadow hover:shadow-xl"
           onClick={() =>
             navigate(`/supervisor/event/${event._id}`, {
               state: { event: { ...event }, applications },
             })
           }
         >
-          <CardHeader className="flex justify-between items-center">
+          <CardHeader className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">{event.title}</h2>
+              <h2 className="text-lg font-semibold text-gray-800">
+                {event.title}
+              </h2>
               <p className="text-sm text-gray-600">
                 {new Date(event.date).toLocaleDateString()}
               </p>
@@ -50,8 +54,8 @@ function SupervisorApplications() {
                     event.status === "approved"
                       ? "text-green-600"
                       : event.status === "rejected"
-                      ? "text-red-600"
-                      : "text-yellow-600"
+                        ? "text-red-600"
+                        : "text-yellow-600"
                   }
                 >
                   {event.status.toUpperCase()}
@@ -60,7 +64,10 @@ function SupervisorApplications() {
               <p className="mt-1 text-sm font-medium">
                 Approved Students:{" "}
                 <span className="text-blue-600">
-                  {applications.filter((app) => app.status === "approved").length}
+                  {
+                    applications.filter((app: any) => app.status === "approved")
+                      .length
+                  }
                 </span>
               </p>
             </div>
