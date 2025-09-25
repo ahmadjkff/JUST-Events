@@ -1,11 +1,14 @@
 import { useTitle } from "../hooks/useTitle";
-import { Search, Bell, User } from "lucide-react";
 import StudentDashboardCards from "../components/DashboardCards";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/auth/AuthContext";
+
 
 function Home() {
   useTitle("Home - JUST Events");
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -14,14 +17,14 @@ function Home() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              Welcome back, Ahmed!
+               Welcome back, {user?.firstName || "Guest"} !
             </h1>
             <p className="text-muted-foreground">
               Here's what's happening at your university today
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Button variant="outline" size="sm">
               <Search className="h-4 w-4" />
             </Button>
@@ -36,7 +39,7 @@ function Home() {
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
             </Button>
-          </div>
+          </div> */}
         </div>
       </header>
 
@@ -58,8 +61,8 @@ function Home() {
                   </p>
                 </div>
                 <Button className="bg-blue-600 hover:bg-blue-700">
-                  Explore Events
-                </Button>
+                  <Link to="/browse-events">Explore Events</Link>
+                </Button> 
               </div>
             </CardContent>
           </Card>

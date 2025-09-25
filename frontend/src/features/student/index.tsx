@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
+import MyCertificates from "../../pages/myCertificates";
 
 
 const StudentRoutes: React.FC = () => (
@@ -13,6 +14,14 @@ const StudentRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["student", "supervisor"]}>
           <MyEvents />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="my-certificates"
+      element={
+        <ProtectedRoute allowedRoles={["student", "supervisor"]}>
+          <MyCertificates />
         </ProtectedRoute>
       }
     />
