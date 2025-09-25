@@ -16,6 +16,7 @@ import Profile from "./pages/profile";
 import { useAuth } from "./context/auth/AuthContext";
 import Setting from "./pages/setting";
 import Notifications from "./pages/notifications";
+import AboutUs from "./pages/aboutUs";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/admin/*" element={<AdminRoutes />} />
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
             <Route path="/student/*" element={<StudentRoutes />} />
+            <Route path="/about-us" element={<AboutUs />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

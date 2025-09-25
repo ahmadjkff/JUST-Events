@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import "../styles/Footer.css"
 
 const Footer = () => {
@@ -5,18 +6,10 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          {/* <div className="footer-links">
-            <a href="/privacy" className="footer-link">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="footer-link">
-              Terms of Service
-            </a>
-            <a href="/support" className="footer-link">
-              Support
-            </a>
-          </div> */}
           <p className="footer-text">© 2024 Just Events. All rights reserved.</p>
+          <Link to="/about-us" className="footer-button">
+            About Us
+          </Link>
         </div>
       </div>
     </footer>

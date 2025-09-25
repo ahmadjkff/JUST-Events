@@ -1,4 +1,5 @@
 import eventModel from "../../models/eventModel";
+import RegistrationModel from "../../models/registrationModel";
 import AppError from "../../types/AppError";
 import { EventStatus } from "../../types/eventTypes";
 
@@ -16,4 +17,33 @@ export const getEventsByStatus = async (status?: string) => {
   const events = await eventModel.find(query).populate("volunteers");
 
   return events;
+};
+
+export const getSpecificEvent = async (eventId: string) => {
+  try {
+    const event = await eventModel.findOne({ _id: eventId }).lean();
+    if (!event)
+      return { message: "Event not found ", statusCode: 403, success: false };
+
+    const appliactions = await RegistrationModel.find({
+      event: eventId,
+      isVolunteer: false,
+    })
+      .populate("student", "firstName lastName email")
+      .select("-event")
+      .lean();
+
+    return {
+      success: true,
+      message: "Event and applications fetched successfully",
+      statusCode: 200,
+      data: { event, appliactions },
+    };
+  } catch (error: any) {
+    return {
+      message: `Server error ${error.message}`,
+      statusCode: 500,
+      success: false,
+    };
+  }
 };
