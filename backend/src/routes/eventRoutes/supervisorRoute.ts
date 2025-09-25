@@ -8,6 +8,7 @@ import {
   deleteEvent,
   editEvent,
   exportRegisteredStudent,
+  getSpecificEvent,
   getSupervisorAppliactions,
 } from "../../services/eventServices/supervisorService";
 
@@ -214,6 +215,31 @@ router.get(
       res
         .status(500)
         .json({ success: false, message: `Server error ${error.message}` });
+    }
+  }
+);
+
+router.get(
+  "/:eventId",
+  validateJWT,
+  isSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const eventId = req.params.eventId;
+      const supervisorId = req.user._id;
+      if (!eventId) {
+        return res.status(400).json({ message: "eventId is required" });
+      }
+      if (!supervisorId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const { data, statusCode, success, message } = await getSpecificEvent(
+        eventId,
+        supervisorId
+      );
+      res.status(statusCode).json({ success, message, data });
+    } catch (error: any) {
+      res.status(500).json({ message: `Server error ${error.message}` });
     }
   }
 );

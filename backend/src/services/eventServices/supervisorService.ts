@@ -304,22 +304,60 @@ export const exportRegisteredStudent = async ({
 
 export const getSupervisorAppliactions = async (supervisorId: string) => {
   try {
+    // 1. Get all events by supervisor
     const events = await eventModel
       .find({ createdBy: supervisorId, status: EventStatus.APPROVED })
-      .select("_id");
-    const eventsIds = events.map((event) => event._id);
+      .select("_id title description location date status department category")
+      .lean();
 
-    const applications = await RegistrationModel.find({
-      event: { $in: eventsIds },
-    })
-      .populate("student", "firstName lastName email")
-      .populate("event", "title description location");
+    // 2. For each event, get the registrations
+    const grouped = await Promise.all(
+      events.map(async (event) => {
+        const applications = await RegistrationModel.find({ event: event._id })
+          .populate("student", "firstName lastName email")
+          .select("-event") // remove event field from applications
+          .lean();
+
+        return { event, applications };
+      })
+    );
 
     return {
       success: true,
-      message: "Applications fetched successfully",
+      message: "Applications grouped by event",
       statusCode: 200,
-      data: applications,
+      data: grouped,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+      statusCode: 500,
+    };
+  }
+};
+
+export const getSpecificEvent = async (
+  eventId: string,
+  supervisorId: string
+) => {
+  try {
+    const event = await eventModel
+      .findOne({ _id: eventId, createdBy: supervisorId })
+      .lean();
+    if (!event)
+      return { message: "Event not found ", statusCode: 403, success: false };
+
+    const appliactions = await RegistrationModel.find({ event: eventId })
+      .populate("student", "firstName lastName email")
+      .select("-event")
+      .lean();
+
+    return {
+      success: true,
+      message: "Event and applications fetched successfully",
+      statusCode: 200,
+      data: { event, appliactions },
     };
   } catch (error: any) {
     return {

@@ -1,20 +1,28 @@
 import { createContext, useContext } from "react";
 
 interface SupervisorContextType {
-  applications: any[];
-  fetchApplications: () => Promise<{
+  events: any[];
+  event: any;
+  applications: any;
+  fetchSupervisorApplications: () => Promise<{
     success: boolean;
     message?: string;
     data?: any[];
   }>;
-  applicationsByStatus: {approved: any[]; rejected: any[]; pending: any[]};
+  getEventById: (eventId: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: any;
+  }>;
   isLoading: boolean;
 }
 
 export const SupervisorContext = createContext<SupervisorContextType>({
-  applications: [],
-  fetchApplications: async () => Promise.resolve({ success: false }),
-  applicationsByStatus: {approved: [], rejected: [], pending: []},
+  events: [],
+  event: null,
+  applications: null,
+  fetchSupervisorApplications: async () => Promise.resolve({ success: false }),
+  getEventById: async () => Promise.resolve({ success: false }),
   isLoading: false,
 });
 

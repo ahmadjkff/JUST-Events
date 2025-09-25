@@ -3,9 +3,11 @@ import { SupervisorContext } from "./SupervisorContext";
 
 const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [applications, setApplications] = useState<any[]>([]);
-  const [applicationsByStatus, setApplicationsByStatus] = useState({approved: [], rejected: [], pending: []});
-  const fetchApplications = async () => {
+  const [events, setEvents] = useState<any[]>([]);
+  const [event, setEvent] = useState();
+  const [applications, setApplications] = useState();
+
+  const fetchSupervisorApplications = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
@@ -16,20 +18,15 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to fetch applications");
       }
-      const grouped = {
-        approved: data.data.data.filter((app: any) => app.status === 'approved'),
-        rejected: data.data.data.filter((app: any) => app.status === 'rejected'),
-        pending: data.data.data.filter((app: any) => app.status === 'pending'),
-      };
-      setApplicationsByStatus(grouped);
+
+      setEvents(data.data.data);
       console.log("fetched applications:", data.data.data);
-      setApplications(data.data.data);
 
       return { success: true, data: data.data, message: data.message };
     } catch (error: unknown) {
@@ -41,10 +38,45 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
       setIsLoading(false);
     }
   };
-  console.log("applications state:", applications);
+  const getEventById = async (eventId: string) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch event");
+      }
+      const data = await response.json();
+      setEvent(data.data.event);
+      setApplications(data.data.appliactions);
+      return { success: true, data: data.data, message: data.message };
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to fetch event";
+      console.error("Error fetching event:", error);
+      return { success: false, message };
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <SupervisorContext.Provider
-      value={{ isLoading, applications, applicationsByStatus,fetchApplications }}
+      value={{
+        isLoading,
+        events,
+        event,
+        applications,
+        fetchSupervisorApplications,
+        getEventById,
+      }}
     >
       {children}
     </SupervisorContext.Provider>
