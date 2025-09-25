@@ -42,7 +42,7 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}`,
+        `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
         {
           method: "GET",
           headers: {

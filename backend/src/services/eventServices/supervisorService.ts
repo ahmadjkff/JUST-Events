@@ -313,7 +313,10 @@ export const getSupervisorAppliactions = async (supervisorId: string) => {
     // 2. For each event, get the registrations
     const grouped = await Promise.all(
       events.map(async (event) => {
-        const applications = await RegistrationModel.find({ event: event._id })
+        const applications = await RegistrationModel.find({
+          event: event._id,
+          isVolunteer: false,
+        })
           .populate("student", "firstName lastName email")
           .select("-event") // remove event field from applications
           .lean();
@@ -333,37 +336,6 @@ export const getSupervisorAppliactions = async (supervisorId: string) => {
       success: false,
       message: error.message,
       statusCode: 500,
-    };
-  }
-};
-
-export const getSpecificEvent = async (
-  eventId: string,
-  supervisorId: string
-) => {
-  try {
-    const event = await eventModel
-      .findOne({ _id: eventId, createdBy: supervisorId })
-      .lean();
-    if (!event)
-      return { message: "Event not found ", statusCode: 403, success: false };
-
-    const appliactions = await RegistrationModel.find({ event: eventId })
-      .populate("student", "firstName lastName email")
-      .select("-event")
-      .lean();
-
-    return {
-      success: true,
-      message: "Event and applications fetched successfully",
-      statusCode: 200,
-      data: { event, appliactions },
-    };
-  } catch (error: any) {
-    return {
-      message: `Server error ${error.message}`,
-      statusCode: 500,
-      success: false,
     };
   }
 };
