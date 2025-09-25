@@ -9,6 +9,8 @@ import NotFound from "../../pages/NotFound";
 import EventForm from "./pages/CreateEvent";
 import EditForm from "./pages/EditEvents";
 import SupervisorApplications from "./pages/SupervisorApplications";
+import EventCard from "./pages/EventCard";
+import EventApplications from "./pages/EventApplications";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -36,11 +38,27 @@ const SupervisorRoutes: React.FC = () => (
         </ProtectedRoute>
       }
     />
-      <Route
+    <Route
       path="control-applications"
       element={
         <ProtectedRoute allowedRoles={["supervisor"]}>
           <SupervisorApplications />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/event/:eventId"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <EventCard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/event/:eventId/applications"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <EventApplications />
         </ProtectedRoute>
       }
     />
