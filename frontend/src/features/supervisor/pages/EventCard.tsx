@@ -1,14 +1,12 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { Card, CardHeader, CardContent } from "../../../components/ui/Card";
-import { Button } from "../../../components/ui/Button";
 import { Calendar, MapPin, Users } from "lucide-react";
 
 export default function EventCard() {
   const { eventId } = useParams();
   const { getEventById, isLoading, event, applications } = useSupervisor();
-  const navigate = useNavigate();
   useEffect(() => {
     if (!eventId) return;
 
@@ -54,15 +52,6 @@ export default function EventCard() {
               <span className="font-semibold">Department:</span>{" "}
               <span>{event.department}</span>
             </div>
-          </div>
-
-          <div className="mt-8 flex justify-center">
-            <Button
-              onClick={() => navigate(`/supervisor/event/${event._id}/applications`)}
-              className="bg-blue-600 px-8 py-4 text-lg font-semibold hover:bg-blue-700"
-            >
-              Manage Applications
-            </Button>
           </div>
         </CardContent>
       </Card>

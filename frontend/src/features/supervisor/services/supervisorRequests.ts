@@ -6,7 +6,7 @@ export const createEvent = async (
   location: string,
   department: EventDepartment,
   category: EventCategory,
-  date: Date
+  date: Date,
 ) => {
   try {
     const response = await fetch(
@@ -25,7 +25,7 @@ export const createEvent = async (
           category,
           date: date.toISOString(),
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -53,7 +53,7 @@ export const deleteEvent = async (eventId: string) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      },
     );
     const data = await response.json();
     if (!response.ok) {
@@ -76,7 +76,7 @@ export const editEvent = async (
   location: string,
   department: EventDepartment,
   category: EventCategory,
-  date: Date
+  date: Date,
 ) => {
   try {
     const response = await fetch(
@@ -95,7 +95,7 @@ export const editEvent = async (
           category,
           date: date.toISOString(),
         }),
-      }
+      },
     );
 
     const data = await response.json();
@@ -114,21 +114,22 @@ export const editEvent = async (
 };
 
 export const updateApplicationStatus = async (
-eventId :string,
-studentId : string,
-action :"approved" | "rejected"| "pending") => {
-
+  eventId: string,
+  studentId: string,
+  action: "approved" | "rejected" | "pending",
+) => {
   try {
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}/registration/${studentId}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ action }),
       },
-      body: JSON.stringify({action}),
-    })
+    );
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Failed to update application status");
@@ -137,8 +138,56 @@ action :"approved" | "rejected"| "pending") => {
     return { success: true, data: data.data, message: data.message };
   } catch (error: unknown) {
     const message =
-      error instanceof Error ? error.message : "Failed to update application status";
+      error instanceof Error
+        ? error.message
+        : "Failed to update application status";
     console.error("Error updating application status:", error);
-    return { success: false, message}
+    return { success: false, message };
   }
-}
+};
+
+export const exportRegisterdStudentList = async (eventId: string) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/supervisor/${eventId}/registrations/export`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+    );
+
+    console.log("Export response status:", response.status);
+    console.log("Export response headers:", [...response.headers]);
+
+    if (!response.ok) {
+      const errorText = await response.json(); // log server error message
+      const error = errorText.message;
+      throw new Error(error || "Failed to export Registered student");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+
+    // detect file type from headers
+    const contentType = response.headers.get("Content-Type");
+    const ext = contentType?.includes("spreadsheet") ? "xlsx" : "csv";
+    a.download = `registered_students_${eventId}.${ext}`;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    return { success: true, message: "File downloaded successfully" };
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to export Registered student";
+    console.error("Failed to export Registered student:", error);
+    return { success: false, message };
+  }
+};
