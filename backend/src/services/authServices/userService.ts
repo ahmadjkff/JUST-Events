@@ -7,17 +7,31 @@ export const login = async (email: string, password: string) => {
     "https://just-events-2.onrender.com/api/auth/login",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify({ email, password }),
     }
   );
+
+  const contentType = response.headers.get("content-type");
+
+  // If it's not JSON, log the raw text so you can debug
+  if (!contentType || !contentType.includes("application/json")) {
+    const text = await response.text();
+    throw new AppError(
+      `Expected JSON but got: ${text.substring(0, 100)}...`,
+      response.status
+    );
+  }
+
+  const data = await response.json();
 
   if (!response.ok) {
     const errorMessage = await response.json();
     throw new AppError(`${errorMessage.message}`, 401);
   }
-
-  const data = await response.json();
 
   if (data.status === "error") {
     throw new AppError(data.message, 401);
