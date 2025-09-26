@@ -66,7 +66,6 @@ function Home() {
               </div>
             </CardContent>
           </Card>
-
           {/* Dashboard Cards */}
           <StudentDashboardCards />
         </div>
