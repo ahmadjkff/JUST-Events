@@ -97,17 +97,18 @@ function ControlEvents() {
         <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            {event.date}
+            {event.date.split("T")[0]}
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.createdAt}
+            {event.createdAt.split("T")[0]}
           </div>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            {event.location}
-          </div>
-
+          <a href="https://www.google.com/maps/place/%D9%85%D8%AF%D8%B1%D8%AC+%D8%A7%D8%A8%D9%86+%D8%B3%D9%8A%D9%86%D8%A7%E2%80%AD/@32.4965546,35.9911206,44m/data=!3m1!1e3!4m14!1m7!3m6!1s0x151b89381a3b428f:0xfd149214da321b7d!2z2KzYp9mF2LnYqSDYp9mE2LnZhNmI2YUg2YjYp9mE2KrZg9mG2YjZhNmI2KzZitinINin2YTYp9ix2K_ZhtmK2Kk!8m2!3d32.4949069!4d35.9860433!16zL20vMGNwbjE5!3m5!1s0x151b890061dec065:0xe9e762c6a1de6eb2!8m2!3d32.4966205!4d35.9909166!16s%2Fg%2F11vz11wx15?entry=ttu&g_ep=EgoyMDI1MDkyMi4wIKXMDSoASAFQAw%3D%3D">
+            <div className="flex items-center gap-1">
+              <MapPin className="h-4 w-4" />
+              {event.location}
+            </div>
+          </a>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             {event.volunteers?.length} attendees

@@ -127,8 +127,6 @@ function VolunteerControl() {
     volunteer: IVolunteerApplication,
     action: "assign" | "remove",
   ) => {
-    console.log(volunteer);
-
     await controlVolunteerApplication(
       volunteer.event._id,
       volunteer.student._id,
@@ -255,7 +253,10 @@ function VolunteerControl() {
               </div>
               {volunteersByStatus.pending.length > 0 ? (
                 filteredVolunteers("pending").map((volunteer: any) => (
-                  <VolunteerCard key={volunteer._id} volunteer={volunteer} />
+                  <VolunteerCard
+                    key={`${volunteer.student._id}${volunteer.event._id}`}
+                    volunteer={volunteer}
+                  />
                 ))
               ) : (
                 <Card className="py-12 text-center">
@@ -301,7 +302,10 @@ function VolunteerControl() {
               </div>
               {volunteersByStatus.approved.length > 0 ? (
                 filteredVolunteers("approved").map((volunteer: any) => (
-                  <VolunteerCard key={volunteer} volunteer={volunteer} />
+                  <VolunteerCard
+                    key={`${volunteer.student._id}${volunteer.event._id}`}
+                    volunteer={volunteer}
+                  />
                 ))
               ) : (
                 <Card className="py-12 text-center">
@@ -345,7 +349,10 @@ function VolunteerControl() {
               </div>
               {volunteersByStatus.rejected.length > 0 ? (
                 filteredVolunteers("rejected").map((volunteer: any) => (
-                  <VolunteerCard key={volunteer} volunteer={volunteer} />
+                  <VolunteerCard
+                    key={`${volunteer.student._id}${volunteer.event._id}`}
+                    volunteer={volunteer}
+                  />
                 ))
               ) : (
                 <Card className="py-12 text-center">

@@ -47,6 +47,7 @@ function SupervisorApplications() {
         Supervisor Events
       </h1>
 
+
       {/* Error message */}
       {errorMessage && (
         <div className="flex items-center gap-2 rounded-md border border-red-400 bg-red-100 p-4 text-red-700">
@@ -68,7 +69,9 @@ function SupervisorApplications() {
           }
         >
           <CardHeader className="flex items-center justify-between">
+
             {/* Left side (event info) */}
+
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
                 {event.title}
@@ -95,7 +98,11 @@ function SupervisorApplications() {
                 Approved Students:{" "}
                 <span className="text-blue-600">
                   {
-                    applications.filter((app) => app.status === "approved")
+
+                    
+
+                    applications.filter((app: any) => app.status === "approved")
+
                       .length
                   }
                 </span>

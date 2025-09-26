@@ -21,6 +21,7 @@ interface IBody {
 }
 
 export const createEvent = async ({
+  // To-Do: check if date is in the future
   title,
   description,
   location,

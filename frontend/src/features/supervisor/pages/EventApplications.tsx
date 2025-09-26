@@ -39,7 +39,7 @@ export default function EventApplications() {
         </p>
       )}
 
-      {applications.map((app) => (
+      {applications.map((app: any) => (
         <Card key={app._id} className="mb-4 p-4 shadow-md">
           <CardHeader className="flex items-center justify-between">
             <div>
