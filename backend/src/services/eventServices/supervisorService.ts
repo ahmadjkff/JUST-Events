@@ -243,10 +243,12 @@ interface IExportRegStudent {
   supervisorId: string;
   eventId: string;
 }
+
 export const exportRegisteredStudent = async ({
   supervisorId,
   eventId,
 }: IExportRegStudent) => {
+  // Find event
   const event = await eventModel.findById(eventId);
   if (!event)
     return { message: "Event not found", statusCode: 403, success: false };
@@ -255,6 +257,7 @@ export const exportRegisteredStudent = async ({
     return { message: "Not authorized", statusCode: 404, success: false };
   }
 
+  // Find approved registrations
   const registrations = await RegistrationModel.find({
     event: eventId,
     status: "approved",
@@ -274,26 +277,74 @@ export const exportRegisteredStudent = async ({
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet("Approved Students");
 
-  worksheet.columns = [
-    { header: "First Name", key: "firstName", width: 20 },
-    { header: "Last Name", key: "lastName", width: 20 },
-    { header: "Email", key: "email", width: 30 },
-    { header: "Registered At", key: "registeredAt", width: 25 },
-    { header: "Event Title", key: "title", width: 25 },
-    { header: "Event description", key: "description", width: 30 },
-    { header: "Event location", key: "location", width: 25 },
-  ];
+  // Event info block at the top
+  worksheet.mergeCells("A1:D1");
+  worksheet.getCell("A1").value = `Event Title: ${event.title}`;
+  worksheet.getCell("A1").font = { bold: true };
 
+  worksheet.mergeCells("A2:D2");
+  worksheet.getCell("A2").value = `Event Description: ${event.description}`;
+  worksheet.getCell("A2").font = { bold: true };
+
+  worksheet.mergeCells("A3:D3");
+  worksheet.getCell("A3").value = `Event Location: ${event.location}`;
+  worksheet.getCell("A3").font = { bold: true };
+
+  worksheet.mergeCells("A4:D4");
+  worksheet.getCell(
+    "A4"
+  ).value = `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell("A4").font = { bold: true };
+
+  worksheet.addRow([]); // spacer row
+
+  // ✅ Explicit header row for student table
+  const headerRow = worksheet.addRow([
+    "First Name",
+    "Last Name",
+    "Email",
+    "Registered At",
+  ]);
+
+  // Style header row (bold + light gray background)
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "DDDDDD" }, // light gray
+    };
+  });
+
+  // Insert student rows with formatted date
   registrations.forEach((r: any) => {
-    worksheet.addRow({
-      firstName: (r.student as any).firstName,
-      lastName: (r.student as any).lastName,
-      email: (r.student as any).email,
-      registeredAt: r.createdAt.toISOString(),
-      title: (r.event as any).title,
-      description: (r.event as any).description,
-      location: (r.event as any).location,
+    const createdAt = new Date(r.createdAt);
+    const formattedDate = `${createdAt.getFullYear()}-${String(
+      createdAt.getMonth() + 1
+    ).padStart(2, "0")}-${String(createdAt.getDate()).padStart(
+      2,
+      "0"
+    )} ${String(createdAt.getHours()).padStart(2, "0")}:${String(
+      createdAt.getMinutes()
+    ).padStart(2, "0")}`;
+
+    worksheet.addRow([
+      (r.student as any).firstName,
+      (r.student as any).lastName,
+      (r.student as any).email,
+      formattedDate,
+    ]);
+  });
+
+  // Auto-size columns based on full content length
+  worksheet.columns.forEach((column) => {
+    let maxLength = 0;
+    column?.eachCell?.({ includeEmpty: true }, (cell) => {
+      const val = cell.value ? cell.value.toString() : "";
+      // Use full content length instead of longest word
+      maxLength = Math.max(maxLength, val.length);
     });
+    column.width = Math.min(Math.max(maxLength + 2, 12), 40); // min 12, max 40
   });
 
   return {
