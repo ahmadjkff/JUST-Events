@@ -258,6 +258,7 @@ export const exportRegisteredStudent = async ({
   const registrations = await RegistrationModel.find({
     event: eventId,
     status: "approved",
+    isVolunteer: false,
   })
     .populate("student", "firstName lastName email")
     .populate("event", "title description location");

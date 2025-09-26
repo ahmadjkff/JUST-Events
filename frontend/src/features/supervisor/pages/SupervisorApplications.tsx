@@ -1,12 +1,33 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { Card, CardHeader } from "../../../components/ui/Card";
-import { Loader2 } from "lucide-react";
+import { Button } from "../../../components/ui/Button";
+import { Loader2, AlertTriangle } from "lucide-react"; // for error icon
 import { useNavigate } from "react-router-dom";
+import { exportRegisterdStudentList } from "../services/supervisorRequests";
 
 function SupervisorApplications() {
   const { events, fetchSupervisorApplications, isLoading } = useSupervisor();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handlexportStudentList = async (eventId: string) => {
+    try {
+      const result = await exportRegisterdStudentList(eventId);
+      if (!result.success) {
+        console.log(result);
+        setErrorMessage(
+          result.message || "Failed to export registered students",
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage("An unexpected error occurred while exporting.");
+    }
+
+    // Hide the error after 5 seconds
+    setTimeout(() => setErrorMessage(null), 5000);
+  };
 
   useEffect(() => {
     fetchSupervisorApplications();
@@ -26,6 +47,15 @@ function SupervisorApplications() {
         Supervisor Events
       </h1>
 
+
+      {/* Error message */}
+      {errorMessage && (
+        <div className="flex items-center gap-2 rounded-md border border-red-400 bg-red-100 p-4 text-red-700">
+          <AlertTriangle className="h-5 w-5" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {events.length === 0 && <p className="text-gray-500">No events found.</p>}
 
       {events.map(({ event, applications }) => (
@@ -39,6 +69,9 @@ function SupervisorApplications() {
           }
         >
           <CardHeader className="flex items-center justify-between">
+
+            {/* Left side (event info) */}
+
             <div>
               <h2 className="text-lg font-semibold text-gray-800">
                 {event.title}
@@ -65,11 +98,37 @@ function SupervisorApplications() {
                 Approved Students:{" "}
                 <span className="text-blue-600">
                   {
+
+                    
+
                     applications.filter((app: any) => app.status === "approved")
+
                       .length
                   }
                 </span>
               </p>
+            </div>
+
+            {/* Right side (buttons) */}
+            <div className="flex gap-3">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation(); // prevent card click
+                  navigate(`/supervisor/event/${event._id}/applications`);
+                }}
+                className="bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Manage Applications
+              </Button>
+              <Button
+                onClick={async (e) => {
+                  e.stopPropagation(); // prevent card click
+                  await handlexportStudentList(event._id);
+                }}
+                className="bg-green-600 text-white hover:bg-green-700"
+              >
+                Export Registered Students
+              </Button>
             </div>
           </CardHeader>
         </Card>
