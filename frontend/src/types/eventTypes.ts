@@ -60,3 +60,9 @@ export enum VolunteerStatus {
   Pending = "pending",
   Rejected = "rejected",
 }
+
+export interface IFeedback {
+  student: User;
+  rating: number;
+  comment: string;
+}

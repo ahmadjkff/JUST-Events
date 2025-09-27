@@ -9,39 +9,32 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/Card";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { EventStatus, type IEvent, type IFeedback } from "../types/eventTypes";
 
 function EventDetails() {
-  const event = {
-    title: "Advanced Programming Workshop",
-    date: "2024-01-15",
-    time: "10:00 AM",
-    location: "Conference Hall",
-    description:
-      "Learn advanced programming concepts and best practices in this intensive workshop.",
-    image:
-      "https://plus.unsplash.com/premium_photo-1661882403999-46081e67c401?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHByb2dyYW1pbmd8ZW58MHx8MHx8fDA%3D",
-    category: "Technology",
-    department: "Computer Science Department",
-    volunteers: 12,
-    status: "PENDING",
-    isVolunteer: false,
-    feedbacks: [
+  const { id } = useParams();
+  const [event, setEvent] = useState<IEvent>();
+
+  const fetchEvent = async (eventId: string) => {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
       {
-        id: 1,
-        user: "Omar Ali",
-        image: "https://ui-avatars.com/api/?name=Omar+Ali",
-        rating: 4,
-        comment: "Great event! Learned a lot.",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       },
-      {
-        id: 2,
-        user: "Sara Ahmed",
-        image: "https://ui-avatars.com/api/?name=Sara+Ahmed",
-        rating: 5,
-        comment: "Amazing workshop with excellent speakers.",
-      },
-    ],
+    );
+    const data = await response.json();
+
+    setEvent(data.data.event);
   };
+
+  useEffect(() => {
+    fetchEvent(id || "");
+  }, [id]);
 
   return (
     <div className="bg-background flex h-screen">
@@ -50,8 +43,8 @@ function EventDetails() {
         <div className="mx-auto max-w-4xl space-y-6">
           {/* صورة الحدث */}
           <img
-            src={event.image}
-            alt={event.title}
+            // src={event.img}
+            alt={event?.title}
             className="h-64 w-full rounded-xl object-cover shadow-md"
           />
 
@@ -60,45 +53,54 @@ function EventDetails() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-3xl font-bold">
-                  {event.title}
+                  {event?.title}
                 </CardTitle>
-                <Badge variant="secondary">{event.category}</Badge>
+                <Badge variant="secondary">
+                  {event?.category.toUpperCase()}
+                </Badge>
               </div>
-              <p className="text-muted-foreground">{event.department}</p>
+              <p className="text-muted-foreground">
+                {event?.department.toUpperCase()}
+              </p>
             </CardHeader>
             <CardContent className="text-muted-foreground space-y-3">
-              <p>
-                📅 <span className="font-medium">Date:</span> {event.date} at{" "}
-                {event.time}
+              <p className="flex items-center gap-2">
+                📅 <span className="font-medium">Date:</span>
+                {` ${event?.date.split("T")[0]} At
+                 ${event?.date ? new Date(event.date).toLocaleTimeString() : ""}`}
               </p>
-              <p>
-                📍 <span className="font-medium">Location:</span>{" "}
-                {event.location}
+              <p className="flex items-center gap-2">
+                📍 <span className="font-medium">Location:</span>
+                {event?.location}
               </p>
-              <p className="text-foreground">{event.description}</p>
-              <p>
-                👥 <span className="font-medium">Volunteers:</span>{" "}
-                {event.volunteers}
+              <p className="text-foreground">{event?.description}</p>
+              <p className="flex items-center gap-2">
+                👥 <span className="font-medium">Volunteers:</span>
+                {event?.volunteers.length}
               </p>
-              <p>
-                📌 <span className="font-medium">Status:</span>{" "}
+              <p className="flex items-center gap-2">
+                👥 <span className="font-medium">Atendees:</span>
+                {event?.registeredStudents.length}
+              </p>
+              <p className="flex items-center gap-2">
+                📌 <span className="font-medium">Status:</span>
                 <Badge
                   className={`${
-                    event.status === "PENDING"
+                    event?.status === EventStatus.Pending
                       ? "bg-yellow-100 text-yellow-800"
-                      : event.status === "APPROVED"
+                      : event?.status === EventStatus.Approved
                         ? "bg-green-100 text-green-800"
-                        : event.status === "REJECTED"
+                        : event?.status === EventStatus.Rejected
                           ? "bg-red-100 text-red-800"
                           : "bg-gray-100 text-gray-800"
                   }`}
                 >
-                  {event.status}
+                  {event?.status}
                 </Badge>
               </p>
-              {!event.isVolunteer && (
+              {/* {!event.isVolunteer && (
                 <Button className="mt-4">🤝 Volunteer for this Event</Button>
-              )}
+              )} */}
             </CardContent>
           </Card>
 
@@ -108,12 +110,14 @@ function EventDetails() {
               <CardTitle className="text-2xl font-bold">Feedbacks</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {event.feedbacks.length > 0 ? (
-                event.feedbacks.map((fb) => (
-                  <div key={fb.id} className="flex items-start gap-3">
+              {/* {event?.feedback.length! > 0 ? (
+                event?.feedback.map((fb: IFeedback) => (
+                  <div key={fb.student._id} className="flex items-start gap-3">
                     <Avatar>
-                      <AvatarImage src={fb.image} alt={fb.user} />
-                      <AvatarFallback>{fb.user.charAt(0)}</AvatarFallback>
+                      <AvatarImage src={fb.student.img} alt={fb.student.img} />
+                      <AvatarFallback>
+                        {fb.student.firstName.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-semibold">{fb.user}</p>
@@ -128,7 +132,7 @@ function EventDetails() {
                 ))
               ) : (
                 <p className="text-muted-foreground">No feedbacks yet.</p>
-              )}
+              )} */}
 
               {/* إضافة Feedback */}
               <div className="space-y-3 border-t pt-4">
