@@ -30,9 +30,8 @@ function SupervisorApplications() {
   };
 
   useEffect(() => {
-    fetchSupervisorApplications();
+    fetchSupervisorApplications("approved");
   }, []);
-
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -46,7 +45,6 @@ function SupervisorApplications() {
       <h1 className="mb-4 text-2xl font-bold text-gray-800">
         Supervisor Events
       </h1>
-
 
       {/* Error message */}
       {errorMessage && (
@@ -69,7 +67,6 @@ function SupervisorApplications() {
           }
         >
           <CardHeader className="flex items-center justify-between">
-
             {/* Left side (event info) */}
 
             <div>
@@ -98,11 +95,7 @@ function SupervisorApplications() {
                 Approved Students:{" "}
                 <span className="text-blue-600">
                   {
-
-                    
-
                     applications.filter((app: any) => app.status === "approved")
-
                       .length
                   }
                 </span>

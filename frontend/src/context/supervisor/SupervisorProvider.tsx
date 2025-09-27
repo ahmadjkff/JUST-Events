@@ -7,11 +7,11 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
   const [event, setEvent] = useState();
   const [applications, setApplications] = useState();
 
-  const fetchSupervisorApplications = async () => {
+  const fetchSupervisorApplications = async (status: string) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/supervisor/appliactions`,
+        `${import.meta.env.VITE_BASE_URL}/supervisor/appliactions?status=${status}`,
         {
           method: "GET",
           headers: {
@@ -25,10 +25,10 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
         throw new Error(data.message || "Failed to fetch applications");
       }
 
-      setEvents(data.data.data);
-      console.log("fetched applications:", data.data.data);
-
-      return { success: true, data: data.data, message: data.message };
+      setEvents(data.data.data.grouped);
+      console.log("fetched applications:", data.data.data.grouped);
+      console.log("number of Events:", data.data.data.totalEvents);
+      return { success: true, data: data.data.data, message: data.message };
     } catch (error: unknown) {
       const message =
         error instanceof Error ? error.message : "Failed to delete event";

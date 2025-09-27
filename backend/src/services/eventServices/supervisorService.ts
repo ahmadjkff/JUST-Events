@@ -355,15 +355,19 @@ export const exportRegisteredStudent = async ({
   };
 };
 
-export const getSupervisorAppliactions = async (supervisorId: string) => {
+export const getSupervisorAppliactions = async (
+  supervisorId: string,
+  status: string
+) => {
   try {
     // 1. Get all events by supervisor
     const events = await eventModel
-      .find({ createdBy: supervisorId, status: EventStatus.APPROVED })
+      .find({ createdBy: supervisorId, status })
       .select("_id title description location date status department category")
       .lean();
 
     // 2. For each event, get the registrations
+
     const grouped = await Promise.all(
       events.map(async (event) => {
         const applications = await RegistrationModel.find({
@@ -382,7 +386,7 @@ export const getSupervisorAppliactions = async (supervisorId: string) => {
       success: true,
       message: "Applications grouped by event",
       statusCode: 200,
-      data: grouped,
+      data: { grouped, totalEvents: events.length },
     };
   } catch (error: any) {
     return {

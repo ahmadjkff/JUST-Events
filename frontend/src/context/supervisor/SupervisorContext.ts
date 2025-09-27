@@ -4,7 +4,7 @@ interface SupervisorContextType {
   events: any[];
   event: any;
   applications: any;
-  fetchSupervisorApplications: () => Promise<{
+  fetchSupervisorApplications: (status: string) => Promise<{
     success: boolean;
     message?: string;
     data?: any[];

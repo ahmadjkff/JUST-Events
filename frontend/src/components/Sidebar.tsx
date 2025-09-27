@@ -56,6 +56,12 @@ export default function Sidebar({ className }: SidebarProps) {
       allowedUsers: ["admin"],
     },
     {
+      icon: Gauge,
+      label: "Dashboard",
+      href: "/supervisor/dashboard",
+      allowedUsers: ["supervisor"],
+    },
+    {
       icon: Calendar,
       label: "Events",
       href: "/browse-events",
@@ -97,17 +103,17 @@ export default function Sidebar({ className }: SidebarProps) {
   return (
     <Card
       className={cn(
-        "h-screen sticky top-0 transition-all duration-300 border-r bg-sidebar",
+        "bg-sidebar sticky top-0 h-screen border-r transition-all duration-300",
         isCollapsed ? "w-16" : "w-64",
-        className
+        className,
       )}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex h-full flex-col">
         {/* Header */}
-        <div className="p-4 border-b border-sidebar-border">
+        <div className="border-sidebar-border border-b p-4">
           <div className="flex items-center justify-between">
             {!isCollapsed && (
-              <h2 className="text-lg font-semibold text-sidebar-foreground">
+              <h2 className="text-sidebar-foreground text-lg font-semibold">
                 JUST Events
               </h2>
             )}
@@ -127,7 +133,7 @@ export default function Sidebar({ className }: SidebarProps) {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-0 p-2 space-y-1">
+        <nav className="flex-0 space-y-1 p-2">
           {navigationItems.map((item) => {
             if (item.allowedUsers && !item.allowedUsers.includes(user?.role!)) {
               return null;
@@ -145,10 +151,10 @@ export default function Sidebar({ className }: SidebarProps) {
                   isCollapsed ? "px-2" : "px-3",
                   isActive
                     ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
-                <Link to={item.href} className="flex items-center w-full">
+                <Link to={item.href} className="flex w-full items-center">
                   <item.icon
                     className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
                   />
@@ -169,13 +175,13 @@ export default function Sidebar({ className }: SidebarProps) {
         </nav>
 
         {/* Footer */}
-        <div className="p-2 border-t border-sidebar-border">
+        <div className="border-sidebar-border border-t p-2">
           <Button
             onClick={() => handleLogout()}
             variant="ghost"
             className={cn(
-              "w-full justify-start text-left text-sidebar-foreground hover:bg-sidebar-accent cursor-pointer",
-              isCollapsed ? "px-2" : "px-3"
+              "text-sidebar-foreground hover:bg-sidebar-accent w-full cursor-pointer justify-start text-left",
+              isCollapsed ? "px-2" : "px-3",
             )}
           >
             <LogOut
