@@ -1,18 +1,24 @@
+import toast from "react-hot-toast";
+
 export const registerForEvent = async (eventId: string, studentId: string) => {
   const res = await fetch(
-    `http://localhost:5000/student/register/${eventId}/${studentId}`,
+    `${import.meta.env.VITE_BASE_URL}/student/register/${eventId}/${studentId}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", 
-    }
+      credentials: "include",
+    },
   );
 
-  if (!res.ok) {
-    throw new Error("Failed to register for event");
+  const data = await res.json();
+
+  if (!data.success) {
+    toast.error(data.message || "Failed to register for event");
+    throw new Error(data.message || "Failed to register for event");
   }
 
-  return await res.json();
+  toast.success(data.message || "Registered for event successfully");
+  return data;
 };

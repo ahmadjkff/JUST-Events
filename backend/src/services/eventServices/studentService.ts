@@ -70,6 +70,12 @@ export const register = async (
   const event = await eventModel.findById(eventId);
   if (!event) throw new Error("Event not found");
 
+  if (event.status !== "approved")
+    throw new Error("Cannot register for an unapproved event");
+
+  const user = await userModel.findById(studentId);
+  if (!user) throw new Error("User not found");
+
   const existing = await RegistrationModel.findOne({
     student: studentId,
     event: eventId,

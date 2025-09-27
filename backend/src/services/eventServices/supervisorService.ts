@@ -10,6 +10,7 @@ import {
 import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
 import ExcelJS from "exceljs";
+import mongoose from "mongoose";
 interface IBody {
   title: string;
   description: string;
@@ -223,7 +224,27 @@ export const approveOrRejectStudentApplacition = async ({
 
     isRegistered.status = action;
 
+    if (
+      !event.registeredStudents.includes(
+        new mongoose.Types.ObjectId(studentId)
+      ) &&
+      action === RegistrationStatus.APPROVED
+    ) {
+      event.registeredStudents.push(new mongoose.Types.ObjectId(studentId));
+    }
+    if (
+      event.registeredStudents.includes(
+        new mongoose.Types.ObjectId(studentId)
+      ) &&
+      action === RegistrationStatus.REJECTED
+    ) {
+      event.registeredStudents = event.registeredStudents.filter(
+        (id) => id.toString() !== studentId.toString()
+      );
+    }
+
     await isRegistered.save();
+    await event.save();
 
     return {
       success: true,
@@ -291,9 +312,8 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell(
-    "A4"
-  ).value = `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell("A4").value =
+    `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row

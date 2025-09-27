@@ -39,49 +39,14 @@ import {
   AlertDialogAction,
 } from "../components/ui/AlertDialog";
 import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
+import { registerForEvent } from "../features/student/services/registerService";
+import type { IEvent } from "../types/eventTypes";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
   const { user } = useAuth();
   const navigate = useNavigate();
-  //   {
-  //     id: 1,
-  //     title: "AI & Machine Learning Summit",
-  //     date: "2024-02-10",
-  //     time: "9:00 AM",
-  //     location: "Innovation Center",
-  //     category: "Technology",
-  //     attendees: 150,
-  //     description:
-  //       "Discover the latest trends in AI and Machine Learning with industry experts.",
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Marketing Strategies Workshop",
-  //     date: "2024-02-15",
-  //     time: "1:00 PM",
-  //     location: "Business Hub",
-  //     category: "Business",
-  //     attendees: 80,
-  //     description:
-  //       "Enhance your marketing skills with hands-on sessions and expert guidance.",
-  //   },
-  // ];
-
-  // const featuredEvents = [
-  //   {
-  //     id: 3,
-  //     title: "Leadership & Teamwork Seminar",
-  //     date: "2024-03-01",
-  //     time: "11:00 AM",
-  //     location: "Main Auditorium",
-  //     category: "Career",
-  //     attendees: 200,
-  //     description:
-  //       "Learn effective leadership and teamwork strategies from successful leaders.",
-  //   },
-  // ];
 
   useEffect(() => {
     fetchEvents("approved");
@@ -107,7 +72,7 @@ function BrowseEvents() {
     );
   };
 
-  const EventCard = ({ event }: { event: any }) => (
+  const EventCard = ({ event }: { event: IEvent }) => (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
         <div className="flex items-start justify-between">
@@ -118,7 +83,12 @@ function BrowseEvents() {
             </Badge>
           </div>
           <div className="flex gap-2">
-            <Button size="sm">Register</Button>
+            <Button
+              size="sm"
+              onClick={() => handleRegister(event._id, user?._id!)}
+            >
+              Register
+            </Button>
             <Button variant="outline" size="sm">
               Details
             </Button>
@@ -182,7 +152,7 @@ function BrowseEvents() {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.time}
+            {event.createdAt.split("T")[1]}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
@@ -190,12 +160,16 @@ function BrowseEvents() {
           </div>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            {event.attendees} attendees
+            {event.registeredStudents.length} attendees
           </div>
         </div>
       </CardContent>
     </Card>
   );
+
+  const handleRegister = (eventId: string, userId: string) => {
+    registerForEvent(eventId, userId);
+  };
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -210,7 +184,6 @@ function BrowseEvents() {
               Explore and register for upcoming events
             </p>
           </div>
-
         </div>
       </header>
 
