@@ -1,0 +1,59 @@
+.toggle-switch {
+    --width: 70px;
+    --height: 35px;
+    --circle: 18px;
+
+    --light: #d8dbe0;
+    --dark: #28292c;
+    --primary: #3182ce;
+
+    position: relative;
+    width: var(--width);
+    height: var(--height);
+}
+
+.switch-label {
+    position: absolute;
+    width: 100%;
+    height: var(--height);
+    background-color: var(--dark);
+    border-radius: calc(var(--height) / 2);
+    cursor: pointer;
+    border: 3px solid var(--dark);
+}
+
+.checkbox {
+    position: absolute;
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: calc(var(--height) / 2);
+    transition: 0.3s;
+}
+
+.checkbox:checked~.slider {
+    background-color: var(--primary);
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    top: calc(var(--height) / 5);
+    left: calc(var(--height) / 5);
+    width: var(--circle);
+    height: var(--circle);
+    border-radius: 50%;
+    box-shadow: inset 12px -4px 0px 0px var(--light);
+    background-color: var(--dark);
+    transition: 0.3s;
+}
+
+.checkbox:checked~.slider::before {
+    transform: translateX(calc(var(--width) - var(--height)));
+    background-color: var(--dark);
+    box-shadow: none;
+}
