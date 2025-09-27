@@ -6,6 +6,7 @@ export interface User {
   faculty: string;
   _id: string;
   universityId: string;
+  img: string;
 }
 
 export enum Roles {
