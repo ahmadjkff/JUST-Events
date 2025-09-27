@@ -1,13 +1,11 @@
 import {
   Badge,
-  Bell,
   Calendar,
   ChartBarStacked,
   Clock,
   Filter,
   MapPin,
   Search,
-  User,
   Users,
 } from "lucide-react";
 import { useTitle } from "../hooks/useTitle";
@@ -213,22 +211,6 @@ function BrowseEvents() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative bg-transparent"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
-            </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </header>
 
