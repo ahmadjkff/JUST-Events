@@ -56,6 +56,12 @@ function ControlEvents() {
     );
   };
 
+  const statusColors: Record<string, string> = {
+    approved: "text-green-500",
+    pending: "text-gray-500",
+    rejected: "text-red-500",
+  };
+
   const EventCard = ({ event }: { event: IEvent; showActions?: boolean }) => (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
@@ -71,21 +77,21 @@ function ControlEvents() {
           <Button
             variant={"outline"}
             className={`border-green-100 bg-green-100 text-green-800 ${event.status === "approved" ? "hidden" : ""}`}
-            onClick={() => handleApprove(event)}
+            onClick={() => updateStatus(event._id, "approved")}
           >
             Approve
           </Button>
           <Button
             variant={"outline"}
             className={`border-gray-100 bg-gray-100 text-gray-800 ${event.status === "pending" ? "hidden" : ""}`}
-            onClick={() => handlePending(event)}
+            onClick={() => updateStatus(event._id, "pending")}
           >
             Set To Pending
           </Button>
           <Button
             variant={"outline"}
             className={`border-red-100 bg-red-100 text-red-800 ${event.status === "rejected" ? "hidden" : ""}`}
-            onClick={() => handleReject(event)}
+            onClick={() => updateStatus(event._id, "rejected")}
           >
             Reject
           </Button>
@@ -97,11 +103,13 @@ function ControlEvents() {
         <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            {event.date.split("T")[0]}
+            {event.date ? new Date(event.date).toLocaleDateString() : "N/A"}
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.createdAt.split("T")[0]}
+            {event.createdAt
+              ? new Date(event.createdAt).toLocaleTimeString()
+              : "N/A"}
           </div>
           <a href="https://www.google.com/maps/place/%D9%85%D8%AF%D8%B1%D8%AC+%D8%A7%D8%A8%D9%86+%D8%B3%D9%8A%D9%86%D8%A7%E2%80%AD/@32.4965546,35.9911206,44m/data=!3m1!1e3!4m14!1m7!3m6!1s0x151b89381a3b428f:0xfd149214da321b7d!2z2KzYp9mF2LnYqSDYp9mE2LnZhNmI2YUg2YjYp9mE2KrZg9mG2YjZhNmI2KzZitinINin2YTYp9ix2K_ZhtmK2Kk!8m2!3d32.4949069!4d35.9860433!16zL20vMGNwbjE5!3m5!1s0x151b890061dec065:0xe9e762c6a1de6eb2!8m2!3d32.4966205!4d35.9909166!16s%2Fg%2F11vz11wx15?entry=ttu&g_ep=EgoyMDI1MDkyMi4wIKXMDSoASAFQAw%3D%3D">
             <div className="flex items-center gap-1">
@@ -119,16 +127,13 @@ function ControlEvents() {
   );
 
   // Reusable function to render table content for each tab
-  const tableContent = (
-    value: string,
-    status: string,
-    color: string,
-    icon: any,
-  ) => {
+  const tableContent = (value: string, status: string, icon: any) => {
     return (
       <TabsContent value={value} className="space-y-4">
         <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
-          <h1 className={`text-2xl font-bold text-${color}-500`}>{status}</h1>
+          <h1 className={`text-2xl font-bold ${statusColors[value]}`}>
+            {status}
+          </h1>
           <div className="flex items-center gap-2">
             {category && (
               <Badge className="bg-gray-100 text-gray-800">
@@ -186,45 +191,28 @@ function ControlEvents() {
     );
   };
 
-  const handleApprove = async (event: any) => {
-    const { success, message } = await changeEventStatus(event._id, "approved");
-    if (!success) {
-      console.error(message);
-      return;
-    }
-    await fetchEvents("approved");
-    await fetchEvents("pending");
-    await fetchEvents("rejected");
-  };
+  const updateStatus = async (
+    eventId: string,
+    status: "approved" | "pending" | "rejected",
+  ) => {
+    const { success, message } = await changeEventStatus(eventId, status);
+    if (!success) return console.error(message);
 
-  const handlePending = async (event: any) => {
-    const { success, message } = await changeEventStatus(event._id, "pending");
-    if (!success) {
-      console.error(message);
-      return;
-    }
-    await fetchEvents("approved");
-    await fetchEvents("pending");
-    await fetchEvents("rejected");
-  };
-
-  const handleReject = async (event: any) => {
-    const { success, message } = await changeEventStatus(event._id, "rejected");
-    if (!success) {
-      console.error(message);
-      return;
-    }
-    await fetchEvents("approved");
-    await fetchEvents("pending");
-    await fetchEvents("rejected");
+    await Promise.all([
+      fetchEvents("approved"),
+      fetchEvents("pending"),
+      fetchEvents("rejected"),
+    ]);
   };
 
   // fetch events on component mount
   useEffect(() => {
     const fetchAll = async () => {
-      await fetchEvents("approved");
-      await fetchEvents("pending");
-      await fetchEvents("rejected");
+      await Promise.all([
+        fetchEvents("approved"),
+        fetchEvents("pending"),
+        fetchEvents("rejected"),
+      ]);
     };
 
     fetchAll();
@@ -235,7 +223,7 @@ function ControlEvents() {
     let events = eventsByStatus[status as keyof typeof eventsByStatus] || [];
     if (category) {
       events = events.filter(
-        (e: any) => e.category.toLowerCase() === category.toLowerCase(),
+        (e: any) => (e.category ?? "").toLowerCase() === category.toLowerCase(),
       );
     }
 
@@ -322,9 +310,9 @@ function ControlEvents() {
               </TabsTrigger>
             </TabsList>
 
-            {tableContent("approved", "Approved", "green", Calendar)}
-            {tableContent("pending", "Pending", "gray", Clock)}
-            {tableContent("rejected", "Rejected", "red", X)}
+            {tableContent("approved", "Approved", Calendar)}
+            {tableContent("pending", "Pending", Clock)}
+            {tableContent("rejected", "Rejected", X)}
           </Tabs>
         </div>
       </main>
