@@ -1,16 +1,15 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Button } from "./ui/Button"; 
+import { Button } from "./ui/Button";
 import "../styles/Header.css";
+import DarkModeToggleSwitch from "./ui/DarkModeToggleSwitch";
 
 const Header = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const handleToggle = (checked: boolean) => {
+    console.log("Toggle is now:", checked ? "ON" : "OFF");
+  };
   const [language, setLanguage] = useState<"en" | "ar">("en");
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    document.body.classList.toggle("dark-mode");
-  };
 
   const toggleLanguage = () => {
     setLanguage(language === "en" ? "ar" : "en");
@@ -25,9 +24,9 @@ const Header = () => {
           </Link>
 
           <div className="header-actions">
-            <Button onClick={toggleDarkMode}>
-              {darkMode ? "Light" : "Dark"}
-            </Button>
+            <DarkModeToggleSwitch
+              onChange={handleToggle}
+            />
             <Button onClick={toggleLanguage}>
               {language === "en" ? "AR" : "EN"}
             </Button>
