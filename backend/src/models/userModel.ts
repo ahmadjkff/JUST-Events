@@ -8,7 +8,7 @@ export interface IUser extends Document {
   role: Roles;
   universityId: string;
   faculty: string;
-  // TO-Do: add university Id field
+  img: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -18,6 +18,7 @@ const userSchema = new Schema<IUser>({
   role: { type: String, enum: Object.values(Roles), required: true },
   universityId: { type: String, required: true, unique: true },
   faculty: { type: String, required: true },
+  img: { type: String, required: true },
 });
 
 const userModel = mongoose.model<IUser>("User", userSchema);

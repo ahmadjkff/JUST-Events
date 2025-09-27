@@ -30,6 +30,7 @@ export const login = async (email: string, password: string) => {
     user.role = data.user.role;
     user.faculty = data.user.faculty;
     user.universityId = data.user.universityId;
+    user.img = `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}`;
     await user.save();
   } else {
     user = await userModel.create({
@@ -39,6 +40,7 @@ export const login = async (email: string, password: string) => {
       role: data.user.role,
       faculty: data.user.faculty,
       universityId: data.user.universityId,
+      img: `https://ui-avatars.com/api/?name=${data.user.firstName}+${data.user.lastName}`,
     });
   }
 
@@ -50,6 +52,7 @@ export const login = async (email: string, password: string) => {
     role: user.role,
     faculty: user.faculty,
     universityId: user.universityId,
+    img: user.img,
   });
 
   return {
@@ -62,6 +65,7 @@ export const login = async (email: string, password: string) => {
       role: user.role,
       faculty: user.faculty,
       universityId: user.universityId,
+      img: user.img,
     },
   };
 };
