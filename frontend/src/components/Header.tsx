@@ -3,8 +3,10 @@ import { useState } from "react";
 import "../styles/Header.css";
 import DarkModeToggleSwitch from "./ui/DarkModeToggleSwitch";
 import LanguageToggleSwitch from "./ui/LanguageToggleSwitch";
+import { useAuth } from "../context/auth/AuthContext";
 
 const Header = () => {
+  const { user } = useAuth();
 
   const DarkModeHandleToggle = (checked: boolean) => {
     console.log("Toggle is now:", checked ? "ON" : "OFF");
@@ -19,14 +21,18 @@ const Header = () => {
     <header className="header">
       <div className="container">
         <div className="header-content">
-          <Link to="/" className="logo">
+          <Link
+            to={user?.role === "admin" ? "/admin/dashboard" : "/"}
+            className="logo"
+          >
             Just Events
           </Link>
           <div className="header-actions">
-            <DarkModeToggleSwitch
-              onChange={DarkModeHandleToggle}
+            <DarkModeToggleSwitch onChange={DarkModeHandleToggle} />
+            <LanguageToggleSwitch
+              defaultChecked={false}
+              onChange={LanguageHandleToggle}
             />
-            <LanguageToggleSwitch defaultChecked={false} onChange={LanguageHandleToggle} />
           </div>
         </div>
       </div>
@@ -35,5 +41,3 @@ const Header = () => {
 };
 
 export default Header;
-
-

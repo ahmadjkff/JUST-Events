@@ -42,7 +42,8 @@ export default function LoginPage() {
       return;
     }
 
-    navigate("/");
+    if (result.userRole === "admin") navigate("/admin/dashboard");
+    else navigate("/");
     setLoading(false);
   };
 

@@ -55,7 +55,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
-        }
+        },
       );
 
       const data = await result.json();
@@ -74,6 +74,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       return {
         success: true,
         message: "Login successful",
+        userRole: user.role,
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Login failed";
