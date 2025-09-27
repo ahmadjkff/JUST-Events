@@ -10,6 +10,7 @@ import {
   exportRegisteredStudent,
   getSupervisorAppliactions,
 } from "../../services/eventServices/supervisorService";
+import { EventStatus } from "../../types/eventTypes";
 
 const router = express.Router();
 
@@ -208,7 +209,17 @@ router.get(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
       }
-      const appliactions = await getSupervisorAppliactions(supervisorId);
+      const { status } = req.query;
+      const validStatuses = Object.values(EventStatus);
+      if (status && !validStatuses.includes(status as EventStatus)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid status value." });
+      }
+      const appliactions = await getSupervisorAppliactions(
+        supervisorId,
+        status as EventStatus
+      );
       res.status(200).json({ success: true, data: appliactions });
     } catch (error: any) {
       res
