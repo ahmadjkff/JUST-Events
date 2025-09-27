@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Home,
   Calendar,
+  CalendarClock,
   Gauge,
   Settings,
   Bell,
@@ -61,6 +62,12 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/browse-events",
       allowedUsers: ["student", "supervisor", "admin"],
       // badge: "3", //Example: If we want a number next to the button
+    },
+        {
+      icon: CalendarClock,
+      label: "My Events",
+      href: "/student/my-events",
+      allowedUsers: ["student", "supervisor"],
     },
     // {
     //   icon: Trophy, label: "Achievements",
