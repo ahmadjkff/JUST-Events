@@ -67,7 +67,7 @@ const eventSchema = new Schema<IEvent>(
     feedback: [feedbackSchema],
     volunteers: [volunteerSchema],
     registeredStudents: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    img: { type: String, required: true },
+    img: { type: String }, // To-Do: add required img field
   },
   { timestamps: true }
 );

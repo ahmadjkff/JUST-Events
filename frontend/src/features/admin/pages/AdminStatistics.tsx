@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import Loading from "../../../components/ui/Loading";
-import { Bell, Search, User } from "lucide-react";
-import { Button } from "../../../components/ui/Button";
 
 const AdminStatistics = () => {
   const [data, setData] = useState<{
@@ -100,23 +98,6 @@ const AdminStatistics = () => {
             System Statistics
           </h1>
           <p className="text-muted-foreground">Show system statistics</p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm">
-            <Search className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="relative bg-transparent"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
-          </Button>
-          <Button variant="outline" size="sm">
-            <User className="h-4 w-4" />
-          </Button>
         </div>
       </header>
 

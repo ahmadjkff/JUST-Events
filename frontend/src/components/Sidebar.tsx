@@ -4,13 +4,13 @@ import {
   Calendar,
   CalendarClock,
   Gauge,
-  Settings,
   Bell,
   User,
   ChevronLeft,
   ChevronRight,
   LogOut,
   Award,
+  ChartColumnBig,
 } from "lucide-react";
 import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
@@ -69,17 +69,12 @@ export default function Sidebar({ className }: SidebarProps) {
       allowedUsers: ["student", "supervisor", "admin"],
       // badge: "3", //Example: If we want a number next to the button
     },
-        {
+    {
       icon: CalendarClock,
       label: "My Events",
       href: "/student/my-events",
       allowedUsers: ["student", "supervisor"],
     },
-    // {
-    //   icon: Trophy, label: "Achievements",
-    //   href: "/student/achievements",
-    //   allowedUsers: ["student", "supervisor"],
-    // },
     {
       icon: Bell,
       label: "Notifications",
@@ -100,10 +95,10 @@ export default function Sidebar({ className }: SidebarProps) {
       allowedUsers: ["student", "supervisor", "admin"],
     },
     {
-      icon: Settings,
-      label: "Settings",
-      href: "settings",
-      allowedUsers: ["student", "supervisor", "admin"],
+      icon: ChartColumnBig,
+      label: "Statistics",
+      href: "/admin/statistics",
+      allowedUsers: ["admin"],
     },
   ];
 
