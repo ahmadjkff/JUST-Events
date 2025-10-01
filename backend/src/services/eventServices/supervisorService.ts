@@ -121,6 +121,8 @@ interface IEditEvent {
   title: string;
   description: string;
   location: string;
+  department: EventDepartment;
+  category: EventCategory;
   date: Date;
 }
 
@@ -130,6 +132,8 @@ export const editEvent = async ({
   title,
   description,
   location,
+  department,
+  category,
   date,
 }: IEditEvent): Promise<IResponseStructure> => {
   try {
@@ -148,6 +152,12 @@ export const editEvent = async ({
     }
     if (location) {
       event.location = location;
+    }
+    if (department) {
+      event.department = department;
+    }
+    if (category) {
+      event.category = category;
     }
     if (date) {
       event.date = date;
@@ -312,8 +322,9 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell("A4").value =
-    `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell(
+    "A4"
+  ).value = `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row
