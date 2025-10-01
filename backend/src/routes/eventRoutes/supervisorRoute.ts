@@ -94,7 +94,8 @@ router.put(
   isSupervisor,
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, date } = req.body;
+      const { title, description, location, department, category, date } =
+        req.body;
       const eventId = req.params.eventId;
 
       if (!eventId) {
@@ -108,6 +109,8 @@ router.put(
         title,
         description,
         location,
+        department,
+        category,
         date,
       });
       res.status(statusCode).json({ success, message, data });

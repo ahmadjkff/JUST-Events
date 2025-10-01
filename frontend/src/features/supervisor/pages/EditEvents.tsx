@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
   MapPin,
@@ -12,13 +12,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
+import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 
 const EditForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { eventId } = useParams<{ eventId: string }>();
-
+  const { getEventById } = useSupervisor();
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -32,7 +33,6 @@ const EditForm: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Validate category & department
     if (!form.category || !form.department) {
       setError("Please select a category and department");
       setLoading(false);
@@ -47,13 +47,11 @@ const EditForm: React.FC = () => {
         form.location,
         form.department,
         form.category,
-        new Date(form.date),
+        new Date(form.date)
       );
 
-      console.log("Create event result:", result);
-
       if (!result.success) {
-        setError(result.message || "Failed to create event");
+        setError(result.message || "Failed to edit event");
         setLoading(false);
         return;
       }
@@ -62,7 +60,7 @@ const EditForm: React.FC = () => {
       setLoading(false);
       navigate("/browse-events");
     } catch (err) {
-      console.log("Error in handleCreateEvent:", err);
+      console.log("Error in handleEditEvent:", err);
       setError("Unexpected error occurred");
       setLoading(false);
     }
@@ -71,13 +69,52 @@ const EditForm: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const handleFetchEvent = async (eventId: string) => {
+    setLoading(true);
+    try {
+      const result = await getEventById(eventId);
+      if (!result.success) return;
+      const fetchedEvent = result.data.event;
+      if (fetchedEvent) {
+        setForm({
+          title: fetchedEvent.title || "",
+          description: fetchedEvent.description || "",
+          location: fetchedEvent.location || "",
+          category: fetchedEvent.category || "",
+          department: fetchedEvent.department || "",
+          date: fetchedEvent.date ? fetchedEvent.date.split("T")[0] : "",
+        });
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setError("Error fetching event");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!eventId) return;
+    handleFetchEvent(eventId);
+  }, []);
+
+  if (loading && !form.title) {
+    // Show loading screen while fetching event
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <p className="text-gray-700 text-lg">Loading event...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* ✅ Header pinned at top */}
+      {/* Header */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
@@ -86,16 +123,11 @@ const EditForm: React.FC = () => {
             </h1>
             <p className="text-muted-foreground">Manage Events</p>
           </div>
-
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm">
               <Search className="h-4 w-4" />
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative bg-transparent"
-            >
+            <Button variant="outline" size="sm" className="relative bg-transparent">
               <Bell className="h-4 w-4" />
               <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
             </Button>
@@ -106,7 +138,7 @@ const EditForm: React.FC = () => {
         </div>
       </header>
 
-      {/* ✅ Form centered below header */}
+      {/* Form */}
       <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleEditEvent}
@@ -118,9 +150,7 @@ const EditForm: React.FC = () => {
 
           {/* Title */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Title
-            </label>
+            <label className="mb-1 block font-medium text-gray-700">Title</label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Type className="text-gray-400" size={18} />
               <input
@@ -137,9 +167,7 @@ const EditForm: React.FC = () => {
 
           {/* Description */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Description
-            </label>
+            <label className="mb-1 block font-medium text-gray-700">Description</label>
             <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <FileText className="mt-1 text-gray-400" size={18} />
               <textarea
@@ -156,9 +184,7 @@ const EditForm: React.FC = () => {
 
           {/* Location */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Location
-            </label>
+            <label className="mb-1 block font-medium text-gray-700">Location</label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <MapPin className="text-gray-400" size={18} />
               <input
@@ -175,9 +201,7 @@ const EditForm: React.FC = () => {
 
           {/* Category */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Category
-            </label>
+            <label className="mb-1 block font-medium text-gray-700">Category</label>
             <select
               name="category"
               value={form.category}
@@ -185,9 +209,7 @@ const EditForm: React.FC = () => {
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
-              <option value="" disabled>
-                Select category
-              </option>
+              <option value="" disabled>Select category</option>
               {Object.values(EventCategory).map((cat) => (
                 <option key={cat} value={cat}>
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -198,9 +220,7 @@ const EditForm: React.FC = () => {
 
           {/* Department */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Department
-            </label>
+            <label className="mb-1 block font-medium text-gray-700">Department</label>
             <select
               name="department"
               value={form.department}
@@ -208,9 +228,7 @@ const EditForm: React.FC = () => {
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
-              <option value="" disabled>
-                Select department
-              </option>
+              <option value="" disabled>Select department</option>
               {Object.values(EventDepartment).map((dep) => (
                 <option key={dep} value={dep}>
                   {dep.charAt(0).toUpperCase() + dep.slice(1)}
