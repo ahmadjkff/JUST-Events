@@ -26,7 +26,7 @@ import {
 import { useEvent } from "../context/event/EventContext";
 import { useEffect } from "react";
 import { useAuth } from "../context/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -89,9 +89,11 @@ function BrowseEvents() {
             >
               Register
             </Button>
-            <Button variant="outline" size="sm">
-              Details
-            </Button>
+            <Link to={`/event/${event._id}`}>
+              <Button variant="outline" size="sm">
+                Details
+              </Button>
+            </Link>
             {event.createdBy === user?._id && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>

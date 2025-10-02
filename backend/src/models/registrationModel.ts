@@ -6,7 +6,6 @@ export interface IRegistration extends Document {
   event: mongoose.Types.ObjectId;
   status: RegistrationStatus;
   isVolunteer: boolean;
-
 }
 
 const registrationSchema = new Schema<IRegistration>(

@@ -61,7 +61,7 @@ function SupervisorApplications() {
           key={event._id}
           className="cursor-pointer rounded-xl border border-gray-200 shadow-md transition-shadow hover:shadow-xl"
           onClick={() =>
-            navigate(`/supervisor/event/${event._id}`, {
+            navigate(`/event/${event._id}`, {
               state: { event: { ...event }, applications },
             })
           }

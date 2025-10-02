@@ -16,23 +16,22 @@ function EventsTable({
   value,
   status,
   icon,
-  category,
-  department,
-  setCategory,
-  setDepartment,
+  category = null,
+  department = null,
+  setCategory = () => {},
+  setDepartment = () => {},
   eventsByStatus,
   updateStatus,
 }: {
   value: string;
   status: string;
   icon: any;
-
-  category: string | null;
-  department: string | null;
-  setCategory: React.Dispatch<React.SetStateAction<string | null>>;
-  setDepartment: React.Dispatch<React.SetStateAction<string | null>>;
-  eventsByStatus: Record<string, IEvent[]>;
-  updateStatus: (eventId: string, status: EventStatus) => Promise<void>;
+  category?: string | null;
+  department?: string | null;
+  setCategory?: React.Dispatch<React.SetStateAction<string | null>>;
+  setDepartment?: React.Dispatch<React.SetStateAction<string | null>>;
+  eventsByStatus: Record<string, any[]>;
+  updateStatus: any;
 }) {
   const filteredEvents = useMemo(
     () => (status: EventStatus) => {
