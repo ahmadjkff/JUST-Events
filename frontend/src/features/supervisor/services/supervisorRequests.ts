@@ -6,25 +6,27 @@ export const createEvent = async (
   location: string,
   department: EventDepartment,
   category: EventCategory,
+  img: File,
   date: Date,
 ) => {
   try {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("location", location);
+    formData.append("department", department);
+    formData.append("category", category);
+    formData.append("date", date.toISOString());
+    formData.append("img", img);
+
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/supervisor`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          title,
-          description,
-          location,
-          department,
-          category,
-          date: date.toISOString(),
-        }),
+        body: formData,
       },
     );
 

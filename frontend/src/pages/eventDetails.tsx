@@ -43,7 +43,7 @@ function EventDetails() {
         <div className="mx-auto max-w-4xl space-y-6">
           {/* صورة الحدث */}
           <img
-            // src={event.img}
+            src={`${import.meta.env.VITE_BASE_URL}${event?.img}`}
             alt={event?.title}
             className="h-64 w-full rounded-xl object-cover shadow-md"
           />

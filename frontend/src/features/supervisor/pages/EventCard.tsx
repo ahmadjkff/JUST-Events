@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import {useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { Card, CardHeader, CardContent } from "../../../components/ui/Card";
 import { Calendar, MapPin, Users } from "lucide-react";
@@ -7,6 +7,7 @@ import { Calendar, MapPin, Users } from "lucide-react";
 export default function EventCard() {
   const { eventId } = useParams();
   const { getEventById, isLoading, event, applications } = useSupervisor();
+
   useEffect(() => {
     if (!eventId) return;
 
@@ -23,6 +24,15 @@ export default function EventCard() {
   return (
     <div className="min-h-screen bg-gray-100 p-10">
       <Card className="mx-auto w-full max-w-5xl rounded-3xl border p-8 shadow-2xl">
+        {/* ✅ Event Image */}
+        {event.img && (
+          <img
+            src={`${import.meta.env.VITE_BASE_URL}${event.img}`}
+            alt={event.title}
+            className="h-[600px] w-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
+          />
+        )}
+
         <CardHeader className="mb-6">
           <h2 className="text-4xl font-extrabold text-gray-900">
             {event.title}
