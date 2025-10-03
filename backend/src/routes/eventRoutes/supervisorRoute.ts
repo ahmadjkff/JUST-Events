@@ -11,7 +11,7 @@ import {
   getSupervisorAppliactions,
 } from "../../services/eventServices/supervisorService";
 import { EventStatus } from "../../types/eventTypes";
-import { upload } from "../../middlewares/UploadEventImage";
+import { upload } from "../../middlewares/uploadEventImage";
 
 const router = express.Router();
 

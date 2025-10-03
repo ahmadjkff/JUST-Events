@@ -15,6 +15,7 @@ export interface IEvent {
   updatedAt: string; // ISO string
   category: EventCategory;
   department: EventDepartment;
+  img: string;
 }
 
 export enum EventStatus {

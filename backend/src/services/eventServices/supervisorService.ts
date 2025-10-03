@@ -11,6 +11,8 @@ import IResponseStructure from "../../types/responseStructure";
 import RegistrationModel from "../../models/registrationModel";
 import ExcelJS from "exceljs";
 import mongoose from "mongoose";
+import path from "path";
+import fs from "fs";
 interface IBody {
   title: string;
   description: string;
@@ -99,6 +101,15 @@ export const deleteEvent = async ({
 
     if (event.createdBy.toString() !== supervisorId.toString()) {
       return { message: "Not authorized", statusCode: 404, success: false };
+    }
+
+    if (event.img) {
+      const imagePath = path.join(__dirname, "..", "..", event.img);
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+        console.log("Deleted image ", imagePath);
+      }
     }
 
     await eventModel.deleteOne({ _id: eventId });
