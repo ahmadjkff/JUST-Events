@@ -34,6 +34,7 @@ import {
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Badge } from "../../../components/ui/badge";
+import EventsTable from "../components/EventsTable";
 
 //To-Do: add unfound filter rsults (no results found for the selected filter)
 
@@ -142,9 +143,11 @@ function VolunteerControl() {
   // fetch volunteer on component mount
   useEffect(() => {
     const fetchAll = async () => {
-      await fetchVolunteers!();
-      await fetchEvents();
-      await fetchEvents("approved");
+      await Promise.all([
+        fetchVolunteers!(),
+        fetchEvents(),
+        fetchEvents("approved"),
+      ]);
     };
 
     fetchAll();
@@ -228,7 +231,7 @@ function VolunteerControl() {
             </TabsList>
 
             {/* Pending Volunteers */}
-            <TabsContent value="pending" className="space-y-4">
+            {/* <TabsContent value="pending" className="space-y-4">
               <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
                 <h1 className={`text-2xl font-bold text-gray-500`}>Pending</h1>
                 <div className="flex items-center gap-2">
@@ -324,7 +327,7 @@ function VolunteerControl() {
             </TabsContent>
 
             {/* Removed Volunteers */}
-            <TabsContent value="removed" className="space-y-4">
+            {/* <TabsContent value="removed" className="space-y-4">
               <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
                 <h1 className={`text-2xl font-bold text-red-500`}>Rejected</h1>
                 <div className="flex items-center gap-2">
@@ -369,6 +372,34 @@ function VolunteerControl() {
                 </Card>
               )}
             </TabsContent>
+             */}
+            <EventsTable
+              value="pending"
+              status="Pending"
+              department={department}
+              setDepartment={setDepartment}
+              icon={Clock}
+              updateStatus={handleStatus}
+              eventsByStatus={volunteersByStatus}
+            />
+            <EventsTable
+              value="assigned"
+              status="Approved"
+              department={department}
+              setDepartment={setDepartment}
+              icon={Calendar}
+              updateStatus={handleStatus}
+              eventsByStatus={volunteersByStatus}
+            />
+            <EventsTable
+              value="removed"
+              status="Rejected"
+              department={department}
+              setDepartment={setDepartment}
+              icon={X}
+              updateStatus={handleStatus}
+              eventsByStatus={volunteersByStatus}
+            />
           </Tabs>
         </div>
       </main>
