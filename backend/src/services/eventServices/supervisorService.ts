@@ -18,6 +18,7 @@ interface IBody {
   department: EventDepartment;
   category: EventCategory;
   date: Date;
+  img: string;
   supervisorId: string;
 }
 
@@ -29,6 +30,7 @@ export const createEvent = async ({
   department,
   category,
   date,
+  img,
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
   try {
@@ -59,6 +61,7 @@ export const createEvent = async ({
       department,
       category,
       date,
+      img,
       createdBy: supervisorId,
       status: "pending",
     });

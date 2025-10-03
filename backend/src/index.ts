@@ -9,6 +9,7 @@ import supervisorRoute from "./routes/eventRoutes/supervisorRoute";
 import eventAdminRoute from "./routes/eventRoutes/adminRoute";
 import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRoute";
 import eventUserRoute from "./routes/eventRoutes/userRoute";
+import path from "path";
 dotenv.config();
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(
 );
 const port = process.env.PORT;
 app.use(express.json());
+app.use("/eventsimage", express.static(path.join(__dirname, "eventsimage")));
 mongoose
   .connect(process.env.MONGODB_URI!)
   .then(() => console.log("Mongoose connected"))

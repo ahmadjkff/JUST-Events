@@ -26,13 +26,21 @@ const EventForm: React.FC = () => {
     date: "",
   });
 
+  // 👇 file state for image
+  const [img, setImg] = useState<File | null>(null);
+
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Validate category & department
     if (!form.category || !form.department) {
       setError("Please select a category and department");
+      setLoading(false);
+      return;
+    }
+
+    if (!img) {
+      setError("Please upload an event image");
       setLoading(false);
       return;
     }
@@ -44,10 +52,9 @@ const EventForm: React.FC = () => {
         form.location,
         form.department,
         form.category,
+        img, // 👈 send File object
         new Date(form.date),
       );
-
-      console.log("Create event result:", result);
 
       if (!result.success) {
         setError(result.message || "Failed to create event");
@@ -59,7 +66,7 @@ const EventForm: React.FC = () => {
       setLoading(false);
       navigate("/browse-events");
     } catch (err) {
-      console.log("Error in handleCreateEvent:", err);
+      console.error("Error in handleCreateEvent:", err);
       setError("Unexpected error occurred");
       setLoading(false);
     }
@@ -75,7 +82,7 @@ const EventForm: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* ✅ Header pinned at top */}
+      {/* Header */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
@@ -84,7 +91,6 @@ const EventForm: React.FC = () => {
             </h1>
             <p className="text-muted-foreground">Manage Events</p>
           </div>
-
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm">
               <Search className="h-4 w-4" />
@@ -104,7 +110,7 @@ const EventForm: React.FC = () => {
         </div>
       </header>
 
-      {/* ✅ Form centered below header */}
+      {/* Form */}
       <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleCreateEvent}
@@ -119,7 +125,7 @@ const EventForm: React.FC = () => {
             <label className="mb-1 block font-medium text-gray-700">
               Title
             </label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
               <Type className="text-gray-400" size={18} />
               <input
                 type="text"
@@ -138,7 +144,7 @@ const EventForm: React.FC = () => {
             <label className="mb-1 block font-medium text-gray-700">
               Description
             </label>
-            <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-start gap-2 rounded-lg border px-3 py-2">
               <FileText className="mt-1 text-gray-400" size={18} />
               <textarea
                 name="description"
@@ -157,7 +163,7 @@ const EventForm: React.FC = () => {
             <label className="mb-1 block font-medium text-gray-700">
               Location
             </label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
               <MapPin className="text-gray-400" size={18} />
               <input
                 type="text"
@@ -180,7 +186,7 @@ const EventForm: React.FC = () => {
               name="category"
               value={form.category}
               onChange={handleChange}
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-lg border px-3 py-2 outline-none"
               required
             >
               <option value="" disabled>
@@ -203,7 +209,7 @@ const EventForm: React.FC = () => {
               name="department"
               value={form.department}
               onChange={handleChange}
-              className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full rounded-lg border px-3 py-2 outline-none"
               required
             >
               <option value="" disabled>
@@ -220,7 +226,7 @@ const EventForm: React.FC = () => {
           {/* Date */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">Date</label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
+            <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
               <Calendar className="text-gray-400" size={18} />
               <input
                 type="date"
@@ -231,6 +237,20 @@ const EventForm: React.FC = () => {
                 required
               />
             </div>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="mb-1 block font-medium text-gray-700">
+              Event Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImg(e.target.files?.[0] || null)}
+              className="w-full rounded-lg border px-3 py-2 outline-none"
+              required
+            />
           </div>
 
           {/* Submit */}

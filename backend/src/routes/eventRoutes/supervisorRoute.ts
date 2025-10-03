@@ -11,6 +11,7 @@ import {
   getSupervisorAppliactions,
 } from "../../services/eventServices/supervisorService";
 import { EventStatus } from "../../types/eventTypes";
+import { upload } from "../../middlewares/UploadEventImage";
 
 const router = express.Router();
 
@@ -19,18 +20,20 @@ router.post(
   "/",
   validateJWT,
   isSupervisor,
+  upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
       const { title, description, location, department, category, date } =
         req.body;
-
+      const img = req.file ? `/eventsimage/${req.file.filename}` : null;
       if (
         !title ||
         !description ||
         !location ||
         !department ||
         !category ||
-        !date
+        !date ||
+        !img
       ) {
         return res.status(400).json({ message: "All fields are required" });
       }
@@ -53,6 +56,7 @@ router.post(
         department,
         category,
         date,
+        img,
         supervisorId,
       });
       res.status(statusCode).json({ success, message, data });
