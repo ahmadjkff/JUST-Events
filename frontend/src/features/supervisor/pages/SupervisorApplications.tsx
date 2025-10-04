@@ -25,13 +25,13 @@ function SupervisorApplications() {
       setErrorMessage("An unexpected error occurred while exporting.");
     }
 
-    // Hide the error after 5 seconds
     setTimeout(() => setErrorMessage(null), 5000);
   };
 
   useEffect(() => {
     fetchSupervisorApplications("approved");
   }, []);
+
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -66,10 +66,9 @@ function SupervisorApplications() {
             })
           }
         >
-          <CardHeader className="flex items-center justify-between">
-            {/* Left side (event info) */}
-
-            <div>
+          <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            {/* Event Info */}
+            <div className="flex-1">
               <h2 className="text-lg font-semibold text-gray-800">
                 {event.title}
               </h2>
@@ -102,25 +101,36 @@ function SupervisorApplications() {
               </p>
             </div>
 
-            {/* Right side (buttons) */}
-            <div className="flex gap-3">
+            {/* Buttons in column */}
+            <div className="mt-2 flex flex-col gap-3 sm:mt-0">
               <Button
                 onClick={(e) => {
-                  e.stopPropagation(); // prevent card click
+                  e.stopPropagation();
                   navigate(`/supervisor/event/${event._id}/applications`);
                 }}
-                className="bg-blue-600 text-white hover:bg-blue-700"
+                className="w-full bg-blue-600 text-white hover:bg-blue-700"
               >
                 Manage Applications
               </Button>
+
               <Button
                 onClick={async (e) => {
-                  e.stopPropagation(); // prevent card click
+                  e.stopPropagation();
                   await handlexportStudentList(event._id);
                 }}
-                className="bg-green-600 text-white hover:bg-green-700"
+                className="w-full bg-green-600 text-white hover:bg-green-700"
               >
                 Export Registered Students
+              </Button>
+
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/supervisor/edit-event/${event._id}`);
+                }}
+                className="w-full bg-yellow-500 text-white hover:bg-yellow-600"
+              >
+                Edit
               </Button>
             </div>
           </CardHeader>
