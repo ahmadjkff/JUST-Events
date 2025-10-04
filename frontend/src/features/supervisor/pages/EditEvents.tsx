@@ -19,6 +19,8 @@ const EditForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { eventId } = useParams<{ eventId: string }>();
+  // 👇 file state for image
+  const [img, setImg] = useState<File | null>(null);
   const { getEventById } = useSupervisor();
   const [form, setForm] = useState({
     title: "",
@@ -39,6 +41,12 @@ const EditForm: React.FC = () => {
       return;
     }
 
+    if (!img) {
+      setError("Please upload an event image");
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await editEvent(
         eventId || "",
@@ -47,7 +55,8 @@ const EditForm: React.FC = () => {
         form.location,
         form.department,
         form.category,
-        new Date(form.date)
+        new Date(form.date),
+        img,
       );
 
       if (!result.success) {
@@ -69,7 +78,7 @@ const EditForm: React.FC = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -107,7 +116,7 @@ const EditForm: React.FC = () => {
     // Show loading screen while fetching event
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <p className="text-gray-700 text-lg">Loading event...</p>
+        <p className="text-lg text-gray-700">Loading event...</p>
       </div>
     );
   }
@@ -127,7 +136,11 @@ const EditForm: React.FC = () => {
             <Button variant="outline" size="sm">
               <Search className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" className="relative bg-transparent">
+            <Button
+              variant="outline"
+              size="sm"
+              className="relative bg-transparent"
+            >
               <Bell className="h-4 w-4" />
               <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
             </Button>
@@ -150,7 +163,9 @@ const EditForm: React.FC = () => {
 
           {/* Title */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Title</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              Title
+            </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Type className="text-gray-400" size={18} />
               <input
@@ -167,7 +182,9 @@ const EditForm: React.FC = () => {
 
           {/* Description */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Description</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              Description
+            </label>
             <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <FileText className="mt-1 text-gray-400" size={18} />
               <textarea
@@ -184,7 +201,9 @@ const EditForm: React.FC = () => {
 
           {/* Location */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Location</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              Location
+            </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <MapPin className="text-gray-400" size={18} />
               <input
@@ -201,7 +220,9 @@ const EditForm: React.FC = () => {
 
           {/* Category */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Category</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              Category
+            </label>
             <select
               name="category"
               value={form.category}
@@ -209,7 +230,9 @@ const EditForm: React.FC = () => {
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
-              <option value="" disabled>Select category</option>
+              <option value="" disabled>
+                Select category
+              </option>
               {Object.values(EventCategory).map((cat) => (
                 <option key={cat} value={cat}>
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -220,7 +243,9 @@ const EditForm: React.FC = () => {
 
           {/* Department */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Department</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              Department
+            </label>
             <select
               name="department"
               value={form.department}
@@ -228,7 +253,9 @@ const EditForm: React.FC = () => {
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
               required
             >
-              <option value="" disabled>Select department</option>
+              <option value="" disabled>
+                Select department
+              </option>
               {Object.values(EventDepartment).map((dep) => (
                 <option key={dep} value={dep}>
                   {dep.charAt(0).toUpperCase() + dep.slice(1)}
@@ -252,7 +279,18 @@ const EditForm: React.FC = () => {
               />
             </div>
           </div>
-
+          <div>
+            <label className="mb-1 block font-medium text-gray-700">
+              Event Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImg(e.target.files?.[0] || null)}
+              className="w-full rounded-lg border px-3 py-2 outline-none"
+              required
+            />
+          </div>
           {/* Submit */}
           <button
             type="submit"
