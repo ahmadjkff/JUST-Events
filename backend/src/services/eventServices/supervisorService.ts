@@ -138,6 +138,7 @@ interface IEditEvent {
   department: EventDepartment;
   category: EventCategory;
   date: Date;
+  img: string | null;
 }
 
 export const editEvent = async ({
@@ -149,6 +150,7 @@ export const editEvent = async ({
   department,
   category,
   date,
+  img,
 }: IEditEvent): Promise<IResponseStructure> => {
   try {
     const event = await eventModel.findById(eventId);
@@ -158,6 +160,16 @@ export const editEvent = async ({
     if (event.createdBy.toString() !== supervisorId.toString()) {
       return { message: "Not authorized", statusCode: 404, success: false };
     }
+
+    if (event.img && img) {
+      const oldImgPath = path.join(__dirname, "..", "..", event.img);
+      if (fs.existsSync(oldImgPath)) {
+        fs.unlinkSync(oldImgPath);
+        console.log("Deleted Old Img ", oldImgPath);
+      }
+      event.img = img;
+    }
+
     if (title) {
       event.title = title;
     }

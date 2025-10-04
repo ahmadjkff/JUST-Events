@@ -96,11 +96,13 @@ router.put(
   "/:eventId",
   validateJWT,
   isSupervisor,
+  upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
       const { title, description, location, department, category, date } =
         req.body;
       const eventId = req.params.eventId;
+      const img = req.file ? `/eventsimage/${req.file.filename}` : null;
 
       if (!eventId) {
         return res.status(400).json({ message: "EventId is required" });
@@ -116,6 +118,7 @@ router.put(
         department,
         category,
         date,
+        img,
       });
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {
