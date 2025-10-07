@@ -42,6 +42,7 @@ import { deleteEvent } from "../features/supervisor/services/supervisorRequests"
 import { registerForEvent } from "../features/student/services/registerService";
 import type { IEvent } from "../types/eventTypes";
 import { cancelRegistration } from "../features/student/services/cancelService";
+import { useTranslation } from "react-i18next";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
@@ -51,6 +52,9 @@ function BrowseEvents() {
   const [registrationStatuses, setRegistrationStatuses] = useState<
     Record<string, string>
   >({});
+  const { t } = useTranslation();
+
+  console.log(t("register"));
 
   useEffect(() => {
     fetchEvents("approved");
@@ -126,7 +130,7 @@ function BrowseEvents() {
             {!checkIsStudentRegistered(user?._id!, event._id) &&
               !registrationStatuses[event._id] && (
                 <Button onClick={() => handleRegister(event._id, user?._id!)}>
-                  Register
+                  {t("register")}
                 </Button>
               )}
 

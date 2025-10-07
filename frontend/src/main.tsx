@@ -6,6 +6,7 @@ import EventProvider from "./context/event/EventProvider";
 import "./main.css";
 import "@radix-ui/themes/styles.css";
 import SupervisorProvider from "./context/supervisor/SupervisorProvider.tsx";
+import "./i18n";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,5 +17,5 @@ createRoot(document.getElementById("root")!).render(
         </EventProvider>
       </SupervisorProvider>
     </AuthProvider>
-  </StrictMode>
+  </StrictMode>,
 );
