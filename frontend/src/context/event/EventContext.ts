@@ -24,6 +24,11 @@ interface EventContextType {
     message?: string;
     data?: IVolunteer[];
   }>;
+  fetchRegistredStudents?: (eventId: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: any[];
+  }>;
 }
 
 export const EventContext = createContext<EventContextType>({
@@ -33,6 +38,7 @@ export const EventContext = createContext<EventContextType>({
   isLoading: false,
   fetchEvents: async () => Promise.resolve({ success: false }),
   fetchVolunteers: async () => Promise.resolve({ success: false }),
+  fetchRegistredStudents: async () => Promise.resolve({ success: false }),
 });
 
 export const useEvent = () => useContext(EventContext);

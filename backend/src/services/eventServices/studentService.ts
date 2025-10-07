@@ -97,6 +97,13 @@ export const cancel = async (
     student: studentId,
     event: eventId,
   });
+  const event = await eventModel.findById(eventId);
+  if (!event) throw new Error("Event not found");
+  event.registeredStudents = event.registeredStudents.filter(
+    (reg) => reg.toString() !== studentId.toString()
+  );
+  await event.save();
+
   if (!deleted) throw new Error("Registration not found");
   return deleted;
 };

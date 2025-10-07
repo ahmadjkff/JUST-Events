@@ -24,7 +24,7 @@ import {
   TabsTrigger,
 } from "../components/ui/tabs";
 import { useEvent } from "../context/event/EventContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/auth/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -41,16 +41,30 @@ import {
 import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
 import { registerForEvent } from "../features/student/services/registerService";
 import type { IEvent } from "../types/eventTypes";
+import { cancelRegistration } from "../features/student/services/cancelService";
 
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [registrationStatuses, setRegistrationStatuses] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     fetchEvents("approved");
   }, []);
+
+  useEffect(() => {
+    if (user?._id) {
+      eventsByStatus.approved.forEach((event) => {
+        if (!event.registeredStudents.includes(user._id)) {
+          getRegistration(user._id, event._id);
+        }
+      });
+    }
+  }, [eventsByStatus, user?._id]);
 
   const handleDeleteEvent = async (eventId: string) => {
     const result = await deleteEvent(eventId);
@@ -71,6 +85,32 @@ function BrowseEvents() {
       colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
     );
   };
+  const checkIsStudentRegistered = (studentId: string, eventId: string) => {
+    const event = eventsByStatus?.approved?.find((e) => e._id === eventId);
+    return event ? event.registeredStudents.includes(studentId) : false;
+  };
+
+  const getRegistration = async (studentId: string, eventId: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/registration/${eventId}/${studentId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      if (!res.ok) return;
+      const data = await res.json();
+      setRegistrationStatuses((prev) => ({
+        ...prev,
+        [eventId]: data.data.status,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const EventCard = ({ event }: { event: IEvent }) => (
     <Card className="transition-shadow hover:shadow-md">
@@ -83,12 +123,24 @@ function BrowseEvents() {
             </Badge>
           </div>
           <div className="flex gap-2">
-            <Button
-              size="sm"
-              onClick={() => handleRegister(event._id, user?._id!)}
-            >
-              Register
-            </Button>
+            {!checkIsStudentRegistered(user?._id!, event._id) &&
+              !registrationStatuses[event._id] && (
+                <Button onClick={() => handleRegister(event._id, user?._id!)}>
+                  Register
+                </Button>
+              )}
+
+            {(checkIsStudentRegistered(user?._id!, event._id) ||
+              registrationStatuses[event._id] === "pending" ||
+              registrationStatuses[event._id] === "approved") && (
+              <Button
+                className="bg-red-500 text-white hover:bg-red-600"
+                onClick={() => handleRegistrationCancel(event._id, user?._id!)}
+              >
+                Cancel Registration
+              </Button>
+            )}
+
             <Link to={`/event/${event._id}`}>
               <Button variant="outline" size="sm">
                 Details
@@ -150,7 +202,7 @@ function BrowseEvents() {
         <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            {event.date}
+            {event.date.split("T")[0]}
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
@@ -162,15 +214,39 @@ function BrowseEvents() {
           </div>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            {event.registeredStudents.length} attendees
+            <Link to={`/registred-students/${event._id}`}>
+              {event.registeredStudents.length} Attendees
+            </Link>
           </div>
         </div>
       </CardContent>
     </Card>
   );
 
-  const handleRegister = (eventId: string, userId: string) => {
-    registerForEvent(eventId, userId);
+  const handleRegister = async (eventId: string, userId: string) => {
+    await registerForEvent(eventId, userId);
+    await fetchEvents("approved");
+  };
+
+  const handleRegistrationCancel = async (eventId: string, userId: string) => {
+    try {
+      const result = await cancelRegistration(eventId, userId);
+      if (result.success) {
+        // Clear that event’s status locally
+        setRegistrationStatuses((prev) => {
+          const updated = { ...prev };
+          delete updated[eventId];
+          return updated;
+        });
+
+        // Refetch the latest events from the server
+        await fetchEvents("approved");
+      } else {
+        console.error("Failed to cancel registration:", result.message);
+      }
+    } catch (error) {
+      console.error("Error cancelling registration:", error);
+    }
   };
 
   return (

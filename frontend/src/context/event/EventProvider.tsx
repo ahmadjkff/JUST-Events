@@ -90,6 +90,32 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const fetchRegistredStudents = async (eventId: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/registered-students/${eventId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch registered students");
+      }
+      return { success: true, data: data.data };
+    } catch (error) {
+      console.error("Error fetching registered students:", error);
+      return {
+        success: false,
+        message: "Failed to fetch registered students",
+        data: [],
+      };
+    }
+  };
+
   return (
     <EventContext.Provider
       value={{
@@ -99,6 +125,7 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
         isLoading,
         fetchEvents,
         fetchVolunteers,
+        fetchRegistredStudents,
       }}
     >
       {children}

@@ -18,6 +18,7 @@ import Setting from "./pages/setting";
 import Notifications from "./pages/notifications";
 import AboutUs from "./pages/aboutUs";
 import EventDetails from "./pages/eventDetails";
+import RegistredStudents from "./pages/RegistredStudents";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -54,6 +55,10 @@ function App() {
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
             <Route path="/student/*" element={<StudentRoutes />} />
             <Route path="/about-us" element={<AboutUs />} />
+            <Route
+              path="/registred-students/:eventId"
+              element={<RegistredStudents />}
+            />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
