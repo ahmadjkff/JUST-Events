@@ -16,6 +16,11 @@ import { useNavigate } from "react-router-dom";
 
 import EventCard from "../components/EventCard";
 
+const TABS = [
+  { value: "available", label: "Available Events", icon: Calendar },
+  { value: "featured", label: "Featured Events", icon: Clock },
+];
+
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
@@ -75,58 +80,38 @@ function BrowseEvents() {
           {/* Events Tabs */}
           <Tabs defaultValue="available" className="space-y-6">
             <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="available">
-                Available Events ({eventsByStatus.approved.length})
-              </TabsTrigger>
-              <TabsTrigger value="featured">
-                Featured Events ({eventsByStatus.approved.length})
-              </TabsTrigger>
+              {TABS.map(({ value, label }) => (
+                <TabsTrigger key={value} value={value}>
+                  {label} ({eventsByStatus.approved.length})
+                </TabsTrigger>
+              ))}
             </TabsList>
 
-            <TabsContent value="available" className="space-y-4">
-              {eventsByStatus.approved.length > 0 ? (
-                <div className="grid gap-4">
-                  {eventsByStatus.approved.map((event) => (
-                    <EventCard key={event._id} event={event} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="py-12 text-center">
-                  <CardContent>
-                    <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                    <h3 className="mb-2 text-lg font-semibold">
-                      No available events
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      Currently, there are no events to display. Please check
-                      back later.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-
-            <TabsContent value="featured" className="space-y-4">
-              {eventsByStatus.approved.length > 0 ? (
-                <div className="grid gap-4">
-                  {eventsByStatus.approved.map((event) => (
-                    <EventCard key={event._id} event={event} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="py-12 text-center">
-                  <CardContent>
-                    <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                    <h3 className="mb-2 text-lg font-semibold">
-                      No featured events
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Featured events will appear here.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
+            {TABS.map(({ value, label, icon: Icon }) => (
+              <TabsContent key={value} value={value} className="space-y-4">
+                {eventsByStatus.approved.length > 0 ? (
+                  <div className="grid gap-4">
+                    {eventsByStatus.approved.map((event) => (
+                      <EventCard key={event._id} event={event} />
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="py-12 text-center">
+                    <CardContent>
+                      <Icon className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                      <h3 className="mb-2 text-lg font-semibold">
+                        No {label.toLowerCase()}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {value === "available"
+                          ? "Currently, there are no events to display. Please check back later."
+                          : "Featured events will appear here."}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+            ))}
           </Tabs>
         </div>
       </main>
