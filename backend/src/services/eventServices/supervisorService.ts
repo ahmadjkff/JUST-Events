@@ -213,6 +213,7 @@ interface IApproveOrReject {
   supervisorId: string;
 }
 export const approveOrRejectStudentApplacition = async ({
+  //To-Do: remove the application when application is rejected
   studentId,
   eventId,
   action,
@@ -259,6 +260,13 @@ export const approveOrRejectStudentApplacition = async ({
     }
 
     isRegistered.status = action;
+
+    if (action === RegistrationStatus.REJECTED) {
+      await RegistrationModel.findOneAndDelete({
+        student: studentId,
+        event: eventId,
+      });
+    }
 
     if (
       !event.registeredStudents.includes(
@@ -348,9 +356,8 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell(
-    "A4"
-  ).value = `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell("A4").value =
+    `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row
