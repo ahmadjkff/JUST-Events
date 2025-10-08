@@ -22,44 +22,59 @@ import { registerForEvent } from "../features/student/services/registerService";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
+import { fetchStudentRegistrations } from "../features/student/services/StudentService";
 
 const EventCard = ({ event }: { event: IEvent }) => {
   const { user } = useAuth();
-  const { fetchEvents, eventsByStatus } = useEvent();
+  const { fetchEvents } = useEvent();
   const navigate = useNavigate();
-  const [registrationStatuses, setRegistrationStatuses] = useState<
-    Record<string, string>
-  >({});
+  const [registrations, setRegistrations] = useState<any[]>([]);
   const { t } = useTranslation();
 
+  // 🔹 Fetch all student registrations once
   useEffect(() => {
-    const fetchStudentRegistrations = async () => {
-      try {
-        const res = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/event/student-registrations/${user?._id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          },
-        );
+    if (!user?._id) return;
 
-        if (!res.ok) return;
-        const data = await res.json();
-
-        // Convert list into { [eventId]: status }
-        const mappedStatuses = Object.fromEntries(
-          data.data.map((r: any) => [r.event, r.status]),
-        );
-
-        setRegistrationStatuses(mappedStatuses);
-      } catch (err) {
-        console.error(err);
+    const getRegistrations = async () => {
+      const result = await fetchStudentRegistrations(user._id);
+      if (result.success) {
+        setRegistrations(result.data);
       }
     };
 
-    if (user?._id) fetchStudentRegistrations();
+    getRegistrations();
   }, [user?._id]);
+
+  // 🔹 Helper to get registration status by eventId
+  const getStatusForEvent = (eventId: string) => {
+    const reg = registrations.find((r) => r.event === eventId);
+    return reg ? reg.status : null;
+  };
+
+  const handleRegister = async (eventId: string, userId: string) => {
+    await registerForEvent(eventId, userId);
+    await fetchEvents("approved");
+
+    // Optimistic UI update
+    setRegistrations((prev) => [
+      ...prev,
+      { event: eventId, status: "pending" },
+    ]);
+  };
+
+  const handleRegistrationCancel = async (eventId: string, userId: string) => {
+    try {
+      const result = await cancelRegistration(eventId, userId);
+      if (result.success) {
+        setRegistrations((prev) => prev.filter((r) => r.event !== eventId));
+        await fetchEvents("approved");
+      } else {
+        console.error("Failed to cancel registration:", result.message);
+      }
+    } catch (error) {
+      console.error("Error cancelling registration:", error);
+    }
+  };
 
   const handleDeleteEvent = async (eventId: string) => {
     const result = await deleteEvent(eventId);
@@ -67,6 +82,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
       fetchEvents("approved");
     }
   };
+
   const getCategoryColor = (category: string) => {
     const colors = {
       Technology:
@@ -80,36 +96,10 @@ const EventCard = ({ event }: { event: IEvent }) => {
       colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
     );
   };
-  const checkIsStudentRegistered = (studentId: string, eventId: string) => {
-    const event = eventsByStatus?.approved?.find((e) => e._id === eventId);
-    return event ? event.registeredStudents.includes(studentId) : false;
-  };
 
-  const handleRegister = async (eventId: string, userId: string) => {
-    await registerForEvent(eventId, userId);
-    await fetchEvents("approved");
-  };
+  // 🔹 Get status for this event
+  const status = getStatusForEvent(event._id);
 
-  const handleRegistrationCancel = async (eventId: string, userId: string) => {
-    try {
-      const result = await cancelRegistration(eventId, userId);
-      if (result.success) {
-        // Clear that event’s status locally
-        setRegistrationStatuses((prev) => {
-          const updated = { ...prev };
-          delete updated[eventId];
-          return updated;
-        });
-
-        // Refetch the latest events from the server
-        await fetchEvents("approved");
-      } else {
-        console.error("Failed to cancel registration:", result.message);
-      }
-    } catch (error) {
-      console.error("Error cancelling registration:", error);
-    }
-  };
   return (
     <Card className="transition-shadow hover:shadow-md">
       <CardHeader>
@@ -121,16 +111,14 @@ const EventCard = ({ event }: { event: IEvent }) => {
             </Badge>
           </div>
           <div className="flex gap-2">
-            {!checkIsStudentRegistered(user?._id!, event._id) &&
-              !registrationStatuses[event._id] && (
-                <Button onClick={() => handleRegister(event._id, user?._id!)}>
-                  {t("register")}
-                </Button>
-              )}
+            {/* 🔹 Show correct button based on registration status */}
+            {!status && (
+              <Button onClick={() => handleRegister(event._id, user?._id!)}>
+                {t("register")}
+              </Button>
+            )}
 
-            {(checkIsStudentRegistered(user?._id!, event._id) ||
-              registrationStatuses[event._id] === "pending" ||
-              registrationStatuses[event._id] === "approved") && (
+            {(status === "approved" || status === "pending") && (
               <Button
                 className="bg-red-500 text-white hover:bg-red-600"
                 onClick={() => handleRegistrationCancel(event._id, user?._id!)}
@@ -144,57 +132,62 @@ const EventCard = ({ event }: { event: IEvent }) => {
                 Details
               </Button>
             </Link>
+
             {event.createdBy === user?._id && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    size="sm"
-                    className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
-                  >
-                    Delete
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="max-w-md">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="text-xl font-bold text-red-600">
-                      Delete Event
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="text-gray-600">
-                      Are you sure you want to Delete <b>{event.title} Event</b>
-                      ? <br />
-                      This action{" "}
-                      <span className="font-semibold text-red-500">
-                        cannot be undone
-                      </span>{" "}
-                      and attendees will lose access.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
-                      Close
-                    </AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => handleDeleteEvent(event._id)}
-                      className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
+              <>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
                     >
-                      Yes, Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-            {event.createdBy === user?._id && (
-              <Button
-                size="sm"
-                className="bg-blue-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-blue-600 hover:shadow-lg"
-                onClick={() => navigate(`/supervisor/edit-event/${event._id}`)}
-              >
-                Edit
-              </Button>
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-md">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-xl font-bold text-red-600">
+                        Delete Event
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-600">
+                        Are you sure you want to delete <b>{event.title}</b>?{" "}
+                        <br />
+                        This action{" "}
+                        <span className="font-semibold text-red-500">
+                          cannot be undone
+                        </span>{" "}
+                        and attendees will lose access.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
+                        Close
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDeleteEvent(event._id)}
+                        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
+                      >
+                        Yes, Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                <Button
+                  size="sm"
+                  className="bg-blue-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-blue-600 hover:shadow-lg"
+                  onClick={() =>
+                    navigate(`/supervisor/edit-event/${event._id}`)
+                  }
+                >
+                  Edit
+                </Button>
+              </>
             )}
           </div>
         </div>
       </CardHeader>
+
       <CardContent>
         <p className="text-muted-foreground mb-4">{event.description}</p>
         <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
