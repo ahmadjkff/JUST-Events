@@ -23,9 +23,7 @@ const Header = () => {
           </Link>
           <div className="header-actions">
             <DarkModeToggleSwitch onChange={DarkModeHandleToggle} />
-            <LanguageToggleSwitch
-              defaultChecked={false}
-            />
+            <LanguageToggleSwitch/>
           </div>
         </div>
       </div>

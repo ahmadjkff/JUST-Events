@@ -7,7 +7,7 @@ interface LanguageToggleSwitchProps {
 }
 
 const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({
-  defaultChecked = false,
+
 }) => {
 
   const { i18n } = useTranslation();
@@ -37,7 +37,7 @@ const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({
         type="checkbox"
         id="language-toggle"
         className="tgl tgl-skewed"
-        defaultChecked={defaultChecked}
+        defaultChecked={i18n.language === "en"}
         onChange={(e) => changeLang(e.target.checked ? "en" : "ar")}
       />
       <label
