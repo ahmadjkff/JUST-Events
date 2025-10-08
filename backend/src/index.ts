@@ -11,7 +11,7 @@ import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRout
 import eventUserRoute from "./routes/eventRoutes/userRoute";
 import path from "path";
 dotenv.config();
-//test commit
+
 const app = express();
 
 app.use(
