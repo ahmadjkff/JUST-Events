@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="container">
         <div className="footer-content">
-          <p className="footer-text">© 2024 Just Events. All rights reserved.</p>
+          <p className="footer-text">© 2025 Just Events. All rights reserved.</p>
           <Link to="/about-us" > 
           {/* className="footer-button" */}
             {/* About Us */}
