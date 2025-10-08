@@ -74,32 +74,26 @@ router.get("/registered-students/:eventId", validateJWT, async (req, res) => {
 });
 
 router.get(
-  "/registration/:eventId/:studentId",
+  "/student-registrations/:studentId",
   validateJWT,
   async (req, res) => {
     try {
-      const { eventId, studentId } = req.params;
-      if (!eventId || !studentId) {
-        return res
-          .status(400)
-          .json({ message: "eventId and studentId are required" });
-      }
-      const registration = await RegistrationModel.findOne({
-        event: eventId,
+      const { studentId } = req.params;
+
+      const registrations = await RegistrationModel.find({
         student: studentId,
-      });
-      if (!registration) {
-        return res
-          .status(404)
-          .json({ message: "Registration not found", data: null });
-      }
+        status: { $in: ["pending", "approved"] },
+      }).select("event status");
+
       res.status(200).json({
         success: true,
-        message: "Registration fetched",
-        data: registration,
+        data: registrations,
       });
     } catch (error: any) {
-      res.status(500).json({ message: `Server error ${error.message}` });
+      res.status(500).json({
+        success: false,
+        message: error.message || "Failed to fetch student registrations",
+      });
     }
   }
 );
