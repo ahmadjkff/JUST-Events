@@ -1,3 +1,26 @@
 {
-  "register": "Register"
+  "register": "Register",
+
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "events": "Events",
+  "myEvents": "My Events",
+  "notifications": "Notifications",
+  "myCertificates": "My Certificates",
+  "profile": "Profile",
+  "statistics": "Statistics",
+  "signOut": "Sign Out",
+  "appName": "JUST Events",
+
+  "aboutUs": "About Us",
+  "allRightsReserved": "All rights reserved.",
+
+
+  "aboutParagraph1": "JUST Events is a digital platform designed to centralize and streamline the management of student activities at Jordan University of Science and Technology (JUST). The system provides a modern alternative to traditional methods of promoting and managing events, which often rely on fragmented channels such as printed posters or social media groups. By bringing everything together in one place, JUST Events makes it easier for students and organizers to stay connected and engaged.",
+  "aboutParagraph2": "The platform allows students to browse upcoming events, register for activities, volunteer, provide feedback, and even download participation certificates directly from the system. Event organizers benefit from efficient registration tracking, feedback collection, and communication with participants. With an intuitive design and user-friendly interface, JUST Events ensures that both students and staff can manage event participation seamlessly.",
+  "meetTeam": "Meet Our Team",
+  "studentId": "Student ID",
+  "email": "Email",
+  "teamSupervisor": "Team Supervisor"
+
 }
