@@ -13,6 +13,16 @@ import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
 
+interface IStage {
+  _id: string;
+  location: string;
+  name: string;
+  date?: string;
+  startTime?: string;
+  endTime?: string;
+  status: "free" | "reserved";
+}
+
 const EventForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,10 +34,33 @@ const EventForm: React.FC = () => {
     category: "" as EventCategory | "",
     department: "" as EventDepartment | "",
     date: "",
+    startTime: "",
+    endTime: "",
   });
 
-  // 👇 file state for image
   const [img, setImg] = useState<File | null>(null);
+  const [stages, setStages] = useState<IStage[]>([]);
+  const [showDialog, setShowDialog] = useState(false);
+
+  // Open stage selection modal
+  const openStageDialog = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/stage");
+      const data = await res.json();
+      setStages(data.data.events);
+      setShowDialog(true);
+    } catch (err) {
+      console.error("Failed to fetch stages", err);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +78,12 @@ const EventForm: React.FC = () => {
       return;
     }
 
+    if (!form.location) {
+      setError("Please select a stage");
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await createEvent(
         form.title,
@@ -52,8 +91,7 @@ const EventForm: React.FC = () => {
         form.location,
         form.department,
         form.category,
-        img, // 👈 send File object
-        new Date(form.date),
+        img,
       );
 
       if (!result.success) {
@@ -70,14 +108,6 @@ const EventForm: React.FC = () => {
       setError("Unexpected error occurred");
       setLoading(false);
     }
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   return (
@@ -158,23 +188,18 @@ const EventForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Location */}
+          {/* Stage Selection */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Location
+              Stage
             </label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
-              <MapPin className="text-gray-400" size={18} />
-              <input
-                type="text"
-                name="location"
-                value={form.location}
-                onChange={handleChange}
-                placeholder="Enter event location"
-                className="w-full outline-none"
-                required
-              />
-            </div>
+            <button
+              type="button"
+              className="w-full rounded-lg border bg-white px-3 py-2 text-left"
+              onClick={openStageDialog}
+            >
+              {form.location || "Select Stage"}
+            </button>
           </div>
 
           {/* Category */}
@@ -223,22 +248,6 @@ const EventForm: React.FC = () => {
             </select>
           </div>
 
-          {/* Date */}
-          <div>
-            <label className="mb-1 block font-medium text-gray-700">Date</label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
-              <Calendar className="text-gray-400" size={18} />
-              <input
-                type="date"
-                name="date"
-                value={form.date}
-                onChange={handleChange}
-                className="w-full outline-none"
-                required
-              />
-            </div>
-          </div>
-
           {/* Image Upload */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
@@ -265,6 +274,72 @@ const EventForm: React.FC = () => {
           {error && <p className="text-center text-red-500">{error}</p>}
         </form>
       </main>
+
+      {/* Stage Selection Modal */}
+      {showDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-11/12 max-w-2xl rounded-xl bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-bold">Select a Stage</h2>
+            <table className="w-full border text-left">
+              <thead>
+                <tr className="border-b">
+                  <th className="px-2 py-1">Location</th>
+                  <th className="px-2 py-1">Date</th>
+                  <th className="px-2 py-1">Start Time</th>
+                  <th className="px-2 py-1">End Time</th>
+                  <th className="px-2 py-1">Status</th>
+                  <th className="px-2 py-1">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stages.map((stage) => (
+                  <tr key={stage._id} className="border-b">
+                    <td className="px-2 py-1">{stage.location}</td>
+                    <td className="px-2 py-1">
+                      {stage.date
+                        ? new Date(stage.date).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td className="px-2 py-1">{stage.startTime || "-"}</td>
+                    <td className="px-2 py-1">{stage.endTime || "-"}</td>
+                    <td className="px-2 py-1">{stage.status}</td>
+                    <td className="px-2 py-1">
+                      <button
+                        disabled={stage.status === "reserved"}
+                        className={`rounded px-2 py-1 ${
+                          stage.status === "reserved"
+                            ? "cursor-not-allowed bg-gray-300"
+                            : "bg-blue-500 text-white hover:bg-blue-600"
+                        }`}
+                        onClick={() => {
+                          setForm({
+                            ...form,
+                            location: stage.name,
+                            date: stage.date
+                              ? new Date(stage.date).toISOString().split("T")[0]
+                              : "",
+                            startTime: stage.startTime || "",
+                            endTime: stage.endTime || "",
+                          });
+                          setShowDialog(false);
+                        }}
+                      >
+                        Select
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <button
+              className="mt-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+              onClick={() => setShowDialog(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

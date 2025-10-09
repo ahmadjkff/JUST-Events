@@ -4,10 +4,11 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/auth";
 import adminRoute from "./routes/adminRoute";
 import stagesRoute from "./routes/stagesRoute";
-
+import cors from "cors";
 const app = express();
 app.use(bodyParser.json());
 
+app.use(cors());
 const MONGOOSE_URI =
   "mongodb+srv://ahmadjkff1_db_user:0KUIcI6znOZkGYUa@cluster0.6dztitw.mongodb.net/justsimulator?retryWrites=true&w=majority&appName=Cluster0";
 mongoose

@@ -12,6 +12,7 @@ import {
 } from "../../services/eventServices/supervisorService";
 import { EventStatus } from "../../types/eventTypes";
 import { upload } from "../../middlewares/uploadEventImage";
+import fs from "fs";
 
 const router = express.Router();
 
@@ -23,8 +24,7 @@ router.post(
   upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, department, category, date } =
-        req.body;
+      const { title, description, location, department, category } = req.body;
       const img = req.file ? `/eventsimage/${req.file.filename}` : null;
       if (
         !title ||
@@ -32,17 +32,18 @@ router.post(
         !location ||
         !department ||
         !category ||
-        !date ||
         !img
       ) {
         return res.status(400).json({ message: "All fields are required" });
       }
       if (title.length < 3) {
+        if (req.file) fs.unlinkSync(req.file.path);
         return res
           .status(400)
           .json({ message: "Title must be at least 3 characters long" });
       }
       if (description.length < 10) {
+        if (req.file) fs.unlinkSync(req.file.path);
         return res.status(400).json({
           message: "Description must be at least 10 characters long",
         });
@@ -55,7 +56,6 @@ router.post(
         location,
         department,
         category,
-        date,
         img,
         supervisorId,
       });

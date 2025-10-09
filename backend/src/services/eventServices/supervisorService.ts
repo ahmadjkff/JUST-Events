@@ -13,13 +13,13 @@ import ExcelJS from "exceljs";
 import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
+
 interface IBody {
   title: string;
   description: string;
   location: string;
   department: EventDepartment;
   category: EventCategory;
-  date: Date;
   img: string;
   supervisorId: string;
 }
@@ -31,7 +31,6 @@ export const createEvent = async ({
   location,
   department,
   category,
-  date,
   img,
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
@@ -62,7 +61,9 @@ export const createEvent = async ({
       location,
       department,
       category,
-      date,
+      date: data.data.stage.date,
+      startTime: data.data.stage.startTime,
+      endTime: data.data.stage.endTime,
       img,
       createdBy: supervisorId,
       status: "pending",
@@ -356,8 +357,9 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell("A4").value =
-    `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell(
+    "A4"
+  ).value = `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row

@@ -24,12 +24,16 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { name, location, capacity, status } = req.body;
+    const { name, location, capacity, status, date, startTime, endTime } =
+      req.body;
     const newStage = await stageModel.create({
       name,
       location,
       capacity,
       status,
+      date,
+      startTime,
+      endTime,
     });
     res.status(201).json({
       statusCode: 201,

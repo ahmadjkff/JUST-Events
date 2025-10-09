@@ -7,7 +7,6 @@ export const createEvent = async (
   department: EventDepartment,
   category: EventCategory,
   img: File,
-  date: Date,
 ) => {
   try {
     const formData = new FormData();
@@ -16,7 +15,6 @@ export const createEvent = async (
     formData.append("location", location);
     formData.append("department", department);
     formData.append("category", category);
-    formData.append("date", date.toISOString());
     formData.append("img", img);
 
     const response = await fetch(
