@@ -11,10 +11,10 @@ const Footer = () => {
       <div className="container">
         <div className="footer-content">
           <p className="footer-text">
-            © {new Date().getFullYear()} {t("appName")}. {t("allRightsReserved")}
+            © {new Date().getFullYear()} {t("app.name")}. {t("footer.allRightsReserved")}
           </p>
           <Link to="/about-us">
-            <AboutUsButton text={t("aboutUs")} size="small" />
+            <AboutUsButton text={t("footer.aboutUs")} size="small" />
           </Link>
         </div>
       </div>

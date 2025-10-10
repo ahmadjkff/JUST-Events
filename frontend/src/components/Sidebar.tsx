@@ -18,7 +18,7 @@ import { Button } from "./ui/Button";
 import { Badge } from "./ui/badge";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth/AuthContext";
-import { useTranslation } from "react-i18next"; // ✅ import
+import { useTranslation } from "react-i18next";
 
 interface SidebarProps {
   className?: string;
@@ -30,7 +30,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const currentPath = location.pathname;
   const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation(); // ✅ hook for translations
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     logout();
@@ -48,56 +48,56 @@ export default function Sidebar({ className }: SidebarProps) {
   const navigationItems: NavigationItem[] = [
     {
       icon: Home,
-      label: t("home"),
+      label: t("sidebar.home"),
       href: "/",
       allowedUsers: ["student", "supervisor"],
     },
     {
       icon: Gauge,
-      label: t("dashboard"),
+      label: t("sidebar.dashboard"),
       href: "/admin/dashboard",
       allowedUsers: ["admin"],
     },
     {
       icon: Gauge,
-      label: t("dashboard"),
+      label: t("sidebar.dashboard"),
       href: "/supervisor/dashboard",
       allowedUsers: ["supervisor"],
     },
     {
       icon: Calendar,
-      label: t("events"),
+      label: t("sidebar.events"),
       href: "/browse-events",
       allowedUsers: ["student", "supervisor", "admin"],
     },
     {
       icon: CalendarClock,
-      label: t("myEvents"),
+      label: t("sidebar.myEvents"),
       href: "/student/my-events",
       allowedUsers: ["student", "supervisor"],
     },
     {
       icon: Bell,
-      label: t("notifications"),
+      label: t("sidebar.notifications"),
       href: "/notifications",
       allowedUsers: ["student", "supervisor", "admin"],
       badge: "5",
     },
     {
       icon: Award,
-      label: t("myCertificates"),
+      label: t("sidebar.myCertificates"),
       href: "/student/my-certificates",
       allowedUsers: ["student", "supervisor"],
     },
     {
       icon: User,
-      label: t("profile"),
+      label: t("sidebar.profile"),
       href: "/profile",
       allowedUsers: ["student", "supervisor", "admin"],
     },
     {
       icon: ChartColumnBig,
-      label: t("statistics"),
+      label: t("sidebar.statistics"),
       href: "/admin/statistics",
       allowedUsers: ["admin"],
     },
@@ -117,7 +117,7 @@ export default function Sidebar({ className }: SidebarProps) {
           <div className="flex items-center justify-between">
             {!isCollapsed && (
               <h2 className="text-sidebar-foreground text-lg font-semibold">
-                {t("appName")}
+                {t("app.name")}
               </h2>
             )}
             <Button
@@ -190,7 +190,7 @@ export default function Sidebar({ className }: SidebarProps) {
             <LogOut
               className={cn("h-4 w-4", isCollapsed ? "mx-auto" : "mr-2")}
             />
-            {!isCollapsed && <span className="flex-1">{t("signOut")}</span>}
+            {!isCollapsed && <span className="flex-1">{t("sidebar.signOut")}</span>}
           </Button>
         </div>
       </div>

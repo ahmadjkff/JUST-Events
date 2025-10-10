@@ -1,8 +1,10 @@
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/auth/AuthContext";
+import { useTranslation } from "react-i18next";
 
 function NotFound() {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="bg-background flex h-screen flex-col items-center justify-center px-4 text-center">
@@ -13,12 +15,12 @@ function NotFound() {
 
       {/* the title */}
       <h2 className="text-foreground mb-2 text-3xl font-bold">
-        Page Not Found
+        {t("notFound.title")}
       </h2>
 
       {/* Description */}
       <p className="text-muted-foreground mb-6 max-w-md">
-        Oops! The page you're looking for doesn't exist or was moved.
+        {t("notFound.description")}
       </p>
 
       {user?.role === "admin" ? (
@@ -28,7 +30,7 @@ function NotFound() {
           className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
           onClick={() => (window.location.href = "/admin/dashboard")}
         >
-          ⬅ Back to Dashboard
+          ⬅ {t("notFound.backDashboard")}
         </Button>
       ) : (
         <Button
@@ -37,7 +39,7 @@ function NotFound() {
           className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
           onClick={() => (window.location.href = "/")}
         >
-          ⬅ Back to Home
+          ⬅ {t("notFound.backHome")}
         </Button>
       )}
     </div>

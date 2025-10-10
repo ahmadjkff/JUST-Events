@@ -1,26 +1,108 @@
 {
-  "register": "Register",
+  "app": {
+    "name": "JUST Events"
+  },
+  "auth": {
+    "register": "Register"
+  },
+  "sidebar": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "events": "Events",
+    "myEvents": "My Events",
+    "notifications": "Notifications",
+    "myCertificates": "My Certificates",
+    "profile": "Profile",
+    "statistics": "Statistics",
+    "signOut": "Sign Out"
+  },
+  "footer": {
+    "aboutUs": "About Us",
+    "allRightsReserved": "All rights reserved."
+  },
+  "aboutUsPage": {
+    "title": "About Us",
+    "paragraph1": "JUST Events is a digital platform designed to centralize and streamline the management of student activities at Jordan University of Science and Technology (JUST). The system provides a modern alternative to traditional methods of promoting and managing events, which often rely on fragmented channels such as printed posters or social media groups. By bringing everything together in one place, JUST Events makes it easier for students and organizers to stay connected and engaged.",
+    "paragraph2": "The platform allows students to browse upcoming events, register for activities, volunteer, provide feedback, and even download participation certificates directly from the system. Event organizers benefit from efficient registration tracking, feedback collection, and communication with participants. With an intuitive design and user-friendly interface, JUST Events ensures that both students and staff can manage event participation seamlessly.",
+    "meetTeam": "Meet Our Team",
+    "studentId": "Student ID",
+    "email": "Email",
+    "teamSupervisor": "Team Supervisor"
+  },
+  "browseEvents": {
+    "title": "Browse Events",
+    "subtitle": "Explore and register for upcoming events",
+    "createEvent": "Create Event",
+    "searchPlaceholder": "Search available events...",
+    "filter": "Filter",
+    "category": "Category",
+    "availableEvents": "Available Events",
+    "featuredEvents": "Featured Events",
+    "noEvents": "No {{type}}",
+    "noAvailableText": "Currently, there are no events to display. Please check back later.",
+    "noFeaturedText": "Featured events will appear here."
+  },
+  "home": {
+    "welcomeBack": "Welcome back, {{name}} !",
+    "guest": "Guest",
+    "subtitle": "Here's what's happening at your university today",
+    "welcomeTitle": "Welcome to Jordan University of Science and Technology Events Platform",
+    "welcomeDescription": "Discover new events, connect with your peers, and develop your skills through our interactive platform"
+  },
+  "login": {
+    "welcomeTitle": "Welcome to Just Events",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign In",
+    "signingIn": "Signing In...",
+    "errorDefault": "An error occurred. Please try again."
+  },
+  "event": {
+  "date": "Date",
+  "at": "At",
+  "location": "Location",
+  "volunteers": "Volunteers",
+  "attendees": "Attendees",
+  "status": "Status",
+  "feedbacks": "Feedbacks",
+  "addFeedback": "Add your feedback",
+  "writeComment": "Write your comment...",
+  "submitFeedback": "Submit Feedback",
+  "nA": "N/A"
+},
+"eventStatus": {
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected"
+},
+"myCertificates": {
+  "title": "My Certificates",
+  "subtitle": "Here are the certificates you have earned from attending events.",
+  "heading": "Your Certificates",
+  "description": "Download and view your event participation certificates here.",
+  "exampleEvent": "Event Name",
+  "date": "Date",
+  "download": "Download Certificate"
+},
+"notFound": {
+  "title": "Page Not Found",
+  "description": "Oops! The page you're looking for doesn't exist or was moved.",
+  "backHome": "Back to Home",
+  "backDashboard": "Back to Dashboard"
+},
+"notifications": {
+  "title": "الإشعارات",
+  "description": "إليك أحدث الإشعارات والتحديثات الخاصة بك.",
+  "headerTitle": "إشعاراتك",
+  "headerDescription": "ابقَ على اطلاع بأحدث الأخبار والتنبيهات من فعالياتك.",
+  "exampleTitle": "فعالية جديدة متاحة",
+  "exampleDescription": "تمت إضافة ورشة عمل جديدة حول \"تقنيات React المتقدمة\". تحقق منها!",
+  "exampleTime": "منذ ساعتين"
+}
 
-  "home": "Home",
-  "dashboard": "Dashboard",
-  "events": "Events",
-  "myEvents": "My Events",
-  "notifications": "Notifications",
-  "myCertificates": "My Certificates",
-  "profile": "Profile",
-  "statistics": "Statistics",
-  "signOut": "Sign Out",
-  "appName": "JUST Events",
-
-  "aboutUs": "About Us",
-  "allRightsReserved": "All rights reserved.",
 
 
-  "aboutParagraph1": "JUST Events is a digital platform designed to centralize and streamline the management of student activities at Jordan University of Science and Technology (JUST). The system provides a modern alternative to traditional methods of promoting and managing events, which often rely on fragmented channels such as printed posters or social media groups. By bringing everything together in one place, JUST Events makes it easier for students and organizers to stay connected and engaged.",
-  "aboutParagraph2": "The platform allows students to browse upcoming events, register for activities, volunteer, provide feedback, and even download participation certificates directly from the system. Event organizers benefit from efficient registration tracking, feedback collection, and communication with participants. With an intuitive design and user-friendly interface, JUST Events ensures that both students and staff can manage event participation seamlessly.",
-  "meetTeam": "Meet Our Team",
-  "studentId": "Student ID",
-  "email": "Email",
-  "teamSupervisor": "Team Supervisor"
 
 }

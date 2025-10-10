@@ -16,12 +16,12 @@ const AboutUs: React.FC = () => {
         {/* Title Section */}
         <section className="mb-16 text-center">
           <h1 className="mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-5xl font-bold text-transparent">
-            {t("aboutUs")}
+            {t("aboutUsPage.title")}
           </h1>
           <div className="mb-8 flex justify-center">
             <img
               src={logo}
-              alt={t("aboutUs")}
+              alt={t("aboutUsPage.title")}
               className="h-48 w-48 rounded-2xl object-contain shadow-lg transition-shadow duration-300 hover:shadow-xl"
             />
           </div>
@@ -29,10 +29,10 @@ const AboutUs: React.FC = () => {
           {/* Description */}
           <div className="mx-auto max-w-4xl space-y-6">
             <p className="text-lg leading-relaxed text-gray-700">
-              {t("aboutParagraph1")}
+              {t("aboutUsPage.paragraph1")}
             </p>
             <p className="text-lg leading-relaxed text-gray-700">
-              {t("aboutParagraph2")}
+              {t("aboutUsPage.paragraph2")}
             </p>
           </div>
         </section>
@@ -40,7 +40,7 @@ const AboutUs: React.FC = () => {
         {/* Team Section */}
         <section className="mb-16">
           <h2 className="mb-12 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-center text-4xl font-bold text-transparent">
-            {t("meetTeam")}
+            {t("aboutUsPage.meetTeam")}
           </h2>
 
           {/* Team Members */}
@@ -88,13 +88,11 @@ const AboutUs: React.FC = () => {
                   <h3 className="mb-2 text-xl font-semibold text-gray-800">
                     {member.name}
                   </h3>
-                  <p
-                    className={`mb-1 text-sm font-medium text-${member.color}-600`}
-                  >
-                    {t("studentId")}: {member.id}
+                  <p className={`mb-1 text-sm font-medium text-${member.color}-600`}>
+                    {t("aboutUsPage.studentId")}: {member.id}
                   </p>
                   <p className="text-sm text-gray-600">
-                    {t("email")}:{" "}
+                    {t("aboutUsPage.email")}:{" "}
                     <a
                       href={`mailto:${member.email}`}
                       className={`text-${member.color}-500 transition-colors duration-200 hover:text-${member.color}-700`}
@@ -113,17 +111,17 @@ const AboutUs: React.FC = () => {
               <div className="text-center">
                 <img
                   src={hasanImg}
-                  alt={t("teamSupervisor")}
+                  alt={t("aboutUsPage.teamSupervisor")}
                   className="mx-auto mb-4 h-28 w-28 rounded-full object-cover ring-4 ring-indigo-200 transition-all duration-300 hover:ring-indigo-300"
                 />
                 <h3 className="mb-2 text-2xl font-bold text-gray-800">
                   Dr.Hasan K Albzoor
                 </h3>
                 <p className="mb-2 text-lg font-semibold text-indigo-600">
-                  {t("teamSupervisor")}
+                  {t("aboutUsPage.teamSupervisor")}
                 </p>
                 <p className="text-sm text-gray-600">
-                  {t("email")}:{" "}
+                  {t("aboutUsPage.email")}:{" "}
                   <a
                     href="mailto:hkalbzoor@just.edu.jo"
                     className="text-indigo-500 transition-colors duration-200 hover:text-indigo-700"
