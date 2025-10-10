@@ -294,7 +294,7 @@ const EventForm: React.FC = () => {
               <tbody>
                 {stages.map((stage) => (
                   <tr key={stage._id} className="border-b">
-                    <td className="px-2 py-1">{stage.location}</td>
+                    <td className="px-2 py-1">{stage.name}</td>
                     <td className="px-2 py-1">
                       {stage.date
                         ? new Date(stage.date).toLocaleDateString()

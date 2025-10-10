@@ -67,7 +67,7 @@ function EventDetails() {
               <p className="flex items-center gap-2">
                 📅 <span className="font-medium">Date:</span>
                 {` ${event?.date.split("T")[0]} At
-                 ${event?.date ? new Date(event.date).toLocaleTimeString() : ""}`}
+                 ${event?.startTime ? event.startTime : "N/A"} ${event?.endTime ? `- ${event.endTime}` : ""}`}
               </p>
               <p className="flex items-center gap-2">
                 📍 <span className="font-medium">Location:</span>

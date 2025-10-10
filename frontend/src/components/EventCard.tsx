@@ -197,7 +197,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.createdAt.split("T")[1]}
+            {event.startTime ? event.startTime : "N/A"} {event.endTime ? `- ${event.endTime}` : ""}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />

@@ -11,7 +11,7 @@ interface IStage extends Document {
 }
 
 const stageSchema = new Schema<IStage>({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   location: { type: String, required: true },
   capacity: { type: Number, required: true },
   status: { type: String, enum: ["free", "reserved"], required: true },

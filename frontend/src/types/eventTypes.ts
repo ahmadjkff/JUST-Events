@@ -6,6 +6,8 @@ export interface IEvent {
   description: string;
   location: string;
   date: string; // ISO string
+  startTime?: string; // "HH:MM" format
+  endTime?: string; // "HH:MM" format
   createdBy: string; // User ID
   status: EventStatus;
   volunteers: User[]; // Array of User IDs

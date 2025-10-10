@@ -50,10 +50,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:name", async (req, res) => {
+router.get("/:location", async (req, res) => {
   try {
-    const { name } = req.params;
-    const stage = await stageModel.findOne({ name });
+    const { location } = req.params;
+    const stage = await stageModel.findOne({ name: location, status: "free" });
     if (!stage) {
       return res.status(404).json({
         statusCode: 404,
