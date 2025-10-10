@@ -1,18 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/Button";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/AlertDialog";
+import { Link } from "react-router-dom";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useEvent } from "../context/event/EventContext";
@@ -21,13 +10,11 @@ import { cancelRegistration } from "../features/student/services/cancelService";
 import { registerForEvent } from "../features/student/services/registerService";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { deleteEvent } from "../features/supervisor/services/supervisorRequests";
 import { fetchStudentRegistrations } from "../features/student/services/StudentService";
 
 const EventCard = ({ event }: { event: IEvent }) => {
   const { user } = useAuth();
   const { fetchEvents } = useEvent();
-  const navigate = useNavigate();
   const [registrations, setRegistrations] = useState<any[]>([]);
   const { t } = useTranslation();
 
@@ -73,13 +60,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
       }
     } catch (error) {
       console.error("Error cancelling registration:", error);
-    }
-  };
-
-  const handleDeleteEvent = async (eventId: string) => {
-    const result = await deleteEvent(eventId);
-    if (result.success) {
-      fetchEvents("approved");
     }
   };
 
@@ -132,58 +112,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
                 Details
               </Button>
             </Link>
-
-            {event.createdBy === user?._id && (
-              <>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      size="sm"
-                      className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
-                    >
-                      Delete
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="max-w-md">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle className="text-xl font-bold text-red-600">
-                        Delete Event
-                      </AlertDialogTitle>
-                      <AlertDialogDescription className="text-gray-600">
-                        Are you sure you want to delete <b>{event.title}</b>?{" "}
-                        <br />
-                        This action{" "}
-                        <span className="font-semibold text-red-500">
-                          cannot be undone
-                        </span>{" "}
-                        and attendees will lose access.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
-                        Close
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => handleDeleteEvent(event._id)}
-                        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
-                      >
-                        Yes, Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <Button
-                  size="sm"
-                  className="bg-blue-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-blue-600 hover:shadow-lg"
-                  onClick={() =>
-                    navigate(`/supervisor/edit-event/${event._id}`)
-                  }
-                >
-                  Edit
-                </Button>
-              </>
-            )}
           </div>
         </div>
       </CardHeader>
@@ -197,7 +125,8 @@ const EventCard = ({ event }: { event: IEvent }) => {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.startTime ? event.startTime : "N/A"} {event.endTime ? `- ${event.endTime}` : ""}
+            {event.startTime ? event.startTime : "N/A"}{" "}
+            {event.endTime ? `- ${event.endTime}` : ""}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />

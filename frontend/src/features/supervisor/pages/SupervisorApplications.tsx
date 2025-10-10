@@ -5,7 +5,20 @@ import { Button } from "../../../components/ui/Button";
 import { Loader2, AlertTriangle } from "lucide-react"; // for error icon
 import { useNavigate } from "react-router-dom";
 import { exportRegisterdStudentList } from "../services/supervisorRequests";
-
+import { deleteEvent } from "../services/supervisorRequests";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@radix-ui/react-alert-dialog";
+import {
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "../../../components/ui/AlertDialog";
 function SupervisorApplications() {
   const { events, fetchSupervisorApplications, isLoading } = useSupervisor();
   const navigate = useNavigate();
@@ -26,6 +39,21 @@ function SupervisorApplications() {
     }
 
     setTimeout(() => setErrorMessage(null), 5000);
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      const result = await deleteEvent(eventId);
+      if (result.success) {
+        await fetchSupervisorApplications("approved");
+      } else {
+        console.log(result);
+        setErrorMessage(result.message || "Failed to delete event");
+      }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage("An unexpected error occurred while deleting.");
+    }
   };
 
   useEffect(() => {
@@ -132,6 +160,52 @@ function SupervisorApplications() {
               >
                 Edit
               </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent
+                  className="pointer-events-auto fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+                  onClick={(e) => e.stopPropagation()} 
+                >
+                  <div
+                    className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg"
+                    onClick={(e) => e.stopPropagation()}  
+                  >
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-xl font-bold text-red-600">
+                        Delete Event
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-600">
+                        Are you sure you want to delete <b>{event.title}</b>?{" "}
+                        <br />
+                        This action{" "}
+                        <span className="font-semibold text-red-500">
+                          cannot be undone
+                        </span>{" "}
+                        and attendees will lose access.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="mt-4 flex justify-end gap-3">
+                      <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
+                        Close
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDeleteEvent(event._id)}
+                        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
+                      >
+                        Yes, Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </div>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardHeader>
         </Card>

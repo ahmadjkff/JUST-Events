@@ -11,9 +11,6 @@ import {
 } from "../components/ui/tabs";
 import { useEvent } from "../context/event/EventContext";
 import { useEffect } from "react";
-import { useAuth } from "../context/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
-
 import EventCard from "../components/EventCard";
 
 const TABS = [
@@ -24,9 +21,6 @@ const TABS = [
 function BrowseEvents() {
   useTitle("Browse Events - JUST Events");
   const { eventsByStatus, fetchEvents } = useEvent();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
   useEffect(() => {
     fetchEvents("approved");
   }, []);
@@ -52,14 +46,6 @@ function BrowseEvents() {
         <div className="mx-auto max-w-7xl">
           {/* Search and Filter Bar */}
           <div className="mb-6 flex items-center gap-4">
-            {user?.role === "supervisor" && (
-              <Button
-                size="lg"
-                onClick={() => navigate("/supervisor/create-event")}
-              >
-                Create Event
-              </Button>
-            )}
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
