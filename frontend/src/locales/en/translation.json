@@ -100,9 +100,47 @@
   "exampleTitle": "فعالية جديدة متاحة",
   "exampleDescription": "تمت إضافة ورشة عمل جديدة حول \"تقنيات React المتقدمة\". تحقق منها!",
   "exampleTime": "منذ ساعتين"
+},
+"registeredStudents": {
+  "title": "الطلاب المسجلين",
+  "empty": "لا يوجد طلاب مسجلين في هذا الحدث.",
+  "studentLine": "{{firstName}} {{lastName}} - {{email}}"
+},
+"settings": {
+  "title": "الإعدادات",
+  "toggleTheme": "تبديل الوضع الداكن / الفاتح",
+  "switchLanguage": "تبديل اللغة (عربي / إنجليزي)",
+  "logout": "تسجيل الخروج"
+},
+"unauthorized": {
+  "title": "دخول غير مصرح",
+  "description": "ليس لديك إذن لعرض هذه الصفحة. يرجى تسجيل الدخول بالحساب الصحيح أو التواصل مع المسؤول.",
+  "backDashboard": "⬅ العودة إلى لوحة التحكم",
+  "backHome": "⬅ العودة إلى الصفحة الرئيسية"
+},
+"eventDetails": {
+  "details": "التفاصيل",
+  "cancelRegistration": "إلغاء التسجيل",
+  "attendees": "الحضور",
+  "register": "سجل الآن",
+  "viewDetails": "عرض التفاصيل",
+  "noEvents": "لا توجد فعاليات متاحة حالياً",
+  "registered": "تم التسجيل",
+  "spotsLeft": "المقاعد المتبقية",
+  "startsAt": "تبدأ في",
+  "endsAt": "تنتهي في",
+  "location": "المكان"
+},
+"categories": {
+  "Technology": "تكنولوجيا",
+  "Business": "أعمال",
+  "Career": "مسار مهني",
+  "Education": "تعليم",
+  "Health": "صحة",
+  "Sports": "رياضة",
+  "Culture": "ثقافة",
+  "Other": "أخرى"
+}
 }
 
 
-
-
-}

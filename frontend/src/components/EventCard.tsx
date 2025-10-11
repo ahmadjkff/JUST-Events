@@ -18,7 +18,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const { t } = useTranslation();
 
-  // 🔹 Fetch all student registrations once
+  // Fetch all student registrations once
   useEffect(() => {
     if (!user?._id) return;
 
@@ -32,7 +32,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
     getRegistrations();
   }, [user?._id]);
 
-  // 🔹 Helper to get registration status by eventId
+  // Helper to get registration status by eventId
   const getStatusForEvent = (eventId: string) => {
     const reg = registrations.find((r) => r.event === eventId);
     return reg ? reg.status : null;
@@ -42,7 +42,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
     await registerForEvent(eventId, userId);
     await fetchEvents("approved");
 
-    // Optimistic UI update
     setRegistrations((prev) => [
       ...prev,
       { event: eventId, status: "pending" },
@@ -71,13 +70,20 @@ const EventCard = ({ event }: { event: IEvent }) => {
         "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
       Career:
         "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      Education:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+      Health:
+        "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+      Sports:
+        "bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300",
+      Culture:
+        "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
+      Other:
+        "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300",
     };
-    return (
-      colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
-    );
+    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
-  // 🔹 Get status for this event
   const status = getStatusForEvent(event._id);
 
   return (
@@ -87,14 +93,13 @@ const EventCard = ({ event }: { event: IEvent }) => {
           <div className="space-y-2">
             <CardTitle className="text-lg">{event.title}</CardTitle>
             <Badge className={getCategoryColor(event.category)}>
-              {event.category}
+              {t(`categories.${event.category}`)}
             </Badge>
           </div>
           <div className="flex gap-2">
-            {/* 🔹 Show correct button based on registration status */}
             {!status && (
               <Button onClick={() => handleRegister(event._id, user?._id!)}>
-                {t("register")}
+                {t("eventDetails.register")}
               </Button>
             )}
 
@@ -103,13 +108,13 @@ const EventCard = ({ event }: { event: IEvent }) => {
                 className="bg-red-500 text-white hover:bg-red-600"
                 onClick={() => handleRegistrationCancel(event._id, user?._id!)}
               >
-                Cancel Registration
+                {t("eventDetails.cancelRegistration")}
               </Button>
             )}
 
             <Link to={`/event/${event._id}`}>
               <Button variant="outline" size="sm">
-                Details
+                {t("eventDetails.details")}
               </Button>
             </Link>
           </div>
@@ -125,17 +130,17 @@ const EventCard = ({ event }: { event: IEvent }) => {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.startTime ? event.startTime : "N/A"}{" "}
-            {event.endTime ? `- ${event.endTime}` : ""}
+            {event.startTime ? `${t("eventDetails.startsAt")} ${event.startTime}` : "N/A"}{" "}
+            {event.endTime ? `- ${t("eventDetails.endsAt")} ${event.endTime}` : ""}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
-            {event.location}
+            {t("eventDetails.location")}: {event.location}
           </div>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             <Link to={`/registred-students/${event._id}`}>
-              {event.registeredStudents.length} Attendees
+              {event.registeredStudents.length} {t("eventDetails.attendees")}
             </Link>
           </div>
         </div>

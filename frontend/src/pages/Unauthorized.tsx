@@ -1,8 +1,10 @@
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/auth/AuthContext";
+import { useTranslation } from "react-i18next";
 
 function Unauthorized() {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <div className="bg-background flex h-screen flex-col items-center justify-center px-4 text-center">
@@ -13,13 +15,12 @@ function Unauthorized() {
 
       {/* the title */}
       <h2 className="text-foreground mb-2 text-3xl font-bold">
-        Unauthorized Access
+        {t("unauthorized.title")}
       </h2>
 
       {/* Description */}
       <p className="text-muted-foreground mb-6 max-w-md">
-        You don’t have permission to view this page. Please log in with the
-        right account or contact the admin.
+        {t("unauthorized.description")}
       </p>
 
       {user?.role === "admin" ? (
@@ -29,7 +30,7 @@ function Unauthorized() {
           className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
           onClick={() => (window.location.href = "/admin/dashboard")}
         >
-          ⬅ Back to Dashboard
+          {t("unauthorized.backDashboard")}
         </Button>
       ) : (
         <Button
@@ -38,7 +39,7 @@ function Unauthorized() {
           className="rounded-full px-8 text-lg shadow-md transition-all hover:shadow-lg"
           onClick={() => (window.location.href = "/")}
         >
-          ⬅ Back to Home
+          {t("unauthorized.backHome")}
         </Button>
       )}
     </div>
