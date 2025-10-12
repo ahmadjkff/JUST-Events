@@ -15,6 +15,7 @@ import path from "path";
 import fs from "fs";
 
 interface IBody {
+  stageId: string;
   title: string;
   description: string;
   location: string;
@@ -26,6 +27,7 @@ interface IBody {
 
 export const createEvent = async ({
   // To-Do: check if date is in the future
+  stageId,
   title,
   description,
   location,
@@ -35,7 +37,9 @@ export const createEvent = async ({
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
   try {
-    const response = await fetch(`http://localhost:5000/api/stage/${location}`);
+    const response = await fetch(
+      `http://localhost:5000/api/stage/${location}/${stageId}`
+    );
 
     if (!response.ok) {
       return {

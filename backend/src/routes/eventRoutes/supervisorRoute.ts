@@ -24,7 +24,8 @@ router.post(
   upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, department, category } = req.body;
+      const { stageId, title, description, location, department, category } =
+        req.body;
       const img = req.file ? `/eventsimage/${req.file.filename}` : null;
       if (
         !title ||
@@ -51,6 +52,7 @@ router.post(
 
       const supervisorId = req.user._id;
       const { data, statusCode, message, success } = await createEvent({
+        stageId,
         title,
         description,
         location,

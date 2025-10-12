@@ -1,6 +1,7 @@
 import type { EventCategory, EventDepartment } from "../../../types/eventTypes";
 
 export const createEvent = async (
+  stageId: string,
   title: string,
   description: string,
   location: string,
@@ -10,6 +11,7 @@ export const createEvent = async (
 ) => {
   try {
     const formData = new FormData();
+    formData.append("stageId", stageId);
     formData.append("title", title);
     formData.append("description", description);
     formData.append("location", location);

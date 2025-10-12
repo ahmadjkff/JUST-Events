@@ -28,6 +28,7 @@ const EventForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [form, setForm] = useState({
+    stageId: "",
     title: "",
     description: "",
     location: "",
@@ -86,6 +87,7 @@ const EventForm: React.FC = () => {
 
     try {
       const result = await createEvent(
+        form.stageId,
         form.title,
         form.description,
         form.location,
@@ -108,6 +110,12 @@ const EventForm: React.FC = () => {
       setError("Unexpected error occurred");
       setLoading(false);
     }
+  };
+
+  const hanldelSeletetStage = async (id: string, location: string) => {
+    console.log("Selected Stage ID:", id);
+    console.log("Selected Stage Location:", location);
+    setForm({ ...form, stageId: id, location });
   };
 
   return (
@@ -312,15 +320,7 @@ const EventForm: React.FC = () => {
                             : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
                         onClick={() => {
-                          setForm({
-                            ...form,
-                            location: stage.name,
-                            date: stage.date
-                              ? new Date(stage.date).toISOString().split("T")[0]
-                              : "",
-                            startTime: stage.startTime || "",
-                            endTime: stage.endTime || "",
-                          });
+                          hanldelSeletetStage(stage._id, stage.name);
                           setShowDialog(false);
                         }}
                       >
