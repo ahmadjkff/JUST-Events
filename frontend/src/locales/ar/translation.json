@@ -93,54 +93,54 @@
   "backDashboard": "العودة إلى لوحة التحكم"
 },
 "notifications": {
-  "title": "Notifications",
-  "description": "Here are your recent notifications and updates.",
-  "headerTitle": "Your Notifications",
-  "headerDescription": "Stay updated with the latest news and alerts from your events.",
-  "exampleTitle": "New Event Available",
-  "exampleDescription": "A new workshop on \"Advanced React Techniques\" has been added. Check it out!",
-  "exampleTime": "2 hours ago"
+  "title": "الإشعارات",
+  "description": "إليك أحدث الإشعارات والتحديثات الخاصة بك.",
+  "headerTitle": "إشعاراتك",
+  "headerDescription": "ابقَ على اطلاع بأحدث الأخبار والتنبيهات من فعالياتك.",
+  "exampleTitle": "فعالية جديدة متاحة",
+  "exampleDescription": "تمت إضافة ورشة عمل جديدة حول \"تقنيات React المتقدمة\". تحقق منها!",
+  "exampleTime": "منذ ساعتين"
 },
 "registeredStudents": {
-  "title": "Registered Students",
-  "empty": "No students have registered for this event.",
+  "title": "الطلاب المسجلين",
+  "empty": "لا يوجد طلاب مسجلين في هذا الحدث.",
   "studentLine": "{{firstName}} {{lastName}} - {{email}}"
 },
 "settings": {
-  "title": "Settings",
-  "toggleTheme": "Toggle Dark / Light Mode",
-  "switchLanguage": "Switch Language (AR / EN)",
-  "logout": "Logout"
+  "title": "الإعدادات",
+  "toggleTheme": "تبديل الوضع الداكن / الفاتح",
+  "switchLanguage": "تبديل اللغة (عربي / إنجليزي)",
+  "logout": "تسجيل الخروج"
 },
 "unauthorized": {
-  "title": "Unauthorized Access",
-  "description": "You don’t have permission to view this page. Please log in with the right account or contact the admin.",
-  "backDashboard": "⬅ Back to Dashboard",
-  "backHome": "⬅ Back to Home"
+  "title": "دخول غير مصرح",
+  "description": "ليس لديك إذن لعرض هذه الصفحة. يرجى تسجيل الدخول بالحساب الصحيح أو التواصل مع المسؤول.",
+  "backDashboard": "⬅ العودة إلى لوحة التحكم",
+  "backHome": "⬅ العودة إلى الصفحة الرئيسية"
 },
-  "eventDetails": {
-    "details": "Details",
-    "cancelRegistration": "Cancel Registration",
-    "attendees": "Attendees",
-    "register": "Register Now",
-    "viewDetails": "View Details",
-    "noEvents": "No events available",
-    "registered": "Registered",
-    "spotsLeft": "Spots Left",
-    "startsAt": "Starts At",
-    "endsAt": "Ends At",
-    "location": "Location"
-  },
-  "categories": {
-    "Technology": "Technology",
-    "Business": "Business",
-    "Career": "Career",
-    "Education": "Education",
-    "Health": "Health",
-    "Sports": "Sports",
-    "Culture": "Culture",
-    "Other": "Other"
-  }
+"eventDetails": {
+  "details": "التفاصيل",
+  "cancelRegistration": "إلغاء التسجيل",
+  "attendees": "الحضور",
+  "register": "سجل الآن",
+  "viewDetails": "عرض التفاصيل",
+  "noEvents": "لا توجد فعاليات متاحة حالياً",
+  "registered": "تم التسجيل",
+  "spotsLeft": "المقاعد المتبقية",
+  "startsAt": "تبدأ في",
+  "endsAt": "تنتهي في",
+  "location": "المكان"
+},
+"categories": {
+  "Technology": "تكنولوجيا",
+  "Business": "أعمال",
+  "Career": "مسار مهني",
+  "Education": "تعليم",
+  "Health": "صحة",
+  "Sports": "رياضة",
+  "Culture": "ثقافة",
+  "Other": "أخرى"
+}
 
 
 
