@@ -5,6 +5,7 @@ import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/Button";
 import EventCard from "./EventCard";
 import { Card, CardContent } from "../../../components/ui/Card";
+import { useTranslation } from "react-i18next";
 
 const statusColors: Record<string, string> = {
   approved: "text-green-500",
@@ -14,7 +15,6 @@ const statusColors: Record<string, string> = {
 
 function EventsTable({
   value,
-  status,
   icon,
   category = null,
   department = null,
@@ -33,44 +33,53 @@ function EventsTable({
   eventsByStatus: Record<string, any[]>;
   updateStatus: any;
 }) {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+
   const filteredEvents = useMemo(
     () => (status: EventStatus) => {
       let events = eventsByStatus[status as keyof typeof eventsByStatus] || [];
       if (category) {
         events = events.filter(
           (e: IEvent) =>
-            (e.category ?? "").toLowerCase() === category.toLowerCase(),
+            (e.category ?? "").toLowerCase() === category.toLowerCase()
         );
       }
 
       if (department) {
         events = events.filter(
           (e: IEvent) =>
-            e.department.toLowerCase() === department.toLowerCase(),
+            e.department.toLowerCase() === department.toLowerCase()
         );
       }
 
       return events;
     },
-    [eventsByStatus, category, department],
+    [eventsByStatus, category, department]
   );
 
   return (
-    <TabsContent value={value} className="space-y-4">
-      <div className="mb-4 flex items-center justify-between border-b-2 pb-2">
+    <TabsContent value={value} className={`space-y-4 ${isRTL ? "text-right" : ""}`}>
+      {/* === Header Section === */}
+      <div
+        className={`mb-4 flex items-center justify-between border-b-2 pb-2 ${
+          isRTL ? "flex-row-reverse" : ""
+        }`}
+      >
         <h1 className={`text-2xl font-bold ${statusColors[value]}`}>
-          {status}
+          {t(`eventStatusLabels.${value.toLowerCase()}`)}
         </h1>
-        <div className="flex items-center gap-2">
+
+        <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
           {category && (
             <Badge className="bg-gray-100 text-gray-800">
-              Category:
+              {t("eventsTable.category")}:{" "}
               <strong className="text-orange-700">{category}</strong>
             </Badge>
           )}
           {department && (
             <Badge className="bg-gray-100 text-gray-800">
-              Department:
+              {t("eventsTable.department")}:{" "}
               <strong className="text-orange-700">{department}</strong>
             </Badge>
           )}
@@ -83,11 +92,13 @@ function EventsTable({
                 setDepartment(null);
               }}
             >
-              Clear Filters
+              {t("buttons.clearFilters")}
             </Button>
           )}
         </div>
       </div>
+
+      {/* === Events List === */}
       {eventsByStatus[value as keyof typeof eventsByStatus].length > 0 ? (
         <div className="grid gap-4">
           {filteredEvents(value as EventStatus).length ? (
@@ -100,7 +111,7 @@ function EventsTable({
             ))
           ) : (
             <p className="text-muted-foreground">
-              No events found for the selected filters.
+              {t("eventsTable.noFilteredEvents")}
             </p>
           )}
         </div>
@@ -110,11 +121,17 @@ function EventsTable({
             {React.createElement(icon, {
               className: "h-12 w-12 mx-auto text-muted-foreground mb-4",
             })}
-            <h3 className="mb-2 text-lg font-semibold">No {value} events</h3>
+            <h3 className="mb-2 text-lg font-semibold">
+              {t("eventsTable.noEvents", {
+                status: t(`eventStatusLabels.${value.toLowerCase()}`),
+              })}
+            </h3>
             <p className="text-muted-foreground mb-4">
-              {value} events will appear here.
+              {t("eventsTable.noEventsDescription", {
+                status: t(`eventStatusLabels.${value.toLowerCase()}`),
+              })}
             </p>
-            <Button>Browse Available Events</Button>
+            <Button>{t("eventsTable.browseEvents")}</Button>
           </CardContent>
         </Card>
       )}

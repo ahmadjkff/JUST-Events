@@ -2,45 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { Calendar, CalendarCheck, User, Users, UserStar } from "lucide-react";
 import { useEvent } from "../../../context/event/EventContext";
-
 import { useEffect, useState } from "react";
-
-const DASHBOARD_ITEMS = [
-  {
-    title: "Control Events",
-    icon: CalendarCheck,
-    description:
-      "Manage and oversee all events happening within the university.",
-    link: "/admin/control-events",
-    color: "green",
-  },
-  {
-    title: "Manage User Roles",
-    icon: User,
-    description: "Assign and modify roles for users in the system.",
-    link: "/admin/manage-roles",
-    color: "blue",
-  },
-  {
-    title: "Volunteers Management",
-    icon: UserStar,
-    description: "Oversee volunteer activities and assignments.",
-    link: "/admin/volunteer-control",
-    color: "orange",
-  },
-  {
-    title: "Statistics",
-    icon: Calendar,
-    description: "View detailed statistics and reports.",
-    link: "/admin/statistics",
-    color: "purple",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { eventsByStatus, fetchEvents } = useEvent();
   const [userCount, setUserCount] = useState<number>(0);
+  const { i18n, t } = useTranslation();
+
+  // ✅ ضبط اتجاه الصفحة بناءً على اللغة
+  useEffect(() => {
+    document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
 
   useEffect(() => {
     fetchEvents();
@@ -48,7 +22,7 @@ function Dashboard() {
     fetchEvents("pending");
     fetchEvents("rejected");
 
-    // fetch users once
+    // Fetch users once
     const getUsers = async () => {
       try {
         const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin`, {
@@ -75,61 +49,138 @@ function Dashboard() {
 
   const SYSTEM_SUMMARY = [
     {
-      title: "Number Of Users",
+      title: t("adminDashboard.usersTitle"),
       subtitle: userCount,
       icon: Users,
-      description:
-        "Total registered users including students, supervisors, and admins.",
+      description: t("adminDashboard.usersDescription"),
       color: "blue",
     },
     {
-      title: "Active Events",
+      title: t("adminDashboard.activeEventsTitle"),
       subtitle: eventsByStatus.approved.length,
       icon: CalendarCheck,
-      description: "Events currently active or upcoming in the university.",
+      description: t("adminDashboard.activeEventsDescription"),
       color: "green",
     },
     {
-      title: "Supervisors",
+      title: t("adminDashboard.supervisorsTitle"),
       subtitle: "25",
       icon: User,
-      description: "Total number of supervisors managing various events.",
+      description: t("adminDashboard.supervisorsDescription"),
       color: "orange",
     },
     {
-      title: "Volunteers",
+      title: t("adminDashboard.volunteersTitle"),
       subtitle: "300",
       icon: UserStar,
-      description: "Students actively volunteering in different events.",
+      description: t("adminDashboard.volunteersDescription"),
       color: "purple",
     },
     {
-      title: "Pending Requests",
+      title: t("adminDashboard.pendingRequestsTitle"),
       subtitle: eventsByStatus.pending.length,
       icon: Calendar,
-      description: "Requests awaiting approval from the admin.",
+      description: t("adminDashboard.pendingRequestsDescription"),
       color: "red",
     },
   ];
 
+  const DASHBOARD_ITEMS = [
+    {
+      title: t("adminDashboard.controlEventsTitle"),
+      icon: CalendarCheck,
+      description: t("adminDashboard.controlEventsDescription"),
+      link: "/admin/control-events",
+      color: "green",
+    },
+    {
+      title: t("adminDashboard.manageRolesTitle"),
+      icon: User,
+      description: t("adminDashboard.manageRolesDescription"),
+      link: "/admin/manage-roles",
+      color: "blue",
+    },
+    {
+      title: t("adminDashboard.volunteerManagementTitle"),
+      icon: UserStar,
+      description: t("adminDashboard.volunteerManagementDescription"),
+      link: "/admin/volunteer-control",
+      color: "orange",
+    },
+    {
+      title: t("adminDashboard.statisticsTitle"),
+      icon: Calendar,
+      description: t("adminDashboard.statisticsDescription"),
+      link: "/admin/statistics",
+      color: "purple",
+    },
+  ];
+
+  const isRTL = i18n.language === "ar";
+
   return (
-    <div className="p-8">
-      <header className="mb-8">
-        <h1 className="text-4xl font-extrabold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">
-          Manage university events and user roles efficiently
-        </p>
+    <div
+      className={`p-8 transition-all ${isRTL ? "text-right" : "text-left"
+        }`}
+      dir={isRTL ? "rtl" : "ltr"}
+    >
+      {/* Header */}
+      <header
+        className={`mb-8 ${isRTL ? "text-right" : "text-left"
+          }`}
+      >
+        <h1 className="text-4xl font-extrabold">{t("adminDashboard.title")}</h1>
+        <p className="text-muted-foreground">{t("adminDashboard.subtitle")}</p>
       </header>
+
       <div className="space-y-6">
-        <h2 className="text-center text-2xl font-bold">System Summary</h2>
+
+
+        {/* System Management */}
+        <h2 className="text-center text-2xl font-bold">
+          {t("adminDashboard.systemManagement")}
+        </h2>
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
-          {SYSTEM_SUMMARY.map((item) => (
+          {DASHBOARD_ITEMS.map((item) => (
             <Card
+              onClick={() => navigate(item.link)}
               key={item.title}
-              className="transition-shadow hover:shadow-lg"
+              className="cursor-pointer transition-shadow hover:shadow-lg"
             >
               <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
+                <div
+                  className={`flex items-center ${isRTL
+                      ? "flex-row-reverse space-x-reverse"
+                      : "space-x-2"
+                    }`}
+                >
+                  <item.icon className={`h-8 w-8 text-${item.color}-500`} />
+                  <div>
+                    <p className="text-xl font-bold">{item.title}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {item.description}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* System Summary */}
+        <h2 className="text-center text-2xl font-bold">
+          {t("adminDashboard.systemSummary")}
+        </h2>
+        <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
+          {SYSTEM_SUMMARY.map((item) => (
+            <Card key={item.title} className="transition-shadow hover:shadow-lg">
+              <CardContent className="p-4">
+                <div
+                  className={`flex items-center ${isRTL
+                      ? "flex-row-reverse space-x-reverse"
+                      : "space-x-2"
+                    }`}
+                >
                   <item.icon className={`h-8 w-8 text-${item.color}-500`} />
                   <div>
                     <p className="text-2xl font-bold">{item.subtitle}</p>
@@ -145,28 +196,7 @@ function Dashboard() {
             </Card>
           ))}
         </div>
-        <h2 className="text-center text-2xl font-bold">System Management</h2>
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
-          {DASHBOARD_ITEMS.map((item) => (
-            <Card
-              onClick={() => navigate(item.link)}
-              key={item.title}
-              className="cursor-pointer transition-shadow hover:shadow-lg"
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-2">
-                  <item.icon className={`h-8 w-8 text-${item.color}-500`} />
-                  <div>
-                    <p className="text-xl font-bold">{item.title}</p>
-                    <p className="text-muted-foreground text-sm">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 import Loading from "../../../components/ui/Loading";
+import { useTranslation } from "react-i18next";
 
 const AdminStatistics = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<{
     events: {
       totalEvents: number;
@@ -20,19 +22,20 @@ const AdminStatistics = () => {
   const [loading, setLoading] = useState(true);
 
   // Fetch statistics data from the backend
-  useState(() => {
+  useEffect(() => {
     fetch("http://localhost:3001/event/admin/statistics")
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((err) => console.error("Failed to fetch admin statistics:", err))
       .finally(() => setLoading(false));
-  });
+  }, []);
 
   const USER_COLORS: Record<string, string> = {
     admin: "blue",
     student: "green",
     supervisor: "orange",
   };
+
   const EVENT_COLORS: Record<string, string> = {
     approved: "green",
     pending: "gray",
@@ -42,16 +45,18 @@ const AdminStatistics = () => {
 
   const statistics = [
     {
-      title: "Events",
+      title: t("adminStatistics.events"),
       dataKey: "events",
       colors: EVENT_COLORS,
       statisticsData: data?.events.eventCounts || [],
+      translationGroup: "eventStatusLabels",
     },
     {
-      title: "Users",
+      title: t("adminStatistics.users"),
       dataKey: "users",
       colors: USER_COLORS,
       statisticsData: data?.users.roleCounts || [],
+      translationGroup: "roles",
     },
   ];
 
@@ -59,33 +64,43 @@ const AdminStatistics = () => {
     title,
     statisticsData,
     colors,
+    translationGroup,
   }: {
     title: string;
     statisticsData: { _id: string; count: number }[];
     colors: Record<string, string>;
-  }) => (
-    <div className="flex flex-col items-center">
-      <h1>{title} Statistics</h1>
-      <PieChart width={400} height={300}>
-        <Pie
-          data={statisticsData}
-          dataKey="count"
-          nameKey="_id"
-          cx="50%"
-          cy="50%"
-          outerRadius={100}
-          fill="#8884d8"
-          label
-        >
-          {statisticsData.map((entry: any, index: number) => (
-            <Cell key={`cell-${index}`} fill={colors[entry._id] || "gray"} />
-          ))}
-        </Pie>
-        <Tooltip />
-        <Legend />
-      </PieChart>
-    </div>
-  );
+    translationGroup: string;
+  }) => {
+    // ترجمة القيم (roles أو statuses)
+    const translatedData = statisticsData.map((entry) => ({
+      ...entry,
+      translatedName: t(`${translationGroup}.${entry._id}`, entry._id),
+    }));
+
+    return (
+      <div className="flex flex-col items-center">
+        <h1 className="text-xl font-bold mb-4">{title}</h1>
+        <PieChart width={400} height={300}>
+          <Pie
+            data={translatedData}
+            dataKey="count"
+            nameKey="translatedName"
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            fill="#8884d8"
+            label
+          >
+            {translatedData.map((entry: any, index: number) => (
+              <Cell key={`cell-${index}`} fill={colors[entry._id] || "gray"} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </div>
+    );
+  };
 
   if (loading) return <Loading />;
 
@@ -95,12 +110,15 @@ const AdminStatistics = () => {
       <header className="bg-card border-border flex items-center justify-between border-b p-4">
         <div>
           <h1 className="text-foreground text-2xl font-bold">
-            System Statistics
+            {t("adminStatistics.title")}
           </h1>
-          <p className="text-muted-foreground">Show system statistics</p>
+          <p className="text-muted-foreground">
+            {t("adminStatistics.description")}
+          </p>
         </div>
       </header>
 
+      {/* Charts */}
       <div className="flex flex-wrap justify-between gap-8 p-6">
         {statistics.map((stat) => (
           <StatistcsComponent
@@ -108,6 +126,7 @@ const AdminStatistics = () => {
             title={stat.title}
             colors={stat.colors}
             statisticsData={stat.statisticsData}
+            translationGroup={stat.translationGroup}
           />
         ))}
       </div>

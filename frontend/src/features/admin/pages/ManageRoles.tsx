@@ -6,12 +6,15 @@ import { getAllUsers } from "../services/APIRequests";
 import toast from "react-hot-toast";
 import EditDialog from "../../../components/ui/EditDialog";
 import Menu from "../../../components/ui/Menu";
+import { useTranslation } from "react-i18next";
 
 function ManageRoles() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [users, setUsers] = useState<User[]>([]);
   const [role, setRole] = useState<string | null>(null);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -19,7 +22,7 @@ function ManageRoles() {
       if (success) setUsers(users);
       else {
         console.error("Failed to fetch users:", message);
-        toast.error(message || "Failed to fetch users");
+        toast.error(message || t("manageRoles.fetchError"));
       }
     };
     fetchUsers();
@@ -47,30 +50,40 @@ function ManageRoles() {
   );
 
   return (
-    <div className="flex flex-col space-y-6 p-6">
+    <div
+      className={`flex flex-col space-y-6 p-6 ${
+        isRTL ? "text-right" : "text-left"
+      }`}
+    >
+      {/* ===== Header ===== */}
       <header className="bg-card border-border flex items-center justify-between border-b p-4">
-        <div>
-          <h1 className="text-foreground text-2xl font-bold">All Users</h1>
-          <p className="text-muted-foreground">
-            Manage user roles and permissions
-          </p>
+        <div className={isRTL ? "text-right" : "text-left"}>
+          <h1 className="text-foreground text-2xl font-bold">
+            {t("manageRoles.title")}
+          </h1>
+          <p className="text-muted-foreground">{t("manageRoles.subtitle")}</p>
         </div>
         <Input
-          placeholder="🔍 Search users"
+          placeholder={t("manageRoles.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-60"
         />
       </header>
 
+      {/* ===== Main ===== */}
       <main>
-        <table className="w-full border">
+        <table
+          className={`w-full border ${
+            isRTL ? "text-right" : "text-left"
+          }`}
+        >
           <thead>
             <tr className="bg-gray-100">
-              <th className="border p-2">ID</th>
-              <th className="border p-2">Name</th>
-              <th className="border p-2">Role</th>
-              <th className="border p-2">Actions</th>
+              <th className="border p-2">{t("manageRoles.id")}</th>
+              <th className="border p-2">{t("manageRoles.name")}</th>
+              <th className="border p-2">{t("manageRoles.role")}</th>
+              <th className="border p-2">{t("manageRoles.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -78,36 +91,46 @@ function ManageRoles() {
               <tr key={user._id}>
                 <td className="border p-2">{user.universityId}</td>
                 <td className="border p-2">{user.firstName}</td>
-                <td className="border p-2">{user.role}</td>
-                <td className="flex gap-5 space-x-2 border p-2">
+                <td className="border p-2">{t(`roles.${user.role}`)}</td>
+
+                <td
+                  className={`border p-2 ${
+                    isRTL
+                      ? "flex flex-row-reverse gap-5 justify-end"
+                      : "flex flex-row gap-5 justify-start"
+                  }`}
+                >
+                  {/* ===== Edit Dialog ===== */}
                   <EditDialog<User>
-                    title="Edit User"
-                    description="Make changes to this user’s profile."
+                    title={t("manageRoles.editTitle")}
+                    description={t("manageRoles.editDescription")}
                     initialData={user}
                     fields={[
                       {
                         key: "firstName",
-                        label: "First Name",
-                        placeholder: "Enter first name",
+                        label: t("manageRoles.firstName"),
+                        placeholder: t("manageRoles.firstNamePlaceholder"),
                       },
                       {
                         key: "lastName",
-                        label: "Last Name",
-                        placeholder: "Enter last name",
+                        label: t("manageRoles.lastName"),
+                        placeholder: t("manageRoles.lastNamePlaceholder"),
                       },
                       {
                         key: "email",
-                        label: "Email",
-                        placeholder: "Enter email",
+                        label: t("manageRoles.email"),
+                        placeholder: t("manageRoles.emailPlaceholder"),
                         type: "email",
                       },
                     ]}
                     extraContent={
                       <label>
-                        <span className="text-sm font-bold">Role</span>
+                        <span className="text-sm font-bold">
+                          {t("manageRoles.role")}
+                        </span>
                         <Menu
                           className="w-full"
-                          title="Select Role"
+                          title={t("manageRoles.selectRole")}
                           items={["student", "supervisor", "admin"]}
                           selected={role || user.role}
                           setSelected={(role) => setRole(role)}
@@ -116,7 +139,6 @@ function ManageRoles() {
                       </label>
                     }
                     onSave={async (updatedUser) => {
-                      // Exclude _id field from the update payload to avoid MongoDB error
                       const { _id, ...updateData } = updatedUser;
 
                       const response = await fetch(
@@ -125,7 +147,9 @@ function ManageRoles() {
                           method: "PUT",
                           headers: {
                             "Content-Type": "application/json",
-                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            Authorization: `Bearer ${localStorage.getItem(
+                              "token",
+                            )}`,
                           },
                           body: JSON.stringify({
                             ...updateData,
@@ -135,31 +159,39 @@ function ManageRoles() {
                       );
                       const data = await response.json();
                       if (response.ok) {
-                        toast.success("User updated successfully");
+                        toast.success(t("manageRoles.updateSuccess"));
                       } else {
-                        toast.error(data.message || "Failed to update user");
+                        toast.error(
+                          data.message || t("manageRoles.updateError"),
+                        );
                       }
                     }}
                   />
 
+                  {/* ===== Delete Button ===== */}
                   <Button size="sm" variant="destructive">
-                    Delete
+                    {t("manageRoles.delete")}
                   </Button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* Pagination */}
-        <div className="mt-4 flex justify-end space-x-2">
+
+        {/* ===== Pagination ===== */}
+        <div
+          className={`mt-4 flex justify-end space-x-2 ${
+            isRTL ? "flex-row-reverse space-x-reverse" : ""
+          }`}
+        >
           <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
-            Prev
+            {t("manageRoles.prev")}
           </Button>
           <Button
             onClick={() => setPage(page + 1)}
             disabled={page === lastPage}
           >
-            Next
+            {t("manageRoles.next")}
           </Button>
         </div>
       </main>

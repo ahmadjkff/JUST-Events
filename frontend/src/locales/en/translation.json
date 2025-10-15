@@ -49,6 +49,15 @@
     "welcomeTitle": "Welcome to Jordan University of Science and Technology Events Platform",
     "welcomeDescription": "Discover new events, connect with your peers, and develop your skills through our interactive platform"
   },
+  "dashboardCards": {
+    "upcomingEvents": "Upcoming Events",
+    "registeredEvents": "Registered Events",
+    "myCertificates": "My Certificates",
+    "notifications": "Notifications",
+    "myProfile": "My Profile",
+    "profileDescription": "Manage your profile details and account settings.",
+    "viewProfile": "View Profile"
+  },
   "login": {
     "welcomeTitle": "Welcome to Just Events",
     "emailLabel": "Email Address",
@@ -60,64 +69,64 @@
     "errorDefault": "An error occurred. Please try again."
   },
   "event": {
-  "date": "Date",
-  "at": "At",
-  "location": "Location",
-  "volunteers": "Volunteers",
-  "attendees": "Attendees",
-  "status": "Status",
-  "feedbacks": "Feedbacks",
-  "addFeedback": "Add your feedback",
-  "writeComment": "Write your comment...",
-  "submitFeedback": "Submit Feedback",
-  "nA": "N/A"
-},
-"eventStatus": {
-  "Pending": "Pending",
-  "Approved": "Approved",
-  "Rejected": "Rejected"
-},
-"myCertificates": {
-  "title": "My Certificates",
-  "subtitle": "Here are the certificates you have earned from attending events.",
-  "heading": "Your Certificates",
-  "description": "Download and view your event participation certificates here.",
-  "exampleEvent": "Event Name",
-  "date": "Date",
-  "download": "Download Certificate"
-},
-"notFound": {
-  "title": "Page Not Found",
-  "description": "Oops! The page you're looking for doesn't exist or was moved.",
-  "backHome": "Back to Home",
-  "backDashboard": "Back to Dashboard"
-},
-"notifications": {
-  "title": "Notifications",
-  "description": "Here are your recent notifications and updates.",
-  "headerTitle": "Your Notifications",
-  "headerDescription": "Stay updated with the latest news and alerts from your events.",
-  "exampleTitle": "New Event Available",
-  "exampleDescription": "A new workshop on \"Advanced React Techniques\" has been added. Check it out!",
-  "exampleTime": "2 hours ago"
-},
-"registeredStudents": {
-  "title": "Registered Students",
-  "empty": "No students have registered for this event.",
-  "studentLine": "{{firstName}} {{lastName}} - {{email}}"
-},
-"settings": {
-  "title": "Settings",
-  "toggleTheme": "Toggle Dark / Light Mode",
-  "switchLanguage": "Switch Language (AR / EN)",
-  "logout": "Logout"
-},
-"unauthorized": {
-  "title": "Unauthorized Access",
-  "description": "You don’t have permission to view this page. Please log in with the right account or contact the admin.",
-  "backDashboard": "⬅ Back to Dashboard",
-  "backHome": "⬅ Back to Home"
-},
+    "date": "Date",
+    "at": "At",
+    "location": "Location",
+    "volunteers": "Volunteers",
+    "attendees": "Attendees",
+    "status": "Status",
+    "feedbacks": "Feedbacks",
+    "addFeedback": "Add your feedback",
+    "writeComment": "Write your comment...",
+    "submitFeedback": "Submit Feedback",
+    "nA": "N/A"
+  },
+  "eventStatus": {
+    "Pending": "Pending",
+    "Approved": "Approved",
+    "Rejected": "Rejected"
+  },
+  "myCertificates": {
+    "title": "My Certificates",
+    "subtitle": "Here are the certificates you have earned from attending events.",
+    "heading": "Your Certificates",
+    "description": "Download and view your event participation certificates here.",
+    "exampleEvent": "Event Name",
+    "date": "Date",
+    "download": "Download Certificate"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Oops! The page you're looking for doesn't exist or was moved.",
+    "backHome": "Back to Home",
+    "backDashboard": "Back to Dashboard"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Here are your recent notifications and updates.",
+    "headerTitle": "Your Notifications",
+    "headerDescription": "Stay updated with the latest news and alerts from your events.",
+    "exampleTitle": "New Event Available",
+    "exampleDescription": "A new workshop on \"Advanced React Techniques\" has been added. Check it out!",
+    "exampleTime": "2 hours ago"
+  },
+  "registeredStudents": {
+    "title": "Registered Students",
+    "empty": "No students have registered for this event.",
+    "studentLine": "{{firstName}} {{lastName}} - {{email}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "toggleTheme": "Toggle Dark / Light Mode",
+    "switchLanguage": "Switch Language (AR / EN)",
+    "logout": "Logout"
+  },
+  "unauthorized": {
+    "title": "Unauthorized Access",
+    "description": "You don’t have permission to view this page. Please log in with the right account or contact the admin.",
+    "backDashboard": "⬅ Back to Dashboard",
+    "backHome": "⬅ Back to Home"
+  },
   "eventDetails": {
     "details": "Details",
     "cancelRegistration": "Cancel Registration",
@@ -140,7 +149,130 @@
     "Sports": "Sports",
     "Culture": "Culture",
     "Other": "Other"
-  }
+  },
+  "profile": {
+    "role": "Role",
+    "email": "Email",
+    "faculty": "Faculty",
+    "universityId": "University ID"
+  },
+  "adminStatistics": {
+    "title": "System Statistics",
+    "description": "Show system statistics",
+    "events": "Events Statistics",
+    "users": "Users Statistics"
+  },
+  "roles": {
+    "admin": "Admin",
+    "student": "Student",
+    "supervisor": "Supervisor"
+  },
+  "eventStatusLabels": {
+    "approved": "Approved",
+    "pending": "Pending",
+    "completed": "Completed",
+    "rejected": "Rejected"
+  },
+  "adminDashboard": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage university events and user roles efficiently",
+    "systemSummary": "System Summary",
+    "systemManagement": "System Management",
+    "usersTitle": "Number Of Users",
+    "usersDescription": "Total registered users including students, supervisors, and admins.",
+    "activeEventsTitle": "Active Events",
+    "activeEventsDescription": "Events currently active or upcoming in the university.",
+    "supervisorsTitle": "Supervisors",
+    "supervisorsDescription": "Total number of supervisors managing various events.",
+    "volunteersTitle": "Volunteers",
+    "volunteersDescription": "Students actively volunteering in different events.",
+    "pendingRequestsTitle": "Pending Requests",
+    "pendingRequestsDescription": "Requests awaiting approval from the admin.",
+    "controlEventsTitle": "Control Events",
+    "controlEventsDescription": "Manage and oversee all events happening within the university.",
+    "manageRolesTitle": "Manage User Roles",
+    "manageRolesDescription": "Assign and modify roles for users in the system.",
+    "volunteerManagementTitle": "Volunteers Management",
+    "volunteerManagementDescription": "Oversee volunteer activities and assignments.",
+    "statisticsTitle": "Statistics",
+    "statisticsDescription": "View detailed statistics and reports."
+  },
+  "myEvents": {
+    "title": "My Events",
+    "subtitle": "Manage your registered events and explore new opportunities",
+    "cancel": "Cancel",
+    "details": "Details",
+    "attendees": "attendees",
+    "searchPlaceholder": "Search your events...",
+    "filter": "Filter",
+    "browseEvents": "Browse Events",
+    "upcoming": "Upcoming Events",
+    "past": "Past Events",
+    "noUpcoming": "No upcoming events",
+    "noUpcomingDesc": "You haven't registered for any upcoming events yet.",
+    "browseAvailable": "Browse Available Events",
+    "noPast": "No past events",
+    "noPastDesc": "Your completed events will appear here."
+  },
+  "controlEvents": {
+    "title": "Approve / Reject Events",
+    "subtitle": "Manage and review submitted university events",
+    "searchPlaceholder": "Search your events...",
+    "category": "Category",
+    "department": "Department",
+    "approved": "Approved Events",
+    "pending": "Pending Events",
+    "rejected": "Rejected Events",
+    "updateError": "Failed to update event",
+    "updatedTo": "Event status updated to {{status}}"
+  },
+  "departments": {
+    "it": "IT",
+    "engineering": "Engineering",
+    "medical": "Medical",
+    "science": "Science"
+  },
+  "eventsTable": {
+    "category": "Category",
+    "department": "Department",
+    "noFilteredEvents": "No events found for the selected filters.",
+    "noEvents": "No {{status}} events",
+    "noEventsDescription": "{{status}} events will appear here.",
+    "browseEvents": "Browse Available Events"
+  },
+  "buttons": {
+    "clearFilters": "Clear Filters",
+    "approve": "Approve",
+    "reject": "Reject",
+    "setPending": "Set to Pending"
+  },
+  "common": {
+    "na": "N/A"
+  },
+  "manageRoles": {
+  "title": "All Users",
+  "subtitle": "Manage user roles and permissions",
+  "searchPlaceholder": "🔍 Search users",
+  "id": "ID",
+  "name": "Name",
+  "role": "Role",
+  "actions": "Actions",
+  "editTitle": "Edit User",
+  "editDescription": "Make changes to this user’s profile.",
+  "firstName": "First Name",
+  "firstNamePlaceholder": "Enter first name",
+  "lastName": "Last Name",
+  "lastNamePlaceholder": "Enter last name",
+  "email": "Email",
+  "emailPlaceholder": "Enter email",
+  "selectRole": "Select Role",
+  "updateSuccess": "User updated successfully",
+  "updateError": "Failed to update user",
+  "fetchError": "Failed to fetch users",
+  "delete": "Delete",
+  "prev": "Prev",
+  "next": "Next"
 }
 
 
+}

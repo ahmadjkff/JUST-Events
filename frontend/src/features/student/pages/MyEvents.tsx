@@ -23,10 +23,21 @@ import {
   TabsTrigger,
 } from "../../../components/ui/tabs";
 import { Input } from "../../../components/ui/input";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 function MyEvents() {
-  useTitle("My Events - JUST Events");
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
 
+  useTitle(`${t("myEvents.title")} - JUST Events`);
+
+  // ✅ جعل الاتجاه يتبدل مثل باقي الصفحات
+  useEffect(() => {
+    document.body.dir = isRTL ? "rtl" : "ltr";
+  }, [isRTL]);
+
+  // عينات الأحداث (غير مترجمة)
   const registeredEvents = [
     {
       id: 1,
@@ -48,8 +59,7 @@ function MyEvents() {
       category: "Business",
       status: "upcoming",
       attendees: 120,
-      description:
-        "Network with entrepreneurs and learn about startup strategies",
+      description: "Network with entrepreneurs and learn about startup strategies",
     },
   ];
 
@@ -74,23 +84,17 @@ function MyEvents() {
       category: "Career",
       status: "completed",
       attendees: 200,
-      description:
-        "Connect with potential employers and explore career opportunities",
+      description: "Connect with potential employers and explore career opportunities",
     },
   ];
 
   const getCategoryColor = (category: string) => {
     const colors = {
-      Technology:
-        "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-      Business:
-        "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      Career:
-        "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      Technology: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+      Business: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+      Career: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
     };
-    return (
-      colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800"
-    );
+    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   const EventCard = ({
@@ -113,11 +117,11 @@ function MyEvents() {
             <div className="flex gap-2">
               {event.status === "upcoming" && (
                 <Button variant="outline" size="sm">
-                  Cancel
+                  {t("myEvents.cancel")}
                 </Button>
               )}
               <Button variant="outline" size="sm">
-                Details
+                {t("myEvents.details")}
               </Button>
             </div>
           )}
@@ -140,7 +144,7 @@ function MyEvents() {
           </div>
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            {event.attendees} attendees
+            {event.attendees} {t("myEvents.attendees")}
           </div>
         </div>
       </CardContent>
@@ -149,46 +153,48 @@ function MyEvents() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* Header */}
+      {/* ===== Header ===== */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-foreground text-2xl font-bold">My Events</h1>
-            <p className="text-muted-foreground">
-              Manage your registered events and explore new opportunities
-            </p>
+            <h1 className="text-foreground text-2xl font-bold">
+              {t("myEvents.title")}
+            </h1>
+            <p className="text-muted-foreground">{t("myEvents.subtitle")}</p>
           </div>
-
         </div>
       </header>
 
-      {/* Main Content Area */}
+      {/* ===== Main ===== */}
       <main className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-7xl">
-          {/* Search and Filter Bar */}
+          {/* Search and Filter */}
           <div className="mb-6 flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
-              <Input placeholder="Search your events..." className="pl-10" />
+              <Input
+                placeholder={t("myEvents.searchPlaceholder")}
+                className="pl-10"
+              />
             </div>
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              Filter
+              {t("myEvents.filter")}
             </Button>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Browse Events
+              {t("myEvents.browseEvents")}
             </Button>
           </div>
 
-          {/* Events Tabs */}
+          {/* Tabs */}
           <Tabs defaultValue="upcoming" className="space-y-6">
             <TabsList className="grid w-full max-w-md grid-cols-2">
               <TabsTrigger value="upcoming">
-                Upcoming Events ({registeredEvents.length})
+                {t("myEvents.upcoming")} ({registeredEvents.length})
               </TabsTrigger>
               <TabsTrigger value="past">
-                Past Events ({pastEvents.length})
+                {t("myEvents.past")} ({pastEvents.length})
               </TabsTrigger>
             </TabsList>
 
@@ -204,12 +210,12 @@ function MyEvents() {
                   <CardContent>
                     <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
                     <h3 className="mb-2 text-lg font-semibold">
-                      No upcoming events
+                      {t("myEvents.noUpcoming")}
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      You haven't registered for any upcoming events yet.
+                      {t("myEvents.noUpcomingDesc")}
                     </p>
-                    <Button>Browse Available Events</Button>
+                    <Button>{t("myEvents.browseAvailable")}</Button>
                   </CardContent>
                 </Card>
               )}
@@ -219,11 +225,7 @@ function MyEvents() {
               {pastEvents.length > 0 ? (
                 <div className="grid gap-4">
                   {pastEvents.map((event) => (
-                    <EventCard
-                      key={event.id}
-                      event={event}
-                      showActions={false}
-                    />
+                    <EventCard key={event.id} event={event} showActions={false} />
                   ))}
                 </div>
               ) : (
@@ -231,10 +233,10 @@ function MyEvents() {
                   <CardContent>
                     <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
                     <h3 className="mb-2 text-lg font-semibold">
-                      No past events
+                      {t("myEvents.noPast")}
                     </h3>
                     <p className="text-muted-foreground">
-                      Your completed events will appear here.
+                      {t("myEvents.noPastDesc")}
                     </p>
                   </CardContent>
                 </Card>
