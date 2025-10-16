@@ -64,7 +64,7 @@ function VolunteerControl() {
                 to="/admin/control-events"
                 className="text-blue-600 hover:underline"
               >
-                {` ${event.title} `}
+                {` ${event?.title} `}
               </Link>
               event
             </CardTitle>
@@ -306,7 +306,7 @@ function VolunteerControl() {
               {volunteersByStatus.approved.length > 0 ? (
                 filteredVolunteers("approved").map((volunteer: any) => (
                   <VolunteerCard
-                    key={`${volunteer.student._id}${volunteer.event._id}`}
+                    key={`${volunteer.student?._id}${volunteer.event?._id}`}
                     volunteer={volunteer}
                   />
                 ))
