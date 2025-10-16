@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Calendar,
-  MapPin,
-  FileText,
-  Type,
-  Search,
-  Bell,
-  User,
-} from "lucide-react";
+import { FileText, Type, Search, Bell, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
@@ -38,7 +30,6 @@ const EventForm: React.FC = () => {
     startTime: "",
     endTime: "",
   });
-
   const [img, setImg] = useState<File | null>(null);
   const [stages, setStages] = useState<IStage[]>([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -331,12 +322,36 @@ const EventForm: React.FC = () => {
                 ))}
               </tbody>
             </table>
-            <button
-              className="mt-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-              onClick={() => setShowDialog(false)}
-            >
-              Close
-            </button>
+            <div className="mt-4 flex items-center justify-between">
+              <button
+                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                onClick={() => setShowDialog(false)}
+              >
+                Close
+              </button>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="startTime">Start Time</label>
+                  <input
+                    id="startTime"
+                    type="time"
+                    step="60" // minutes only, no seconds
+                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <label htmlFor="endTime">Start Time</label>
+                  <input
+                    id="endTime"
+                    type="time"
+                    step="60" // minutes only, no seconds
+                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
