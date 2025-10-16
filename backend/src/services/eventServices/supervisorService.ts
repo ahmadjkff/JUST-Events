@@ -37,13 +37,11 @@ export const createEvent = async ({
   supervisorId,
 }: IBody): Promise<IResponseStructure> => {
   try {
-    const response = await fetch(
-      `http://localhost:5000/api/stage/${location}/${stageId}`
-    );
+    const response = await fetch(`http://localhost:5000/api/stage/${stageId}`);
 
     if (!response.ok) {
       return {
-        message: `${location} ${response.statusText}`,
+        message: `${response.statusText}`,
         statusCode: response.status,
         success: false,
       };
@@ -361,9 +359,8 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell(
-    "A4"
-  ).value = `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell("A4").value =
+    `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row
