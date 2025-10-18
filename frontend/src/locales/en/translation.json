@@ -250,29 +250,116 @@
     "na": "N/A"
   },
   "manageRoles": {
-  "title": "All Users",
-  "subtitle": "Manage user roles and permissions",
-  "searchPlaceholder": "🔍 Search users",
-  "id": "ID",
-  "name": "Name",
-  "role": "Role",
-  "actions": "Actions",
-  "editTitle": "Edit User",
-  "editDescription": "Make changes to this user’s profile.",
-  "firstName": "First Name",
-  "firstNamePlaceholder": "Enter first name",
-  "lastName": "Last Name",
-  "lastNamePlaceholder": "Enter last name",
-  "email": "Email",
-  "emailPlaceholder": "Enter email",
-  "selectRole": "Select Role",
-  "updateSuccess": "User updated successfully",
-  "updateError": "Failed to update user",
-  "fetchError": "Failed to fetch users",
-  "delete": "Delete",
-  "prev": "Prev",
-  "next": "Next"
-}
-
-
+    "title": "All Users",
+    "subtitle": "Manage user roles and permissions",
+    "searchPlaceholder": "🔍 Search users",
+    "id": "ID",
+    "name": "Name",
+    "role": "Role",
+    "actions": "Actions",
+    "editTitle": "Edit User",
+    "editDescription": "Make changes to this user’s profile.",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "Enter first name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Enter last name",
+    "email": "Email",
+    "emailPlaceholder": "Enter email",
+    "selectRole": "Select Role",
+    "updateSuccess": "User updated successfully",
+    "updateError": "Failed to update user",
+    "fetchError": "Failed to fetch users",
+    "delete": "Delete",
+    "prev": "Prev",
+    "next": "Next"
+  },
+  "dashboard": {
+    "title": "Supervisor Dashboard",
+    "subtitle": "Manage your events and student applications efficiently",
+    "systemSummaryTitle": "System Summary",
+    "systemManagementTitle": "System Management",
+    "systemSummary": {
+      "createdEventsByMe": "Created Events by Me",
+      "createdAndManaged": "Events created and managed by you.",
+      "approvedEvents": "Approved Events",
+      "approvedByAdmin": "Events approved by the admin.",
+      "pendingEvents": "Pending Events",
+      "awaitingApproval": "Events awaiting admin approval.",
+      "rejectedEvents": "Rejected Events",
+      "rejectedByAdmin": "Events rejected by the admin."
+    },
+    "items": {
+      "controlStudentApplications": "Control Student Applications",
+      "controlDescription": "Edit or delete events, approve/reject students, and export registered students.",
+      "createEvent": "Create Event",
+      "createEventDescription": "Submit a new event for admin approval."
+    }
+  },
+  "editForm": {
+    "header": {
+      "title": "Edit Event Form",
+      "subtitle": "Manage Events"
+    },
+    "formTitle": "Edit Event",
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "location": "Location",
+      "category": "Category",
+      "department": "Department",
+      "date": "Date",
+      "eventImage": "Event Image"
+    },
+    "placeholders": {
+      "title": "Enter event title",
+      "description": "Enter event description",
+      "location": "Enter event location",
+      "selectCategory": "Select category",
+      "selectDepartment": "Select department"
+    },
+    "errors": {
+      "categoryAndDepartment": "Please select a category and department",
+      "uploadImage": "Please upload an event image",
+      "editEventFailed": "Failed to edit event",
+      "unexpectedError": "Unexpected error occurred",
+      "fetchEvent": "Error fetching event"
+    },
+    "loadingEvent": "Loading event...",
+    "submit": {
+      "editing": "Editing...",
+      "editEvent": "Edit Event"
+    }
+  },
+  "supervisorApplications": {
+    "header": {
+      "title": "Supervisor Events"
+    },
+    "noEventsFound": "No events found.",
+    "status": "Status",
+    "approvedStudents": "Approved Students",
+    "manageApplications": "Manage Applications",
+    "exportRegisteredStudents": "Export Registered Students",
+    "editEvent": "Edit",
+    "deleteEvent": "Delete",
+    "deleteEventTitle": "Delete Event",
+    "deleteEventDescription": "Are you sure you want to delete this event? This action cannot be undone and attendees will lose access.",
+    "close": "Close",
+    "yesDelete": "Yes, Delete",
+    "errors": {
+      "exportFailed": "Failed to export registered students",
+      "unexpectedErrorExport": "An unexpected error occurred while exporting.",
+      "deleteFailed": "Failed to delete event",
+      "unexpectedErrorDelete": "An unexpected error occurred while deleting."
+    }
+  },
+  "eventApplications": {
+    "loading": "Loading...",
+    "eventNotFound": "Event not found",
+    "applications": "Applications",
+    "noApplications": "No students have applied for this event yet.",
+    "status": "Status",
+    "approve": "Approve",
+    "reject": "Reject",
+    "pending": "Pending"
+  }
 }

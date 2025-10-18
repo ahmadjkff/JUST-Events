@@ -4,7 +4,10 @@ import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { Card, CardHeader } from "../../../components/ui/Card";
 import { Button } from "../../../components/ui/Button";
 import { updateApplicationStatus } from "../services/supervisorRequests";
+import { useTranslation } from "react-i18next";  // إضافة الترجمة
+
 export default function EventApplications() {
+  const { t } = useTranslation();  // استخدام الترجمة
   const { eventId } = useParams();
   const { getEventById, event, applications, isLoading } = useSupervisor();
 
@@ -23,20 +26,18 @@ export default function EventApplications() {
     await getEventById(eventId);
   };
 
-  if (isLoading) return <p className="mt-10 text-center">Loading...</p>;
+  if (isLoading) return <p className="mt-10 text-center">{t("eventApplications.loading")}</p>;
   if (!event)
-    return <p className="mt-10 text-center text-red-500">Event not found</p>;
+    return <p className="mt-10 text-center text-red-500">{t("eventApplications.eventNotFound")}</p>;
 
   return (
     <div className="min-h-screen bg-gray-100 p-10">
       <h1 className="mb-6 text-3xl font-bold text-gray-800">
-        {event.title} - Applications
+        {event.title} - {t("eventApplications.applications")}
       </h1>
 
       {applications.length === 0 && (
-        <p className="text-gray-500">
-          No students have applied for this event yet.
-        </p>
+        <p className="text-gray-500">{t("eventApplications.noApplications")}</p>
       )}
 
       {applications.map((app: any) => (
@@ -48,7 +49,7 @@ export default function EventApplications() {
               </p>
               <p className="text-sm text-gray-600">{app.student.email}</p>
               <p className="mt-1 text-sm font-medium">
-                Status:{" "}
+                {t("eventApplications.status")}:{" "}
                 <span
                   className={
                     app.status === "approved"
@@ -68,19 +69,19 @@ export default function EventApplications() {
                 className="bg-green-600 hover:bg-green-700"
                 onClick={() => handleUpdate(app.student._id, "approved")}
               >
-                Approve
+                {t("eventApplications.approve")}
               </Button>
               <Button
                 className="bg-red-600 hover:bg-red-700"
                 onClick={() => handleUpdate(app.student._id, "rejected")}
               >
-                Reject
+                {t("eventApplications.reject")}
               </Button>
               <Button
                 className="bg-yellow-500 hover:bg-yellow-600"
                 onClick={() => handleUpdate(app.student._id, "pending")}
               >
-                Pending
+                {t("eventApplications.pending")}
               </Button>
             </div>
           </CardHeader>

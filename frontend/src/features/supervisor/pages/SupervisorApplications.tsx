@@ -19,7 +19,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "../../../components/ui/AlertDialog";
+import { useTranslation } from "react-i18next";  // إضافة الترجمة
+
 function SupervisorApplications() {
+  const { t } = useTranslation();  // استخدام الترجمة
   const { events, fetchSupervisorApplications, isLoading } = useSupervisor();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -30,12 +33,12 @@ function SupervisorApplications() {
       if (!result.success) {
         console.log(result);
         setErrorMessage(
-          result.message || "Failed to export registered students",
+          result.message || t("supervisorApplications.errors.exportFailed"),
         );
       }
     } catch (error) {
       console.log(error);
-      setErrorMessage("An unexpected error occurred while exporting.");
+      setErrorMessage(t("supervisorApplications.errors.unexpectedErrorExport"));
     }
 
     setTimeout(() => setErrorMessage(null), 5000);
@@ -48,11 +51,11 @@ function SupervisorApplications() {
         await fetchSupervisorApplications("approved");
       } else {
         console.log(result);
-        setErrorMessage(result.message || "Failed to delete event");
+        setErrorMessage(result.message || t("supervisorApplications.errors.deleteFailed"));
       }
     } catch (error) {
       console.log(error);
-      setErrorMessage("An unexpected error occurred while deleting.");
+      setErrorMessage(t("supervisorApplications.errors.unexpectedErrorDelete"));
     }
   };
 
@@ -71,7 +74,7 @@ function SupervisorApplications() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-6">
       <h1 className="mb-4 text-2xl font-bold text-gray-800">
-        Supervisor Events
+        {t("supervisorApplications.header.title")}
       </h1>
 
       {/* Error message */}
@@ -82,7 +85,7 @@ function SupervisorApplications() {
         </div>
       )}
 
-      {events.length === 0 && <p className="text-gray-500">No events found.</p>}
+      {events.length === 0 && <p className="text-gray-500">{t("supervisorApplications.noEventsFound")}</p>}
 
       {events.map(({ event, applications }) => (
         <Card
@@ -105,7 +108,7 @@ function SupervisorApplications() {
               </p>
               <p className="text-sm text-gray-500">{event.location}</p>
               <p className="mt-1 text-sm font-medium">
-                Status:{" "}
+                {t("supervisorApplications.status")}:{" "}
                 <span
                   className={
                     event.status === "approved"
@@ -119,7 +122,7 @@ function SupervisorApplications() {
                 </span>
               </p>
               <p className="mt-1 text-sm font-medium">
-                Approved Students:{" "}
+                {t("supervisorApplications.approvedStudents")}:{" "}
                 <span className="text-blue-600">
                   {
                     applications.filter((app: any) => app.status === "approved")
@@ -138,7 +141,7 @@ function SupervisorApplications() {
                 }}
                 className="w-full bg-blue-600 text-white hover:bg-blue-700"
               >
-                Manage Applications
+                {t("supervisorApplications.manageApplications")}
               </Button>
 
               <Button
@@ -148,7 +151,7 @@ function SupervisorApplications() {
                 }}
                 className="w-full bg-green-600 text-white hover:bg-green-700"
               >
-                Export Registered Students
+                {t("supervisorApplications.exportRegisteredStudents")}
               </Button>
 
               <Button
@@ -158,7 +161,7 @@ function SupervisorApplications() {
                 }}
                 className="w-full bg-yellow-500 text-white hover:bg-yellow-600"
               >
-                Edit
+                {t("supervisorApplications.editEvent")}
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -166,7 +169,7 @@ function SupervisorApplications() {
                     className="bg-red-500 font-medium text-white shadow-md transition-all duration-200 hover:bg-red-600 hover:shadow-lg"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    Delete
+                    {t("supervisorApplications.deleteEvent")}
                   </Button>
                 </AlertDialogTrigger>
 
@@ -180,27 +183,21 @@ function SupervisorApplications() {
                   >
                     <AlertDialogHeader>
                       <AlertDialogTitle className="text-xl font-bold text-red-600">
-                        Delete Event
+                        {t("supervisorApplications.deleteEventTitle")}
                       </AlertDialogTitle>
                       <AlertDialogDescription className="text-gray-600">
-                        Are you sure you want to delete <b>{event.title}</b>?{" "}
-                        <br />
-                        This action{" "}
-                        <span className="font-semibold text-red-500">
-                          cannot be undone
-                        </span>{" "}
-                        and attendees will lose access.
+                        {t("supervisorApplications.deleteEventDescription")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter className="mt-4 flex justify-end gap-3">
                       <AlertDialogCancel className="rounded-md bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
-                        Close
+                        {t("supervisorApplications.close")}
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => handleDeleteEvent(event._id)}
                         className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white shadow-sm transition-all hover:bg-red-700 hover:shadow-md"
                       >
-                        Yes, Delete
+                        {t("supervisorApplications.yesDelete")}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </div>

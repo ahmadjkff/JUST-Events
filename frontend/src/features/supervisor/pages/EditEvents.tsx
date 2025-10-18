@@ -13,13 +13,14 @@ import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
+import { useTranslation } from "react-i18next";  
 
 const EditForm: React.FC = () => {
+  const { t } = useTranslation();  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { eventId } = useParams<{ eventId: string }>();
-  // 👇 file state for image
   const [img, setImg] = useState<File | null>(null);
   const { getEventById } = useSupervisor();
   const [form, setForm] = useState({
@@ -36,13 +37,13 @@ const EditForm: React.FC = () => {
     setLoading(true);
 
     if (!form.category || !form.department) {
-      setError("Please select a category and department");
+      setError(t("editForm.errors.categoryAndDepartment"));
       setLoading(false);
       return;
     }
 
     if (!img) {
-      setError("Please upload an event image");
+      setError(t("editForm.errors.uploadImage"));
       setLoading(false);
       return;
     }
@@ -60,7 +61,7 @@ const EditForm: React.FC = () => {
       );
 
       if (!result.success) {
-        setError(result.message || "Failed to edit event");
+        setError(result.message || t("editForm.errors.editEventFailed"));
         setLoading(false);
         return;
       }
@@ -70,7 +71,7 @@ const EditForm: React.FC = () => {
       navigate("/browse-events");
     } catch (err) {
       console.log("Error in handleEditEvent:", err);
-      setError("Unexpected error occurred");
+      setError(t("editForm.errors.unexpectedError"));
       setLoading(false);
     }
   };
@@ -102,7 +103,7 @@ const EditForm: React.FC = () => {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setError("Error fetching event");
+      setError(t("editForm.errors.fetchEvent"));
       setLoading(false);
     }
   };
@@ -113,58 +114,39 @@ const EditForm: React.FC = () => {
   }, []);
 
   if (loading && !form.title) {
-    // Show loading screen while fetching event
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <p className="text-lg text-gray-700">Loading event...</p>
+        <p className="text-lg text-gray-700">{t("editForm.loadingEvent")}</p>
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
-      {/* Header */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              Edit Event Form
+              {t("editForm.header.title")}
             </h1>
-            <p className="text-muted-foreground">Manage Events</p>
+            <p className="text-muted-foreground">{t("editForm.header.subtitle")}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative bg-transparent"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
-            </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
-          </div>
+
         </div>
       </header>
 
-      {/* Form */}
       <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleEditEvent}
           className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 shadow-xl"
         >
           <h2 className="text-center text-2xl font-bold text-gray-800">
-            Edit Event
+            {t("editForm.formTitle")}
           </h2>
 
-          {/* Title */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Title
+              {t("editForm.fields.title")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Type className="text-gray-400" size={18} />
@@ -173,17 +155,16 @@ const EditForm: React.FC = () => {
                 name="title"
                 value={form.title}
                 onChange={handleChange}
-                placeholder="Enter event title"
+                placeholder={t("editForm.placeholders.title")}
                 className="w-full outline-none"
                 required
               />
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Description
+              {t("editForm.fields.description")}
             </label>
             <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <FileText className="mt-1 text-gray-400" size={18} />
@@ -191,7 +172,7 @@ const EditForm: React.FC = () => {
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Enter event description"
+                placeholder={t("editForm.placeholders.description")}
                 className="w-full resize-none outline-none"
                 rows={3}
                 required
@@ -199,10 +180,9 @@ const EditForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Location */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Location
+              {t("editForm.fields.location")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <MapPin className="text-gray-400" size={18} />
@@ -211,17 +191,16 @@ const EditForm: React.FC = () => {
                 name="location"
                 value={form.location}
                 onChange={handleChange}
-                placeholder="Enter event location"
+                placeholder={t("editForm.placeholders.location")}
                 className="w-full outline-none"
                 required
               />
             </div>
           </div>
 
-          {/* Category */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Category
+              {t("editForm.fields.category")}
             </label>
             <select
               name="category"
@@ -231,7 +210,7 @@ const EditForm: React.FC = () => {
               required
             >
               <option value="" disabled>
-                Select category
+                {t("editForm.placeholders.selectCategory")}
               </option>
               {Object.values(EventCategory).map((cat) => (
                 <option key={cat} value={cat}>
@@ -241,10 +220,9 @@ const EditForm: React.FC = () => {
             </select>
           </div>
 
-          {/* Department */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Department
+              {t("editForm.fields.department")}
             </label>
             <select
               name="department"
@@ -254,7 +232,7 @@ const EditForm: React.FC = () => {
               required
             >
               <option value="" disabled>
-                Select department
+                {t("editForm.placeholders.selectDepartment")}
               </option>
               {Object.values(EventDepartment).map((dep) => (
                 <option key={dep} value={dep}>
@@ -264,9 +242,10 @@ const EditForm: React.FC = () => {
             </select>
           </div>
 
-          {/* Date */}
           <div>
-            <label className="mb-1 block font-medium text-gray-700">Date</label>
+            <label className="mb-1 block font-medium text-gray-700">
+              {t("editForm.fields.date")}
+            </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
               <Calendar className="text-gray-400" size={18} />
               <input
@@ -279,9 +258,10 @@ const EditForm: React.FC = () => {
               />
             </div>
           </div>
+
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Event Image
+              {t("editForm.fields.eventImage")}
             </label>
             <input
               type="file"
@@ -291,13 +271,13 @@ const EditForm: React.FC = () => {
               required
             />
           </div>
-          {/* Submit */}
+
           <button
             type="submit"
             className="w-full rounded-xl bg-blue-500 py-3 font-semibold text-white shadow-md transition hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? "Editing..." : "Edit Event"}
+            {loading ? t("editForm.submit.editing") : t("editForm.submit.editEvent")}
           </button>
 
           {error && <p className="text-center text-red-500">{error}</p>}
