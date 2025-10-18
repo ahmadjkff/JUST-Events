@@ -7,11 +7,14 @@ import eliasImg from "../assets/Elias.png";
 import hasanImg from "../assets/Dr-Hasan.jpg";
 import logo from "../assets/JUST-Events AboutUs Logo.jpg";
 
+
+
 const AboutUs: React.FC = () => {
   const { t } = useTranslation(); 
 
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen ">
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* Title Section */}
         <section className="mb-16 text-center">
@@ -77,7 +80,7 @@ const AboutUs: React.FC = () => {
             ].map((member) => (
               <div
                 key={member.id}
-                className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                className="rounded-2xl border border-gray-100  p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
               >
                 <div className="text-center">
                   <img
@@ -85,7 +88,7 @@ const AboutUs: React.FC = () => {
                     alt={member.name}
                     className={`mx-auto mb-4 h-24 w-24 rounded-full object-cover ring-4 ring-${member.color}-100 transition-all duration-300 hover:ring-${member.color}-200`}
                   />
-                  <h3 className="mb-2 text-xl font-semibold text-gray-800">
+                  <h3 className="mb-2 text-xl font-semibold">
                     {member.name}
                   </h3>
                   <p className={`mb-1 text-sm font-medium text-${member.color}-600`}>
@@ -107,14 +110,14 @@ const AboutUs: React.FC = () => {
 
           {/* Supervisor */}
           <div className="flex justify-center">
-            <div className="max-w-sm rounded-2xl border-2 border-indigo-100 bg-gradient-to-br from-indigo-50 to-purple-50 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+            <div className="max-w-sm rounded-2xl border-2 border-indigo-100  p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="text-center">
                 <img
                   src={hasanImg}
                   alt={t("aboutUsPage.teamSupervisor")}
                   className="mx-auto mb-4 h-28 w-28 rounded-full object-cover ring-4 ring-indigo-200 transition-all duration-300 hover:ring-indigo-300"
                 />
-                <h3 className="mb-2 text-2xl font-bold text-gray-800">
+                <h3 className="mb-2 text-2xl font-bold">
                   Dr.Hasan K Albzoor
                 </h3>
                 <p className="mb-2 text-lg font-semibold text-indigo-600">
@@ -137,5 +140,4 @@ const AboutUs: React.FC = () => {
     </div>
   );
 };
-
 export default AboutUs;

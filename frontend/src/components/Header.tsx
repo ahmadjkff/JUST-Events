@@ -7,10 +7,6 @@ import { useAuth } from "../context/auth/AuthContext";
 const Header = () => {
   const { user } = useAuth();
 
-  const DarkModeHandleToggle = (checked: boolean) => {
-    console.log("Toggle is now:", checked ? "ON" : "OFF");
-  };
-
   return (
     <header className="header">
       <div className="container">
@@ -22,7 +18,7 @@ const Header = () => {
             Just Events
           </Link>
           <div className="header-actions">
-            <DarkModeToggleSwitch onChange={DarkModeHandleToggle} />
+            <DarkModeToggleSwitch/>
             <LanguageToggleSwitch/>
           </div>
         </div>

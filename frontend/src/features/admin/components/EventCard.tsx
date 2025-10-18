@@ -65,7 +65,7 @@ const EventCard = ({
           {event.status !== "approved" && (
             <Button
               variant="outline"
-              className="border-green-100 bg-green-100 text-green-800"
+              className="border-green-100 bg-green-100 "
               onClick={() => updateStatus(event._id, "approved")}
             >
               {t("buttons.approve")}
@@ -74,7 +74,7 @@ const EventCard = ({
           {event.status !== "pending" && (
             <Button
               variant="outline"
-              className="border-gray-100 bg-gray-100 text-gray-800"
+              className="border-gray-100 bg-gray-100 "
               onClick={() => updateStatus(event._id, "pending")}
             >
               {t("buttons.setPending")}
@@ -83,7 +83,7 @@ const EventCard = ({
           {event.status !== "rejected" && (
             <Button
               variant="outline"
-              className="border-red-100 bg-red-100 text-red-800"
+              className="border-red-100 bg-red-100"
               onClick={() => updateStatus(event._id, "rejected")}
             >
               {t("buttons.reject")}

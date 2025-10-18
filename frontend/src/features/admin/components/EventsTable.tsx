@@ -72,13 +72,13 @@ function EventsTable({
 
         <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
           {category && (
-            <Badge className="bg-gray-100 text-gray-800">
+            <Badge className="bg-gray-100">
               {t("eventsTable.category")}:{" "}
               <strong className="text-orange-700">{category}</strong>
             </Badge>
           )}
           {department && (
-            <Badge className="bg-gray-100 text-gray-800">
+            <Badge className="bg-gray-100">
               {t("eventsTable.department")}:{" "}
               <strong className="text-orange-700">{department}</strong>
             </Badge>

@@ -79,7 +79,7 @@ function ManageRoles() {
           }`}
         >
           <thead>
-            <tr className="bg-gray-100">
+            <tr>
               <th className="border p-2">{t("manageRoles.id")}</th>
               <th className="border p-2">{t("manageRoles.name")}</th>
               <th className="border p-2">{t("manageRoles.role")}</th>

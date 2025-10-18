@@ -20,6 +20,7 @@ import AboutUs from "./pages/aboutUs";
 import EventDetails from "./pages/eventDetails";
 import RegistredStudents from "./pages/RegistredStudents";
 
+
 function App() {
   const { isAuthenticated } = useAuth();
   return (

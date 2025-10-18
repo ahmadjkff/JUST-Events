@@ -4,14 +4,10 @@ import {
   MapPin,
   FileText,
   Type,
-  Search,
-  Bell,
-  User,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
-import { Button } from "../../../components/ui/Button";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { useTranslation } from "react-i18next";  
 
@@ -115,14 +111,14 @@ const EditForm: React.FC = () => {
 
   if (loading && !form.title) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <p className="text-lg text-gray-700">{t("editForm.loadingEvent")}</p>
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-lg">{t("editForm.loadingEvent")}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col ">
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
@@ -138,18 +134,18 @@ const EditForm: React.FC = () => {
       <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleEditEvent}
-          className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 shadow-xl"
+          className="w-full max-w-lg space-y-6 rounded-2xl p-8 shadow-xl"
         >
-          <h2 className="text-center text-2xl font-bold text-gray-800">
+          <h2 className="text-center text-2xl font-bold">
             {t("editForm.formTitle")}
           </h2>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.title")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <Type className="text-gray-400" size={18} />
+              <Type size={18} />
               <input
                 type="text"
                 name="title"
@@ -163,11 +159,11 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.description")}
             </label>
             <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <FileText className="mt-1 text-gray-400" size={18} />
+              <FileText className="mt-1" size={18} />
               <textarea
                 name="description"
                 value={form.description}
@@ -181,11 +177,11 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.location")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <MapPin className="text-gray-400" size={18} />
+              <MapPin size={18} />
               <input
                 type="text"
                 name="location"
@@ -199,7 +195,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.category")}
             </label>
             <select
@@ -221,7 +217,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.department")}
             </label>
             <select
@@ -243,11 +239,11 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.date")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <Calendar className="text-gray-400" size={18} />
+              <Calendar size={18} />
               <input
                 type="date"
                 name="date"
@@ -260,7 +256,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium text-gray-700">
+            <label className="mb-1 block font-medium">
               {t("editForm.fields.eventImage")}
             </label>
             <input

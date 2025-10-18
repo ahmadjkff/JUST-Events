@@ -31,7 +31,7 @@ export default function EventApplications() {
     return <p className="mt-10 text-center text-red-500">{t("eventApplications.eventNotFound")}</p>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10">
+    <div className="min-h-screen p-10">
       <h1 className="mb-6 text-3xl font-bold text-gray-800">
         {event.title} - {t("eventApplications.applications")}
       </h1>

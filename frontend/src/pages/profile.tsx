@@ -10,7 +10,7 @@ function Profile() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex min-h-screen flex-1 items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-6 dark:from-slate-900 dark:to-slate-800">
+    <div className="flex min-h-screen flex-1 items-center justify-center  p-6 dark:from-slate-900 dark:to-slate-800">
       <Card className="hover:shadow-3xl w-[400px] border-0 bg-white/80 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] dark:bg-slate-800/80">
         <CardHeader className="pb-6">
           <div className="flex flex-col items-center gap-6">
