@@ -21,7 +21,10 @@ export const getEventsByStatus = async (status?: string) => {
 
 export const getSpecificEvent = async (eventId: string) => {
   try {
-    const event = await eventModel.findOne({ _id: eventId }).lean();
+    const event = await eventModel
+      .findOne({ _id: eventId })
+      .populate("feedback.student", "firstName lastName img")
+      .lean();
     if (!event)
       return { message: "Event not found ", statusCode: 403, success: false };
 

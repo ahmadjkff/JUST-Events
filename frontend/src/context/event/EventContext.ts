@@ -29,6 +29,23 @@ interface EventContextType {
     message?: string;
     data?: any[];
   }>;
+  addFeedback: (
+    eventId: string,
+    rating: number,
+    comment: string,
+  ) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: any;
+  }>;
+  deleteFeedback: (
+    eventId: string,
+    feedBackId: string,
+  ) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: any;
+  }>;
 }
 
 export const EventContext = createContext<EventContextType>({
@@ -39,6 +56,8 @@ export const EventContext = createContext<EventContextType>({
   fetchEvents: async () => Promise.resolve({ success: false }),
   fetchVolunteers: async () => Promise.resolve({ success: false }),
   fetchRegistredStudents: async () => Promise.resolve({ success: false }),
+  addFeedback: async () => Promise.resolve({ success: false }),
+  deleteFeedback: async () => Promise.resolve({ success: false }),
 });
 
 export const useEvent = () => useContext(EventContext);

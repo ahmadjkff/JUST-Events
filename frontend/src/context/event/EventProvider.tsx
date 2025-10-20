@@ -116,6 +116,99 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const addFeedback = async (
+    eventId: string,
+    rating: number,
+    comment: string,
+  ) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/student/feedback/${eventId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ rating, comment }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the events state with new feedback
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event._id === eventId ? { ...event, feedback: data.data } : event,
+          ),
+        );
+      }
+
+      return data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Failed to add feedback",
+      };
+    }
+  };
+
+  const deleteFeedback = async (eventId: string, feedbackId: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/student/feedback/${eventId}/${feedbackId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        },
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the events state to remove the deleted feedback
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event._id === eventId ? { ...event, feedback: data.data } : event,
+          ),
+        );
+      }
+
+      return data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Failed to delete feedback",
+      };
+    }
+  };
+
+  const fetchEventById = async (eventId: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
+        {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      const data = await response.json();
+      setEvents(data.data.event);
+
+      return {
+        success: data.success,
+        message: data.message,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || "Failed to fetch event by ID",
+      };
+    }
+  };
   return (
     <EventContext.Provider
       value={{
@@ -126,6 +219,9 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
         fetchEvents,
         fetchVolunteers,
         fetchRegistredStudents,
+        addFeedback,
+        deleteFeedback,
+        fetchEventById,
       }}
     >
       {children}
