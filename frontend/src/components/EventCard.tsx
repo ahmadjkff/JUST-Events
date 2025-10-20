@@ -63,8 +63,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
     }
   };
 
-
-
   const status = getStatusForEvent(event._id);
 
   return (
@@ -111,12 +109,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {event.startTime
-              ? `${t("eventDetails.startsAt")} ${event.startTime}`
-              : "N/A"}{" "}
-            {event.endTime
-              ? `- ${t("eventDetails.endsAt")} ${event.endTime}`
-              : ""}
+            {event.startTime}-{event.endTime}
           </div>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
