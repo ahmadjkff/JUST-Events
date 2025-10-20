@@ -9,6 +9,7 @@ import eventModel, { IEvent } from "../../models/eventModel";
 import userModel from "../../models/userModel";
 import { IExtendRequest } from "../../types/extendedRequest";
 import validateJWT from "../../middlewares/validateJWT";
+
 import { EventStatus } from "../../types/eventTypes";
 
 const router = express.Router();

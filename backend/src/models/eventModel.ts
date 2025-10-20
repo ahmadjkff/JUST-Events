@@ -21,6 +21,7 @@ export interface IEvent extends Document {
   category: EventCategory;
   department: EventDepartment;
   feedback: {
+    _id?: mongoose.Types.ObjectId;
     student: mongoose.Types.ObjectId;
     rating: number;
     comment?: string;
