@@ -1,14 +1,8 @@
-import { Calendar, ChartBarStacked, Clock, Filter, Search } from "lucide-react";
+import { Calendar, ChartBarStacked, Filter, Search } from "lucide-react";
 import { useTitle } from "../hooks/useTitle";
 import { Card, CardContent } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/input";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../components/ui/tabs";
 import { useEvent } from "../context/event/EventContext";
 import { useEffect } from "react";
 import EventCard from "../components/EventCard";
@@ -17,7 +11,6 @@ import { useTranslation } from "react-i18next";
 function BrowseEvents() {
   const { i18n, t } = useTranslation();
   const { eventsByStatus, fetchEvents } = useEvent();
-  const isRTL = i18n.language === "ar";
 
   useTitle(`${t("browseEvents.title")} - JUST Events`);
 
@@ -30,11 +23,6 @@ function BrowseEvents() {
     fetchEvents("approved");
   }, []);
 
-  const TABS = [
-    { value: "available", label: t("browseEvents.availableEvents"), icon: Calendar },
-    { value: "featured", label: t("browseEvents.featuredEvents"), icon: Clock },
-  ];
-
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
@@ -44,7 +32,9 @@ function BrowseEvents() {
             <h1 className="text-foreground text-2xl font-bold">
               {t("browseEvents.title")}
             </h1>
-            <p className="text-muted-foreground">{t("browseEvents.subtitle")}</p>
+            <p className="text-muted-foreground">
+              {t("browseEvents.subtitle")}
+            </p>
           </div>
         </div>
       </header>
@@ -71,44 +61,29 @@ function BrowseEvents() {
             </Button>
           </div>
 
-          {/* Tabs */}
-          <Tabs defaultValue="available" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              {TABS.map(({ value, label }) => (
-                <TabsTrigger key={value} value={value}>
-                  {label} ({eventsByStatus.approved.length})
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {TABS.map(({ value, label, icon: Icon }) => (
-              <TabsContent key={value} value={value} className="space-y-4">
-                {eventsByStatus.approved.length > 0 ? (
-                  <div className="grid gap-4">
-                    {eventsByStatus.approved.map((event) => (
-                      <EventCard key={event._id} event={event} />
-                    ))}
-                  </div>
-                ) : (
-                  <Card className="py-12 text-center">
-                    <CardContent>
-                      <Icon className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                      <h3 className="mb-2 text-lg font-semibold">
-                        {t("browseEvents.noEvents", {
-                          type: label.toLowerCase(),
-                        })}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {value === "available"
-                          ? t("browseEvents.noAvailableText")
-                          : t("browseEvents.noFeaturedText")}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
-              </TabsContent>
-            ))}
-          </Tabs>
+          {/* Events List */}
+          <div defaultValue="available" className="space-y-6">
+            <div className="space-y-4">
+              {eventsByStatus.approved.length > 0 ? (
+                <div className="grid gap-4">
+                  {eventsByStatus.approved.map((event) => (
+                    <EventCard key={event._id} event={event} />
+                  ))}
+                </div>
+              ) : (
+                <Card className="py-12 text-center">
+                  <CardContent>
+                    <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
+                    <h3 className="mb-2 text-lg font-semibold">
+                      {t("browseEvents.noEvents", {
+                        type: t("browseEvents.availableEvents").toLowerCase(),
+                      })}
+                    </h3>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
         </div>
       </main>
     </div>
