@@ -25,6 +25,7 @@ import {
 import { Input } from "../../../components/ui/input";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
+import { getCategoryColor } from "../../../constantColors";
 
 function MyEvents() {
   const { t, i18n } = useTranslation();
@@ -59,7 +60,8 @@ function MyEvents() {
       category: "Business",
       status: "upcoming",
       attendees: 120,
-      description: "Network with entrepreneurs and learn about startup strategies",
+      description:
+        "Network with entrepreneurs and learn about startup strategies",
     },
   ];
 
@@ -84,18 +86,10 @@ function MyEvents() {
       category: "Career",
       status: "completed",
       attendees: 200,
-      description: "Connect with potential employers and explore career opportunities",
+      description:
+        "Connect with potential employers and explore career opportunities",
     },
   ];
-
-  const getCategoryColor = (category: string) => {
-    const colors = {
-      Technology: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-      Business: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      Career: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-    };
-    return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
-  };
 
   const EventCard = ({
     event,
@@ -225,7 +219,11 @@ function MyEvents() {
               {pastEvents.length > 0 ? (
                 <div className="grid gap-4">
                   {pastEvents.map((event) => (
-                    <EventCard key={event.id} event={event} showActions={false} />
+                    <EventCard
+                      key={event.id}
+                      event={event}
+                      showActions={false}
+                    />
                   ))}
                 </div>
               ) : (

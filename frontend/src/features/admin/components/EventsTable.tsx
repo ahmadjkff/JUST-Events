@@ -6,12 +6,7 @@ import { Button } from "../../../components/ui/Button";
 import EventCard from "./EventCard";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { useTranslation } from "react-i18next";
-
-const statusColors: Record<string, string> = {
-  approved: "text-green-500",
-  pending: "text-gray-500",
-  rejected: "text-red-500",
-};
+import { statusColors } from "../../../constantColors";
 
 function EventsTable({
   value,
@@ -42,24 +37,27 @@ function EventsTable({
       if (category) {
         events = events.filter(
           (e: IEvent) =>
-            (e.category ?? "").toLowerCase() === category.toLowerCase()
+            (e.category ?? "").toLowerCase() === category.toLowerCase(),
         );
       }
 
       if (department) {
         events = events.filter(
           (e: IEvent) =>
-            e.department.toLowerCase() === department.toLowerCase()
+            e.department.toLowerCase() === department.toLowerCase(),
         );
       }
 
       return events;
     },
-    [eventsByStatus, category, department]
+    [eventsByStatus, category, department],
   );
 
   return (
-    <TabsContent value={value} className={`space-y-4 ${isRTL ? "text-right" : ""}`}>
+    <TabsContent
+      value={value}
+      className={`space-y-4 ${isRTL ? "text-right" : ""}`}
+    >
       {/* === Header Section === */}
       <div
         className={`mb-4 flex items-center justify-between border-b-2 pb-2 ${
@@ -70,7 +68,9 @@ function EventsTable({
           {t(`eventStatusLabels.${value.toLowerCase()}`)}
         </h1>
 
-        <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+        <div
+          className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
+        >
           {category && (
             <Badge className="bg-gray-100">
               {t("eventsTable.category")}:{" "}
