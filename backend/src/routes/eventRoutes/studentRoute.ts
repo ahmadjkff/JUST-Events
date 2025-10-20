@@ -11,6 +11,7 @@ import { IExtendRequest } from "../../types/extendedRequest";
 import validateJWT from "../../middlewares/validateJWT";
 
 import { EventStatus } from "../../types/eventTypes";
+import { isStudentOrSupervisor } from "../../middlewares/validateUserRole";
 
 const router = express.Router();
 
@@ -109,13 +110,15 @@ router.post(
 /**
  * Provide feedback
  */
-// TO-DO : replace studentId with userId from JWT
 router.post(
-  "/feedback/:eventId/:studentId",
-  async (req: Request, res: Response) => {
+  "/feedback/:eventId",
+  validateJWT,
+  isStudentOrSupervisor,
+  async (req: IExtendRequest, res: Response) => {
     try {
       const { rating, comment } = req.body;
-      const { eventId, studentId } = req.params;
+      const { eventId } = req.params;
+      const studentId = req.user!._id;
 
       if (!eventId || !studentId) {
         return res.status(400).json({
@@ -126,17 +129,75 @@ router.post(
 
       const event = await eventModel.findById(eventId);
       if (!event)
-        return { message: "Event not found ", statusCode: 403, success: false };
+        return res
+          .status(403)
+          .json({ message: "Event not found", success: false });
 
-      event.feedback.push({
-        student: require("mongoose").Types.ObjectId(studentId),
+      event.feedback.unshift({
+        student: req.user!._id,
         rating,
-        comment: comment ? comment : "",
+        comment: comment || "",
       });
       await event.save();
+
+      const populatedEvent = await eventModel
+        .findById(eventId)
+        .populate("feedback.student", "firstName lastName");
+
       res.status(200).json({
         success: true,
         message: "Feedback submitted successfully",
+        data: populatedEvent?.feedback,
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+);
+
+router.delete(
+  "/feedback/:eventId/:feedbackId",
+  validateJWT,
+  isStudentOrSupervisor,
+  async (req: IExtendRequest, res) => {
+    try {
+      const { eventId, feedbackId } = req.params;
+      const studentId = req.user!._id;
+      if (!eventId || !studentId || !feedbackId) {
+        return res.status(400).json({
+          success: false,
+          message: "Missing eventId or studentId or feedbackId",
+        });
+      }
+      const event = await eventModel.findById(eventId);
+      if (!event)
+        return res
+          .status(403)
+          .json({ message: "Event not found", success: false });
+
+      const feedback = event.feedback.find((comment) => {
+        return comment._id?.toString() === feedbackId;
+      });
+      if (!feedback)
+        return res
+          .status(404)
+          .json({ message: "Feedback not found", success: false });
+      if (
+        feedback.student.toString() !== studentId.toString() &&
+        event.createdBy.toString() !== studentId.toString()
+      )
+        return res.status(403).json({
+          message: "Not authorized to delete this feedback",
+          success: false,
+        });
+
+      event.feedback = event.feedback.filter(
+        (comment) => comment._id?.toString() !== feedbackId
+      );
+      await event.save();
+      res.status(200).json({
+        success: true,
+        message: "Feedback deleted successfully",
         data: event.feedback,
       });
     } catch (error: any) {
