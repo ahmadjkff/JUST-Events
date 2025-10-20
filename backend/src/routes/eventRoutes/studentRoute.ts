@@ -5,10 +5,11 @@ import {
   cancel,
   volunteer,
 } from "../../services/eventServices/studentService";
-import eventModel from "../../models/eventModel";
+import eventModel, { IEvent } from "../../models/eventModel";
 import userModel from "../../models/userModel";
 import { IExtendRequest } from "../../types/extendedRequest";
 import validateJWT from "../../middlewares/validateJWT";
+import { EventStatus } from "../../types/eventTypes";
 
 const router = express.Router();
 
@@ -143,10 +144,35 @@ router.post(
   }
 );
 
+// get All Certificates of a Student
+router.get(
+  "/certificates",
+  validateJWT,
+  async (req: IExtendRequest, res: Response) => {
+    const studentId = req.user._id;
+    try {
+      const events = await eventModel.find({ status: EventStatus.APPROVED });
+
+      const completedEvents = events?.filter(
+        (event: IEvent) =>
+          event.registeredStudents.includes(studentId) &&
+          event.date < new Date()
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Certificates fetched successfully",
+        data: completedEvents,
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+);
+
 /**
  * get certificate
  */
-
 router.get(
   "/certificate/:eventId",
   validateJWT,

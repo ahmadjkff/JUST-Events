@@ -4,8 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
-import MyCertificates from "../../pages/myCertificates";
-
+import MyCertificates from "./pages/myCertificates";
 
 const StudentRoutes: React.FC = () => (
   <Routes>
