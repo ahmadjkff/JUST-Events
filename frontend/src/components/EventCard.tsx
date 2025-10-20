@@ -118,7 +118,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
             <Link to={`/registred-students/${event._id}`}>
-              {event.registeredStudents.length} {t("eventDetails.attendees")}
+              {event?.registeredStudents?.length} {t("eventDetails.attendees")}
             </Link>
           </div>
         </div>

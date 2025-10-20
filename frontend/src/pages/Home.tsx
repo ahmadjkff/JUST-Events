@@ -27,7 +27,9 @@ function Home() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              {t("home.welcomeBack", { name: user?.firstName || t("home.guest") })}
+              {t("home.welcomeBack", {
+                name: user?.firstName || t("home.guest"),
+              })}
             </h1>
             <p className="text-muted-foreground">{t("home.subtitle")}</p>
           </div>
@@ -49,7 +51,9 @@ function Home() {
                   <h2 className="mb-2 text-xl font-semibold">
                     {t("home.welcomeTitle")}
                   </h2>
-                  <p className="text-muted-foreground">{t("home.welcomeDescription")}</p>
+                  <p className="text-muted-foreground">
+                    {t("home.welcomeDescription")}
+                  </p>
                 </div>
                 <Button className="bg-blue-600 hover:bg-blue-700">
                   <Link to="/browse-events">{t("browseEvents.title")}</Link>

@@ -1,202 +1,91 @@
-import {
-  Calendar,
-  Clock,
-  Filter,
-  MapPin,
-  Plus,
-  Search,
-  Users,
-} from "lucide-react";
-import { Badge } from "../../../components/ui/badge";
-import { Button } from "../../../components/ui/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../../components/ui/Card";
-import { useTitle } from "../../../hooks/useTitle";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../../components/ui/tabs";
-import { Input } from "../../../components/ui/input";
+import { Calendar, ChartBarStacked, Filter, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import { getCategoryColor } from "../../../constantColors";
+import { useTitle } from "../../../hooks/useTitle";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/Button";
+import EventCard from "../../../components/EventCard";
+import { Card, CardContent } from "../../../components/ui/Card";
+import type { IEvent } from "../../../types/eventTypes";
 
-function MyEvents() {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
+function BrowseEvents() {
+  const { i18n, t } = useTranslation();
+  const [myEvents, setMyEvents] = useState<IEvent[]>([]);
 
-  useTitle(`${t("myEvents.title")} - JUST Events`);
+  useTitle(`${t("browseEvents.title")} - JUST Events`);
 
-  // ✅ جعل الاتجاه يتبدل مثل باقي الصفحات
+  // ✅ هذا السطر هو ما يجعلها تعمل مثل Notifications
   useEffect(() => {
-    document.body.dir = isRTL ? "rtl" : "ltr";
-  }, [isRTL]);
+    document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
 
-  // عينات الأحداث (غير مترجمة)
-  const registeredEvents = [
-    {
-      id: 1,
-      title: "Advanced Programming Workshop",
-      date: "2024-01-15",
-      time: "10:00 AM",
-      location: "Conference Hall",
-      category: "Technology",
-      status: "upcoming",
-      attendees: 45,
-      description: "Learn advanced programming concepts and best practices",
-    },
-    {
-      id: 2,
-      title: "Entrepreneurship Conference",
-      date: "2024-01-18",
-      time: "2:00 PM",
-      location: "Main Auditorium",
-      category: "Business",
-      status: "upcoming",
-      attendees: 120,
-      description:
-        "Network with entrepreneurs and learn about startup strategies",
-    },
-  ];
-
-  const pastEvents = [
-    {
-      id: 3,
-      title: "Web Development Bootcamp",
-      date: "2023-12-10",
-      time: "9:00 AM",
-      location: "Computer Lab",
-      category: "Technology",
-      status: "completed",
-      attendees: 30,
-      description: "Intensive web development training session",
-    },
-    {
-      id: 4,
-      title: "Career Fair 2023",
-      date: "2023-11-25",
-      time: "10:00 AM",
-      location: "Main Hall",
-      category: "Career",
-      status: "completed",
-      attendees: 200,
-      description:
-        "Connect with potential employers and explore career opportunities",
-    },
-  ];
-
-  const EventCard = ({
-    event,
-    showActions = true,
-  }: {
-    event: any;
-    showActions?: boolean;
-  }) => (
-    <Card className="transition-shadow hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-lg">{event.title}</CardTitle>
-            <Badge className={getCategoryColor(event.category)}>
-              {event.category}
-            </Badge>
-          </div>
-          {showActions && (
-            <div className="flex gap-2">
-              {event.status === "upcoming" && (
-                <Button variant="outline" size="sm">
-                  {t("myEvents.cancel")}
-                </Button>
-              )}
-              <Button variant="outline" size="sm">
-                {t("myEvents.details")}
-              </Button>
-            </div>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground mb-4">{event.description}</p>
-        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            {event.date}
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            {event.time}
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            {event.location}
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            {event.attendees} {t("myEvents.attendees")}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/student/my-events`,
+          {
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
+        const data = await response.json();
+        setMyEvents(data.data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
+  }, []);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {/* ===== Header ===== */}
+      {/* Header */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              {t("myEvents.title")}
+              {t("browseEvents.title")}
             </h1>
-            <p className="text-muted-foreground">{t("myEvents.subtitle")}</p>
+            <p className="text-muted-foreground">
+              {t("browseEvents.subtitle")}
+            </p>
           </div>
         </div>
       </header>
 
-      {/* ===== Main ===== */}
+      {/* Main */}
       <main className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-7xl">
-          {/* Search and Filter */}
+          {/* Search and Filter Bar */}
           <div className="mb-6 flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
-                placeholder={t("myEvents.searchPlaceholder")}
+                placeholder={t("browseEvents.searchPlaceholder")}
                 className="pl-10"
               />
             </div>
             <Button variant="outline">
               <Filter className="mr-2 h-4 w-4" />
-              {t("myEvents.filter")}
+              {t("browseEvents.filter")}
             </Button>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("myEvents.browseEvents")}
+            <Button variant="outline">
+              <ChartBarStacked className="mr-2 h-4 w-4" />
+              {t("browseEvents.category")}
             </Button>
           </div>
 
-          {/* Tabs */}
-          <Tabs defaultValue="upcoming" className="space-y-6">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
-              <TabsTrigger value="upcoming">
-                {t("myEvents.upcoming")} ({registeredEvents.length})
-              </TabsTrigger>
-              <TabsTrigger value="past">
-                {t("myEvents.past")} ({pastEvents.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="upcoming" className="space-y-4">
-              {registeredEvents.length > 0 ? (
+          {/* Events List */}
+          <div defaultValue="available" className="space-y-6">
+            <div className="space-y-4">
+              {myEvents?.length > 0 ? (
                 <div className="grid gap-4">
-                  {registeredEvents.map((event) => (
-                    <EventCard key={event.id} event={event} />
+                  {myEvents.map((event) => (
+                    <EventCard key={event._id} event={event} />
                   ))}
                 </div>
               ) : (
@@ -204,47 +93,19 @@ function MyEvents() {
                   <CardContent>
                     <Calendar className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
                     <h3 className="mb-2 text-lg font-semibold">
-                      {t("myEvents.noUpcoming")}
+                      {t("browseEvents.noEvents", {
+                        type: t("browseEvents.availableEvents").toLowerCase(),
+                      })}
                     </h3>
-                    <p className="text-muted-foreground mb-4">
-                      {t("myEvents.noUpcomingDesc")}
-                    </p>
-                    <Button>{t("myEvents.browseAvailable")}</Button>
                   </CardContent>
                 </Card>
               )}
-            </TabsContent>
-
-            <TabsContent value="past" className="space-y-4">
-              {pastEvents.length > 0 ? (
-                <div className="grid gap-4">
-                  {pastEvents.map((event) => (
-                    <EventCard
-                      key={event.id}
-                      event={event}
-                      showActions={false}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <Card className="py-12 text-center">
-                  <CardContent>
-                    <Clock className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-                    <h3 className="mb-2 text-lg font-semibold">
-                      {t("myEvents.noPast")}
-                    </h3>
-                    <p className="text-muted-foreground">
-                      {t("myEvents.noPastDesc")}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
       </main>
     </div>
   );
 }
 
-export default MyEvents;
+export default BrowseEvents;
