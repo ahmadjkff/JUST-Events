@@ -1,13 +1,13 @@
 export const volunteerForEvent = async (eventId: string, studentId: string) => {
   const res = await fetch(
-    `http://localhost:5000/student/volunteer/${eventId}/${studentId}`,
+    `${import.meta.env.VITE_BASE_URL}/student/volunteer/${eventId}/${studentId}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
-    }
+    },
   );
 
   if (!res.ok) {

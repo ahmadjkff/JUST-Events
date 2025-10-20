@@ -1,10 +1,10 @@
 export const downloadCertificate = async (eventId: string) => {
   const res = await fetch(
-    `http://localhost:5000/student/certificate/${eventId}`,
+    `${import.meta.env.VITE_BASE_URL}5000/student/certificate/${eventId}`,
     {
       method: "GET",
       credentials: "include",
-    }
+    },
   );
 
   if (!res.ok) {

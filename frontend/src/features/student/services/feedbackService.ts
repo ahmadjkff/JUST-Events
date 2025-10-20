@@ -2,10 +2,10 @@ export const provideFeedback = async (
   eventId: string,
   studentId: string,
   rating: number,
-  comment?: string
+  comment?: string,
 ) => {
   const res = await fetch(
-    `http://localhost:5000/student/feedback/${eventId}/${studentId}`,
+    `${import.meta.env.VITE_BASE_URL}/student/feedback/${eventId}/${studentId}`,
     {
       method: "POST",
       headers: {
@@ -13,7 +13,7 @@ export const provideFeedback = async (
       },
       credentials: "include",
       body: JSON.stringify({ rating, comment }),
-    }
+    },
   );
 
   if (!res.ok) {
