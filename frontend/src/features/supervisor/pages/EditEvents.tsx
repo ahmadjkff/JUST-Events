@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Calendar,
-  MapPin,
-  FileText,
-  Type,
-} from "lucide-react";
+import { Calendar, MapPin, FileText, Type } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
-import { useTranslation } from "react-i18next";  
+import { useTranslation } from "react-i18next";
 
 const EditForm: React.FC = () => {
-  const { t } = useTranslation();  
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -38,12 +33,6 @@ const EditForm: React.FC = () => {
       return;
     }
 
-    if (!img) {
-      setError(t("editForm.errors.uploadImage"));
-      setLoading(false);
-      return;
-    }
-
     try {
       const result = await editEvent(
         eventId || "",
@@ -53,7 +42,7 @@ const EditForm: React.FC = () => {
         form.department,
         form.category,
         new Date(form.date),
-        img,
+        img ? img : new File([], ""),
       );
 
       if (!result.success) {
@@ -118,16 +107,17 @@ const EditForm: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col ">
+    <div className="flex min-h-screen flex-col">
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
               {t("editForm.header.title")}
             </h1>
-            <p className="text-muted-foreground">{t("editForm.header.subtitle")}</p>
+            <p className="text-muted-foreground">
+              {t("editForm.header.subtitle")}
+            </p>
           </div>
-
         </div>
       </header>
 
@@ -264,7 +254,6 @@ const EditForm: React.FC = () => {
               accept="image/*"
               onChange={(e) => setImg(e.target.files?.[0] || null)}
               className="w-full rounded-lg border px-3 py-2 outline-none"
-              required
             />
           </div>
 
@@ -273,7 +262,9 @@ const EditForm: React.FC = () => {
             className="w-full rounded-xl bg-blue-500 py-3 font-semibold text-white shadow-md transition hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? t("editForm.submit.editing") : t("editForm.submit.editEvent")}
+            {loading
+              ? t("editForm.submit.editing")
+              : t("editForm.submit.editEvent")}
           </button>
 
           {error && <p className="text-center text-red-500">{error}</p>}
