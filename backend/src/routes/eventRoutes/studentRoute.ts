@@ -15,10 +15,7 @@ import { isStudentOrSupervisor } from "../../middlewares/validateUserRole";
 
 const router = express.Router();
 
-/**
- * Register for an event
- */
-
+//  Register for an event
 // TO-DO : replace studentId with userId from JWT
 router.post(
   "/register/:eventId/:studentId",
@@ -46,9 +43,31 @@ router.post(
   }
 );
 
-/**
- * Cancel event registration
- */
+router.get(
+  "/my-events",
+  validateJWT,
+  async (req: IExtendRequest, res: Response) => {
+    try {
+      const studentId = req.user!._id;
+
+      const events = await eventModel.find().sort({ date: -1 });
+
+      const registeredEvents = events.filter((event) =>
+        event.registeredStudents.includes(studentId)
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Registered events fetched successfully",
+        data: registeredEvents,
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+);
+
+// Cancel event registration
 // TO-DO : replace studentId with userId from JWT
 router.delete(
   "/cancel/:eventId/:studentId",
@@ -75,10 +94,7 @@ router.delete(
   }
 );
 
-/**
- * Volunteer for event
- */
-
+//   Volunteer for event
 // TO-DO : replace studentId with userId from JWT
 router.post(
   // To-Do: Check the event is approved before registration
@@ -107,9 +123,7 @@ router.post(
   }
 );
 
-/**
- * Provide feedback
- */
+// Provide feedback
 router.post(
   "/feedback/:eventId",
   validateJWT,
@@ -155,6 +169,7 @@ router.post(
   }
 );
 
+//
 router.delete(
   "/feedback/:eventId/:feedbackId",
   validateJWT,
@@ -232,9 +247,7 @@ router.get(
   }
 );
 
-/**
- * get certificate
- */
+// get certificate
 router.get(
   "/certificate/:eventId",
   validateJWT,
