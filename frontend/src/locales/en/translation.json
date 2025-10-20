@@ -93,7 +93,8 @@
     "description": "Download and view your event participation certificates here.",
     "exampleEvent": "Event Name",
     "date": "Date",
-    "download": "Download Certificate"
+    "download": "Download Certificate",
+    "noCertificates": "No certificates available"
   },
   "notFound": {
     "title": "Page Not Found",
