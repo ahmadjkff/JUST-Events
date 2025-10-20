@@ -3,8 +3,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "../../protectedRoutes";
-import Events from "./pages/Events";
-import Settings from "./pages/Settings";
 import NotFound from "../../pages/NotFound";
 import EventForm from "./pages/CreateEvent";
 import EditForm from "./pages/EditEvents";
@@ -62,22 +60,7 @@ const SupervisorRoutes: React.FC = () => (
         </ProtectedRoute>
       }
     />
-    <Route
-      path="events"
-      element={
-        <ProtectedRoute allowedRoles={["supervisor"]}>
-          <Events />
-        </ProtectedRoute>
-      }
-    />
-    <Route
-      path="settings"
-      element={
-        <ProtectedRoute allowedRoles={["supervisor"]}>
-          <Settings />
-        </ProtectedRoute>
-      }
-    />
+
     <Route path="*" element={<NotFound />} />
   </Routes>
 );
