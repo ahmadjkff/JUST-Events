@@ -6,30 +6,28 @@ interface LanguageToggleSwitchProps {
   defaultChecked?: boolean;
 }
 
-const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({
-
-}) => {
-
+const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({}) => {
   const { i18n } = useTranslation();
 
   useEffect(() => {
     // set document direction and lang attr whenever language changes
-    const dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+    const dir = i18n.language === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = i18n.language;
     document.documentElement.dir = dir;
     // optional: change font for Arabic
-    if (i18n.language === 'ar') {
+    if (i18n.language === "ar") {
       document.documentElement.style.fontFamily = "'Cairo', sans-serif";
+      // document.documentElement.lang = "ar";
     } else {
       document.documentElement.style.fontFamily = "'Inter', sans-serif";
+      // document.documentElement.lang = "en";
     }
   }, [i18n.language]);
 
   const changeLang = (lng: string) => {
     i18n.changeLanguage(lng);
-    localStorage.setItem('i18nextLng', lng);
+    localStorage.setItem("i18nextLng", lng);
   };
-
 
   return (
     <div className="checkbox-wrapper-8">
@@ -51,7 +49,3 @@ const LanguageToggleSwitch: React.FC<LanguageToggleSwitchProps> = ({
 };
 
 export default LanguageToggleSwitch;
-
-
-
-
