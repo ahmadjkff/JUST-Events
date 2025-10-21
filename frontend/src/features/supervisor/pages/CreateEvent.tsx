@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
+import toast from "react-hot-toast";
 
 interface IStage {
   _id: string;
@@ -104,9 +105,12 @@ const EventForm: React.FC = () => {
   };
 
   const hanldelSeletetStage = async (id: string, location: string) => {
-    console.log("Selected Stage ID:", id);
-    console.log("Selected Stage Location:", location);
+    if (!form.startTime || !form.endTime) {
+      toast.error("Please select start time and end time for the stage");
+      return;
+    }
     setForm({ ...form, stageId: id, location });
+    setShowDialog(false);
   };
 
   return (
@@ -291,7 +295,7 @@ const EventForm: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {stages.map((stage) => (
+                {stages?.map((stage) => (
                   <tr key={stage._id} className="border-b">
                     <td className="px-2 py-1">{stage.name}</td>
                     <td className="px-2 py-1">
@@ -312,7 +316,6 @@ const EventForm: React.FC = () => {
                         }`}
                         onClick={() => {
                           hanldelSeletetStage(stage._id, stage.name);
-                          setShowDialog(false);
                         }}
                       >
                         Select
@@ -338,6 +341,9 @@ const EventForm: React.FC = () => {
                     type="time"
                     step="60" // minutes only, no seconds
                     className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    onChange={(e) => {
+                      setForm({ ...form, startTime: e.target.value });
+                    }}
                   />
                 </div>
 
@@ -348,6 +354,9 @@ const EventForm: React.FC = () => {
                     type="time"
                     step="60" // minutes only, no seconds
                     className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    onChange={(e) => {
+                      setForm({ ...form, endTime: e.target.value });
+                    }}
                   />
                 </div>
               </div>
