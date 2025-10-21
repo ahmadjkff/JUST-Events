@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
+import toast from "react-hot-toast";
 
 interface IStage {
   _id: string;
@@ -17,6 +18,9 @@ interface IStage {
 
 const EventForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [loadingDescription, setLoadingDescription] = useState(false);
+  const [descError, setDescError] = useState<string | null>(null);
+
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -34,7 +38,7 @@ const EventForm: React.FC = () => {
   const [stages, setStages] = useState<IStage[]>([]);
   const [showDialog, setShowDialog] = useState(false);
 
-  // Open stage selection modal
+  // ✅ Fetch available stages
   const openStageDialog = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/stage");
@@ -46,6 +50,7 @@ const EventForm: React.FC = () => {
     }
   };
 
+  // ✅ Handle field changes
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -54,6 +59,44 @@ const EventForm: React.FC = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ✅ AI Description Generator
+  const handleGenerateDescription = async () => {
+    if (!form.title.trim()) {
+      setDescError("Please enter a title before generating description");
+      toast.error("Please enter a title before generating description");
+      return;
+    }
+
+    setLoadingDescription(true);
+    setDescError(null);
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/ai/generate-description",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: form.title }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.description) {
+        setForm((prev) => ({ ...prev, description: data.description }));
+      } else {
+        setDescError(data.error || "Failed to generate description");
+        toast.error(data.error || "Failed to generate description");
+      }
+    } catch (error) {
+      console.error(error);
+      setDescError("Something went wrong while generating description");
+    } finally {
+      setLoadingDescription(false);
+    }
+  };
+
+  // ✅ Create Event handler
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -92,7 +135,7 @@ const EventForm: React.FC = () => {
         setLoading(false);
         return;
       }
-
+      toast.success("Event created successfully");
       setError(null);
       setLoading(false);
       navigate("/browse-events");
@@ -168,7 +211,7 @@ const EventForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Description */}
+          {/* Description + AI Button */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
               Description
@@ -179,15 +222,36 @@ const EventForm: React.FC = () => {
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Enter event description"
+                placeholder="Enter or generate event description"
                 className="w-full resize-none outline-none"
                 rows={3}
                 required
               />
             </div>
+
+            <button
+              type="button"
+              onClick={handleGenerateDescription}
+              disabled={loadingDescription}
+              className={`mt-2 w-full rounded-lg py-2 font-medium text-white transition ${
+                loadingDescription
+                  ? "cursor-not-allowed bg-gray-400"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
+              {loadingDescription
+                ? "Generating..."
+                : "Generate Auto Description"}
+            </button>
+
+            {descError && (
+              <p className="mt-2 text-center text-sm text-red-500">
+                {descError}
+              </p>
+            )}
           </div>
 
-          {/* Stage Selection */}
+          {/* Stage */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
               Stage
@@ -322,6 +386,7 @@ const EventForm: React.FC = () => {
                 ))}
               </tbody>
             </table>
+
             <div className="mt-4 flex items-center justify-between">
               <button
                 className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
@@ -329,28 +394,6 @@ const EventForm: React.FC = () => {
               >
                 Close
               </button>
-
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="startTime">Start Time</label>
-                  <input
-                    id="startTime"
-                    type="time"
-                    step="60" // minutes only, no seconds
-                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <label htmlFor="endTime">Start Time</label>
-                  <input
-                    id="endTime"
-                    type="time"
-                    step="60" // minutes only, no seconds
-                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>
