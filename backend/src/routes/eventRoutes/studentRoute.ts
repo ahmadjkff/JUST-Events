@@ -43,6 +43,7 @@ router.post(
   }
 );
 
+// Get all events a student has registered for
 router.get(
   "/my-events",
   validateJWT,
@@ -50,7 +51,9 @@ router.get(
     try {
       const studentId = req.user!._id;
 
-      const events = await eventModel.find().sort({ date: -1 });
+      const events = await eventModel
+        .find({ status: EventStatus.APPROVED })
+        .sort({ date: -1 });
 
       const registeredEvents = events.filter((event) =>
         event.registeredStudents.includes(studentId)
