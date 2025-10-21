@@ -12,7 +12,7 @@ export interface IEvent {
   status: EventStatus;
   volunteers: User[]; // Array of User IDs
   registeredStudents: string[]; // Array of User IDs
-  feedback: string[];
+  feedback: any[];
   createdAt: string; // ISO string
   updatedAt: string; // ISO string
   category: EventCategory;

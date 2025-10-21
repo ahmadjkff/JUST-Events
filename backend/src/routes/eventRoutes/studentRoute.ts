@@ -144,6 +144,13 @@ router.post(
         });
       }
 
+      if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({
+          success: false,
+          message: "Rating must be between 1 and 5",
+        });
+      }
+
       const event = await eventModel.findById(eventId);
       if (!event)
         return res
@@ -159,7 +166,7 @@ router.post(
 
       const populatedEvent = await eventModel
         .findById(eventId)
-        .populate("feedback.student", "firstName lastName");
+        .populate("feedback.student", "firstName lastName img");
 
       res.status(200).json({
         success: true,
@@ -213,10 +220,16 @@ router.delete(
         (comment) => comment._id?.toString() !== feedbackId
       );
       await event.save();
+
+      const populatedEvent = await event.populate(
+        "feedback.student",
+        "firstName lastName img"
+      );
+
       res.status(200).json({
         success: true,
         message: "Feedback deleted successfully",
-        data: event.feedback,
+        data: populatedEvent?.feedback,
       });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
