@@ -43,7 +43,7 @@ const EventForm: React.FC = () => {
     try {
       const res = await fetch("http://localhost:5000/api/stage");
       const data = await res.json();
-      setStages(data.data.events);
+      setStages(data.data);
       setShowDialog(true);
     } catch (err) {
       console.error("Failed to fetch stages", err);
@@ -226,8 +226,7 @@ const EventForm: React.FC = () => {
                 value={form.description}
                 onChange={handleChange}
                 placeholder="Enter or generate event description"
-                className="w-full resize-none outline-none"
-                rows={3}
+                className="h-40 w-full outline-none"
                 required
               />
             </div>

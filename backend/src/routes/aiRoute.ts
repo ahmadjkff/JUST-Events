@@ -23,7 +23,8 @@ router.post("/generate-description", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that writes event descriptions.",
+          content:
+            "You are a helpful assistant that writes event descriptions.",
         },
         { role: "user", content: prompt },
       ],
