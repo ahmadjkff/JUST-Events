@@ -99,7 +99,7 @@ function EventsTable({
       </div>
 
       {/* === Events List === */}
-      {eventsByStatus[value as keyof typeof eventsByStatus].length > 0 ? (
+      {eventsByStatus[value as keyof typeof eventsByStatus]?.length > 0 ? (
         <div className="grid gap-4">
           {filteredEvents(value as EventStatus).length ? (
             filteredEvents(value as EventStatus).map((event: IEvent) => (
