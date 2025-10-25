@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { fetchStudentRegistrations } from "../features/student/services/StudentService";
 import { getCategoryColor } from "../constantColors";
+import { volunteerForEvent } from "../features/student/services/volunteerService";
+import toast from "react-hot-toast";
 
 const EventCard = ({ event }: { event: IEvent }) => {
   const { user } = useAuth();
@@ -63,6 +65,15 @@ const EventCard = ({ event }: { event: IEvent }) => {
     }
   };
 
+  const handleVolunteer = async (eventId: string, userId: string) => {
+    try {
+    await volunteerForEvent(eventId, userId);
+    toast.success("Successfully volunteered for the event");
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : "Failed to volunteer for event");
+  }
+  }
+
   const status = getStatusForEvent(event._id);
 
   return (
@@ -90,6 +101,12 @@ const EventCard = ({ event }: { event: IEvent }) => {
                 {t("eventDetails.cancelRegistration")}
               </Button>
             )}
+
+            <Button
+              onClick={() => handleVolunteer(event._id, user?._id!)}
+            >
+              {"volunteer"}
+            </Button>
 
             <Link to={`/event/${event._id}`}>
               <Button variant="outline" size="sm">

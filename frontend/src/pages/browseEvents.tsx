@@ -14,7 +14,7 @@ function BrowseEvents() {
 
   useTitle(`${t("browseEvents.title")} - JUST Events`);
 
-  // ✅ هذا السطر هو ما يجعلها تعمل مثل Notifications
+
   useEffect(() => {
     document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
