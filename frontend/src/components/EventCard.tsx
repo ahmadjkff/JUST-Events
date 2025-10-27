@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useEvent } from "../context/event/EventContext";
-import type { IEvent } from "../types/eventTypes";
+import { EventStatus, type IEvent } from "../types/eventTypes";
 import { cancelRegistration } from "../features/student/services/cancelService";
 import { registerForEvent } from "../features/student/services/registerService";
 import { useEffect, useState } from "react";
@@ -36,9 +36,23 @@ const EventCard = ({ event }: { event: IEvent }) => {
   }, [user?._id]);
 
   // Helper to get registration status by eventId
-  const getStatusForEvent = (eventId: string) => {
+  const getRegistrationStatus = (eventId: string) => {
     const reg = registrations.find((r) => r.event === eventId);
-    return reg ? reg.status : null;
+    return reg
+      ? !reg.isVolunteer &&
+          (reg.status === EventStatus.Approved ||
+            reg.status === EventStatus.Pending)
+      : null;
+  };
+
+  const getVolunteerStatus = (eventId: string) => {
+    const reg = registrations.find((r) => r.event === eventId);
+
+    return reg
+      ? reg.isVolunteer &&
+          (reg.status === EventStatus.Approved ||
+            reg.status === EventStatus.Pending)
+      : null;
   };
 
   const handleRegister = async (eventId: string, userId: string) => {
@@ -67,14 +81,24 @@ const EventCard = ({ event }: { event: IEvent }) => {
 
   const handleVolunteer = async (eventId: string, userId: string) => {
     try {
-    await volunteerForEvent(eventId, userId);
-    toast.success("Successfully volunteered for the event");
-  } catch (error) {
-    toast.error(error instanceof Error ? error.message : "Failed to volunteer for event");
-  }
-  }
+      await volunteerForEvent(eventId, userId);
+      await fetchEvents("approved");
+      setRegistrations((prev) => [
+        ...prev,
+        { event: eventId, status: "pending", isVolunteer: true },
+      ]);
+      toast.success("Successfully volunteered for the event");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to volunteer for event",
+      );
+    }
+  };
 
-  const status = getStatusForEvent(event._id);
+  const registrationStatus = getRegistrationStatus(event._id);
+  const volunteerStatus = getVolunteerStatus(event._id);
 
   return (
     <Card className="transition-shadow hover:shadow-md">
@@ -87,13 +111,13 @@ const EventCard = ({ event }: { event: IEvent }) => {
             </Badge>
           </div>
           <div className="flex gap-2">
-            {!status && (
+            {!registrationStatus && !volunteerStatus && (
               <Button onClick={() => handleRegister(event._id, user?._id!)}>
                 {t("eventDetails.register")}
               </Button>
             )}
 
-            {(status === "approved" || status === "pending") && (
+            {registrationStatus && !volunteerStatus && (
               <Button
                 className="bg-red-500 text-white hover:bg-red-600"
                 onClick={() => handleRegistrationCancel(event._id, user?._id!)}
@@ -102,11 +126,19 @@ const EventCard = ({ event }: { event: IEvent }) => {
               </Button>
             )}
 
-            <Button
-              onClick={() => handleVolunteer(event._id, user?._id!)}
-            >
-              {"volunteer"}
-            </Button>
+            {!registrationStatus && !volunteerStatus && (
+              <Button onClick={() => handleVolunteer(event._id, user?._id!)}>
+                {"volunteer"}
+              </Button>
+            )}
+            {volunteerStatus && !registrationStatus && (
+              <Button
+                className="bg-red-500 text-white hover:bg-red-600"
+                onClick={() => handleRegistrationCancel(event._id, user?._id!)}
+              >
+                cancel Volunteer
+              </Button>
+            )}
 
             <Link to={`/event/${event._id}`}>
               <Button variant="outline" size="sm">
@@ -136,6 +168,12 @@ const EventCard = ({ event }: { event: IEvent }) => {
             <Users className="h-4 w-4" />
             <Link to={`/registred-students/${event._id}`}>
               {event?.registeredStudents?.length} {t("eventDetails.attendees")}
+            </Link>
+          </div>
+          <div className="flex items-center gap-1">
+            <Users className="h-4 w-4" />
+            <Link to={`/volunteered-students/${event._id}`}>
+              {event?.volunteers?.length} {t("eventDetails.volunteers")}
             </Link>
           </div>
         </div>

@@ -19,7 +19,7 @@ import Notifications from "./pages/notifications";
 import AboutUs from "./pages/aboutUs";
 import EventDetails from "./pages/eventDetails";
 import RegistredStudents from "./pages/RegistredStudents";
-
+import VolunteeredStudents from "./pages/VolunteeredStudents";
 
 function App() {
   const { isAuthenticated } = useAuth();
@@ -59,6 +59,10 @@ function App() {
             <Route
               path="/registred-students/:eventId"
               element={<RegistredStudents />}
+            />
+            <Route
+              path="/volunteered-students/:eventId"
+              element={<VolunteeredStudents />}
             />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route path="*" element={<NotFound />} />

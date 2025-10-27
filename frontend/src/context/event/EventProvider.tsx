@@ -116,6 +116,32 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const fetchVolunteeredStudents = async (eventId: string) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/volunteered-students/${eventId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to fetch registered students");
+      }
+      return { success: true, data: data.data };
+    } catch (error) {
+      console.error("Error fetching registered students:", error);
+      return {
+        success: false,
+        message: "Failed to fetch registered students",
+        data: [],
+      };
+    }
+  };
+
   const addFeedback = async (
     eventId: string,
     rating: number,
@@ -222,6 +248,7 @@ const EventProvider: FC<PropsWithChildren> = ({ children }) => {
         addFeedback,
         deleteFeedback,
         fetchEventById,
+        fetchVolunteeredStudents,
       }}
     >
       {children}

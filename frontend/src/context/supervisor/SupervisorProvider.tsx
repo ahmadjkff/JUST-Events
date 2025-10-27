@@ -26,8 +26,7 @@ const SuperviorProvider: FC<PropsWithChildren> = ({ children }) => {
       }
 
       setEvents(data.data.data.grouped);
-      console.log("fetched applications:", data.data.data.grouped);
-      console.log("number of Events:", data.data.data.totalEvents);
+
       return { success: true, data: data.data.data, message: data.message };
     } catch (error: unknown) {
       const message =
