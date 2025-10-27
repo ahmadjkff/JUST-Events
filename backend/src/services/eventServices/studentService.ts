@@ -98,11 +98,9 @@ export const cancel = async (
     event: eventId,
   });
   const isVolunteer = deleted?.isVolunteer;
-  console.log(isVolunteer);
 
   const event = await eventModel.findById(eventId);
   if (!event) throw new Error("Event not found");
-  console.log(event);
 
   if (isVolunteer) {
     event.volunteers = event.volunteers.filter(

@@ -111,7 +111,6 @@ export const deleteEvent = async ({
 
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
-        console.log("Deleted image ", imagePath);
       }
     }
 
@@ -168,7 +167,6 @@ export const editEvent = async ({
       const oldImgPath = path.join(__dirname, "..", "..", event.img);
       if (fs.existsSync(oldImgPath)) {
         fs.unlinkSync(oldImgPath);
-        console.log("Deleted Old Img ", oldImgPath);
       }
       event.img = img;
     }

@@ -83,9 +83,6 @@ router.get("/volunteered-students/:eventId", validateJWT, async (req, res) => {
       .findById(eventId)
       .populate("volunteers.student", "firstName lastName email");
 
-    if (event) console.log(event.volunteers);
-    else console.log("eventNotFound");
-
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }

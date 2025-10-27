@@ -6,7 +6,6 @@ dotenv.config();
 
 const router = express.Router();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-console.log("OpenAI key loaded:", !!process.env.OPENAI_API_KEY);
 
 // POST /ai/generate-description
 router.post("/generate-description", async (req, res) => {
