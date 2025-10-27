@@ -73,6 +73,32 @@ router.get("/registered-students/:eventId", validateJWT, async (req, res) => {
   }
 });
 
+router.get("/volunteered-students/:eventId", validateJWT, async (req, res) => {
+  try {
+    const { eventId } = req.params;
+    if (!eventId) {
+      return res.status(400).json({ message: "eventId is required" });
+    }
+    const event = await eventModel
+      .findById(eventId)
+      .populate("volunteers.student", "firstName lastName email");
+
+    if (event) console.log(event.volunteers);
+    else console.log("eventNotFound");
+
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Registered students fetched",
+      data: event.volunteers,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: `Server error ${error.message}` });
+  }
+});
+
 router.get(
   "/student-registrations/:studentId",
   validateJWT,
@@ -83,7 +109,7 @@ router.get(
       const registrations = await RegistrationModel.find({
         student: studentId,
         status: { $in: ["pending", "approved"] },
-      }).select("event status");
+      }).select("event status isVolunteer");
 
       res.status(200).json({
         success: true,

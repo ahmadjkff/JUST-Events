@@ -97,11 +97,23 @@ export const cancel = async (
     student: studentId,
     event: eventId,
   });
+  const isVolunteer = deleted?.isVolunteer;
+  console.log(isVolunteer);
+
   const event = await eventModel.findById(eventId);
   if (!event) throw new Error("Event not found");
-  event.registeredStudents = event.registeredStudents.filter(
-    (reg) => reg.toString() !== studentId.toString()
-  );
+  console.log(event);
+
+  if (isVolunteer) {
+    event.volunteers = event.volunteers.filter(
+      (reg) => reg.student.toString() !== studentId.toString()
+    );
+  } else {
+    event.registeredStudents = event.registeredStudents.filter(
+      (reg) => reg.toString() !== studentId.toString()
+    );
+  }
+
   await event.save();
 
   if (!deleted) throw new Error("Registration not found");
