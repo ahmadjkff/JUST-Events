@@ -324,74 +324,58 @@ router.delete("/:id/free-times/:slotId", async (req, res) => {
   }
 });
 
-// Cancel a booking on a stage
 router.delete("/:id/bookings/:bookingId", async (req, res) => {
   try {
     const { id, bookingId } = req.params;
-
     const stage = await StageModel.findById(id);
-
     if (!stage) {
       return res
         .status(404)
         .json({ success: false, message: "Stage not found" });
     }
-
     const bookingIndex =
       stage.bookings?.findIndex(
         (booking: any) => booking._id?.toString() === bookingId
       ) ?? -1;
-
     if (bookingIndex === -1) {
-      return res.status(404).json({
-        success: false,
-        message: "Booking not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Booking not found" });
     }
-
     const [booking] = stage.bookings.splice(bookingIndex, 1);
-
     // Restore cancelled booking time back into freeTimes
     if (booking) {
       const bookingDate = new Date(booking.date);
       const bookingStart = booking.start;
       const bookingEnd = booking.end;
-
       // Try to merge with existing free slots on same day, or just push a new one
       const newSlot = {
         date: bookingDate,
         start: bookingStart,
         end: bookingEnd,
       };
-
       const sameDaySlots = stage.freeTimes?.filter((slot: any) =>
         isSameDay(new Date(slot.date), bookingDate)
       ) as any[];
-
       if (!sameDaySlots?.length) {
         stage.freeTimes = [...(stage.freeTimes ?? []), newSlot];
       } else {
         stage.freeTimes = [...(stage.freeTimes ?? []), newSlot];
       }
-    }
-
-    // Update status if no more bookings
+    } // Update status if no more bookings
     if (!stage.bookings?.length) {
       stage.status = stage.freeTimes?.length ? "free" : "free";
     }
-
     await stage.save();
-
     return res.json({
       success: true,
       message: "Booking cancelled successfully",
       data: stage,
     });
   } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: error.message ?? "Unexpected error",
-    });
+    return res
+      .status(500)
+      .json({ success: false, message: error.message ?? "Unexpected error" });
   }
 });
 
