@@ -166,8 +166,39 @@ router.post("/:id/book", async (req, res) => {
       eventId,
     });
     if (Array.isArray(stage.freeTimes) && availableSlotIndex > -1) {
-      stage.freeTimes.splice(availableSlotIndex, 1);
+      const slot = stage.freeTimes[availableSlotIndex];
+      if (!slot)
+        return res.status(400).json({
+          success: false,
+          message: "Slot not found",
+        });
+      const slotStart = toDateTime(slot.date, slot.start);
+      const slotEnd = toDateTime(slot.date, slot.end);
+
+      const updatedSlots = [];
+
+      // Left-side remaining time (before requestedStart)
+      if (requestedStart > slotStart) {
+        updatedSlots.push({
+          date: slot.date,
+          start: slot.start,
+          end: slot.start < start ? start : slot.start, // using HH:mm format
+        });
+      }
+
+      // Right-side remaining time (after requestedEnd)
+      if (requestedEnd < slotEnd) {
+        updatedSlots.push({
+          date: slot.date,
+          start: end,
+          end: slot.end,
+        });
+      }
+
+      // Replace the old slot with new one(s)
+      stage.freeTimes.splice(availableSlotIndex, 1, ...updatedSlots);
     }
+
     stage.status = "reserved";
     await stage.save();
 
@@ -178,6 +209,118 @@ router.post("/:id/book", async (req, res) => {
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Add free times to a stage
+router.post("/:id/free-times", async (req, res) => {
+  try {
+    const { freeTimes } = req.body;
+
+    if (!Array.isArray(freeTimes) || freeTimes.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "freeTimes must be a non-empty array",
+      });
+    }
+
+    const stage = await StageModel.findById(req.params.id);
+
+    if (!stage) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Stage not found" });
+    }
+
+    const normalizedSlots = [];
+    for (const slot of freeTimes) {
+      const { date, start, end } = slot ?? {};
+
+      if (!date || !start || !end) {
+        return res.status(400).json({
+          success: false,
+          message: "Each slot requires date, start, and end",
+        });
+      }
+
+      const slotDate = new Date(date);
+      if (Number.isNaN(slotDate.getTime())) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid slot date" });
+      }
+
+      const slotStart = toDateTime(slotDate, start);
+      const slotEnd = toDateTime(slotDate, end);
+
+      if (slotEnd <= slotStart) {
+        return res.status(400).json({
+          success: false,
+          message: "Slot end must be after slot start",
+        });
+      }
+
+      normalizedSlots.push({ date: slotDate, start, end });
+    }
+
+    stage.freeTimes = [...(stage.freeTimes ?? []), ...normalizedSlots];
+    stage.status = stage.bookings?.length ? stage.status : "free";
+
+    await stage.save();
+
+    res.json({
+      success: true,
+      message: "Free times added successfully",
+      data: stage,
+    });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ success: false, message: error.message ?? "Unexpected error" });
+  }
+});
+
+// Delete a free time from a stage
+router.delete("/:id/free-times/:slotId", async (req, res) => {
+  try {
+    const { id, slotId } = req.params;
+    const stage = await StageModel.findById(id);
+
+    if (!stage) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Stage not found" });
+    }
+
+    const slotIndex =
+      stage.freeTimes?.findIndex(
+        (slot: any) => slot._id?.toString() === slotId
+      ) ?? -1;
+
+    if (slotIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: "Free time slot not found",
+      });
+    }
+
+    stage.freeTimes?.splice(slotIndex, 1);
+
+    if (!stage.freeTimes?.length && !stage.bookings?.length) {
+      stage.status = "free";
+    }
+
+    await stage.save();
+
+    res.json({
+      success: true,
+      message: "Free time slot deleted successfully",
+      data: stage,
+    });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ success: false, message: error.message ?? "Unexpected error" });
   }
 });
 
