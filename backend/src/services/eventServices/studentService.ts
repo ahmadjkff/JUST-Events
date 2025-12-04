@@ -73,6 +73,10 @@ export const register = async (
   if (event.status !== "approved")
     throw new Error("Cannot register for an unapproved event");
 
+  if (event.capacity === event.registeredStudents.length) {
+    throw new Error("Capacity is Full");
+  }
+
   const user = await userModel.findById(studentId);
   if (!user) throw new Error("User not found");
 

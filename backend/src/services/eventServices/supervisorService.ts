@@ -312,6 +312,19 @@ export const approveOrRejectStudentApplacition = async ({
         student: studentId,
         event: eventId,
       });
+
+      // Also remove from event.registeredStudents
+      event.registeredStudents = event.registeredStudents.filter(
+        (id) => id.toString() !== studentId.toString()
+      );
+
+      await event.save();
+
+      return {
+        success: true,
+        statusCode: 200,
+        message: `Student registration ${action}`,
+      };
     }
 
     if (
@@ -321,17 +334,6 @@ export const approveOrRejectStudentApplacition = async ({
       action === RegistrationStatus.APPROVED
     ) {
       event.registeredStudents.push(new mongoose.Types.ObjectId(studentId));
-    }
-    if (
-      (event.registeredStudents.includes(
-        new mongoose.Types.ObjectId(studentId)
-      ) &&
-        action === RegistrationStatus.REJECTED) ||
-      action === RegistrationStatus.PENDING
-    ) {
-      event.registeredStudents = event.registeredStudents.filter(
-        (id) => id.toString() !== studentId.toString()
-      );
     }
 
     await isRegistered.save();
