@@ -24,8 +24,17 @@ router.post(
   upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
-      const { stageId, title, description, location, department, category } =
-        req.body;
+      const {
+        stageId,
+        title,
+        description,
+        location,
+        department,
+        category,
+        date,
+        startTime,
+        endTime,
+      } = req.body;
       const img = req.file ? `/eventsimage/${req.file.filename}` : null;
       if (
         !title ||
@@ -33,9 +42,14 @@ router.post(
         !location ||
         !department ||
         !category ||
-        !img
+        !img ||
+        !date ||
+        !startTime ||
+        !endTime
       ) {
-        return res.status(400).json({ message: "All fields are required" });
+        return res
+          .status(400)
+          .json({ message: "All fields are required, including time slot" });
       }
       if (title.length < 3) {
         if (req.file) fs.unlinkSync(req.file.path);
@@ -60,6 +74,9 @@ router.post(
         category,
         img,
         supervisorId,
+        date,
+        startTime,
+        endTime,
       });
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {

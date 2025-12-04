@@ -135,6 +135,9 @@ const EventForm: React.FC = () => {
         form.department,
         form.category,
         img,
+        form.date,
+        form.startTime,
+        form.endTime,
       );
 
       if (!result.success) {
@@ -370,9 +373,9 @@ const EventForm: React.FC = () => {
 
                     <td className="px-2 py-1">
                       <button
-                        disabled={stage.status === "reserved"}
+                        disabled={stage?.freeTimes?.length === 0}
                         className={`rounded px-2 py-1 ${
-                          stage.status === "reserved"
+                          stage.freeTimes?.length === 0
                             ? "cursor-not-allowed bg-gray-300"
                             : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}

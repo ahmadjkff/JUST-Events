@@ -83,14 +83,18 @@ const EventCard = ({
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             {event.date
-              ? new Date(event.date).toLocaleDateString(i18n.language)
+              ? new Date(event.date).toLocaleDateString()
               : t("common.na")}
           </div>
           <div className="flex items-center gap-1">
+            Start
             <Clock className="h-4 w-4" />
-            {event.createdAt
-              ? new Date(event.createdAt).toLocaleTimeString(i18n.language)
-              : t("common.na")}
+            {event.startTime ? event.startTime : t("common.na")}
+          </div>
+          <div className="flex items-center gap-1">
+            End
+            <Clock className="h-4 w-4" />
+            {event.startTime ? event.endTime : t("common.na")}
           </div>
           <a
             href="https://www.google.com/maps/place/%D9%85%D8%AF%D8%B1%D8%AC+%D8%A7%D8%A8%D9%86+%D8%B3%D9%8A%D9%86%D8%A7%E2%80%AD"

@@ -13,7 +13,7 @@ export interface IEvent extends Document {
   title: string;
   description: string;
   location: string;
-  date: Date;
+  date?: Date;
   startTime?: string;
   endTime?: string;
   createdBy: mongoose.Types.ObjectId;
@@ -49,7 +49,7 @@ const eventSchema = new Schema<IEvent>(
     title: { type: String, required: true, trim: true, minlength: 3 },
     description: { type: String, required: true, trim: true, minlength: 10 },
     location: { type: String, required: true },
-    // date: { type: Date, required: true },
+    date: { type: Date },
     startTime: { type: String },
     endTime: { type: String },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },

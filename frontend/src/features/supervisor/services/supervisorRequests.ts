@@ -8,6 +8,9 @@ export const createEvent = async (
   department: EventDepartment,
   category: EventCategory,
   img: File,
+  date: string,
+  startTime: string,
+  endTime: string,
 ) => {
   try {
     const formData = new FormData();
@@ -18,6 +21,9 @@ export const createEvent = async (
     formData.append("department", department);
     formData.append("category", category);
     formData.append("img", img);
+    formData.append("date", date);
+    formData.append("startTime", startTime);
+    formData.append("endTime", endTime);
 
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/supervisor`,

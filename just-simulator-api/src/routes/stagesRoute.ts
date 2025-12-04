@@ -4,15 +4,15 @@ import StageModel, { IStage } from "../models/stagesModel";
 
 const router = express.Router();
 
-const toDateTime = (dateInput: string | Date, time: string) => {
-  const base = new Date(dateInput);
-  const [hours, minutes] = time.split(":").map(Number);
-  base.setHours(hours || 0, minutes || 0, 0, 0);
-  return base;
-};
+// const toDateTime = (dateInput: string | Date, time: string) => {
+//   const base = new Date(dateInput);
+//   const [hours, minutes] = time.split(":").map(Number);
+//   base.setHours(hours || 0, minutes || 0, 0, 0);
+//   return base;
+// };
 
-const isSameDay = (first: Date, second: Date) =>
-  first.toISOString().slice(0, 10) === second.toISOString().slice(0, 10);
+// const isSameDay = (first: Date, second: Date) =>
+//   first.toISOString().slice(0, 10) === second.toISOString().slice(0, 10);
 
 // get All Stages
 router.get("/", async (req, res) => {
@@ -67,16 +67,12 @@ router.post("/:id/availability", async (req, res) => {
         ((start >= b.start && start < b.end) || (end > b.start && end <= b.end))
     );
 
-    console.log("Conflict:", conflict);
-
     const availableInFreeTimes = stage.freeTimes?.some(
       (ft) =>
         new Date(ft.date).toISOString().split("T")[0] === date &&
         start >= ft.start &&
         end <= ft.end
     );
-
-    console.log("Available in free times:", availableInFreeTimes);
 
     if (!availableInFreeTimes || conflict) {
       return res.json({
@@ -92,20 +88,175 @@ router.post("/:id/availability", async (req, res) => {
 });
 
 // Book a stage
+// router.post("/:id/book", async (req, res) => {
+//   try {
+//     const { stageId, date, start, end, eventId } = req.body;
+
+//     const bookingDate = new Date(date);
+//     if (Number.isNaN(bookingDate.getTime())) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Invalid booking date" });
+//     }
+
+//     // console.log(bookingDate);
+
+//     const requestedStart = toDateTime(bookingDate, start);
+//     const requestedEnd = toDateTime(bookingDate, end);
+
+//     if (requestedEnd <= requestedStart) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "End time must be after start time",
+//       });
+//     }
+
+//     const stage = await StageModel.findById(stageId);
+//     if (!stage)
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Stage not found" });
+
+//     const availableSlotIndex =
+//       stage.freeTimes?.findIndex((slot: any) => {
+//         const slotStart = toDateTime(slot.date, slot.start);
+//         const slotEnd = toDateTime(slot.date, slot.end);
+
+//         console.log("slotStart", slotStart);
+//         // console.log(slotEnd);
+//         // console.log(requestedStart);
+//         // console.log(requestedEnd);
+
+//         return (
+//           slotStart <= requestedStart &&
+//           slotEnd >= requestedEnd &&
+//           isSameDay(slotStart, requestedStart)
+//         );
+//       }) ?? -1;
+
+//     if (availableSlotIndex === -1) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Stage is not available during the requested time",
+//       });
+//     }
+
+//     // Check if already reserved
+//     const conflict = stage.bookings?.some((booking: any) => {
+//       const existingStart = toDateTime(booking.date, booking.start);
+//       const existingEnd = toDateTime(booking.date, booking.end);
+
+//       return (
+//         (requestedStart >= existingStart && requestedStart < existingEnd) ||
+//         (requestedEnd > existingStart && requestedEnd <= existingEnd)
+//       );
+//     });
+//     if (conflict) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Stage already reserved for that time",
+//       });
+//     }
+
+//     // Add new booking
+//     stage.bookings?.push({
+//       date: bookingDate,
+//       start,
+//       end,
+//       eventId,
+//     });
+//     if (Array.isArray(stage.freeTimes) && availableSlotIndex > -1) {
+//       const slot = stage.freeTimes[availableSlotIndex];
+//       if (!slot)
+//         return res.status(400).json({
+//           success: false,
+//           message: "Slot not found",
+//         });
+//       const slotStart = toDateTime(slot.date, slot.start);
+//       const slotEnd = toDateTime(slot.date, slot.end);
+
+//       const updatedSlots = [];
+
+//       // Left-side remaining time (before requestedStart)
+//       if (requestedStart > slotStart) {
+//         updatedSlots.push({
+//           date: slot.date,
+//           start: slot.start,
+//           end: slot.start < start ? start : slot.start, // using HH:mm format
+//         });
+//       }
+
+//       // Right-side remaining time (after requestedEnd)
+//       if (requestedEnd < slotEnd) {
+//         updatedSlots.push({
+//           date: slot.date,
+//           start: end,
+//           end: slot.end,
+//         });
+//       }
+
+//       // Replace the old slot with new one(s)
+//       stage.freeTimes.splice(availableSlotIndex, 1, ...updatedSlots);
+//     }
+
+//     stage.status = "reserved";
+//     await stage.save();
+
+//     res.json({
+//       success: true,
+//       message: "Stage reserved successfully",
+//       data: stage,
+//     });
+//   } catch (error: any) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// });
+
+// Force any date-like input into YYYY-MM-DD
+function normalizeDateString(input: any) {
+  const d = new Date(input);
+  if (isNaN(d.getTime())) return null; // gets rid of the TS error
+
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+// Convert date string + HH:mm to a real UTC datetime
+function toDateTime(dateString: string, time: string) {
+  const [hour, minute] = time.split(":").map(Number);
+  const d = new Date(dateString);
+
+  return new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), hour, minute)
+  );
+}
+
+function isSameDay(d1: Date, d2: Date) {
+  return (
+    d1.getUTCFullYear() === d2.getUTCFullYear() &&
+    d1.getUTCMonth() === d2.getUTCMonth() &&
+    d1.getUTCDate() === d2.getUTCDate()
+  );
+}
+
 router.post("/:id/book", async (req, res) => {
   try {
     const { stageId, date, start, end, eventId } = req.body;
-    console.log(req.body);
 
-    const bookingDate = new Date(date);
-    if (Number.isNaN(bookingDate.getTime())) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid booking date" });
+    // Normalize date into YYYY-MM-DD
+    const normalizedDate = normalizeDateString(date);
+    if (!normalizedDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid booking date",
+      });
     }
 
-    const requestedStart = toDateTime(bookingDate, start);
-    const requestedEnd = toDateTime(bookingDate, end);
+    const requestedStart = toDateTime(normalizedDate, start);
+    const requestedEnd = toDateTime(normalizedDate, end);
 
     if (requestedEnd <= requestedStart) {
       return res.status(400).json({
@@ -114,43 +265,49 @@ router.post("/:id/book", async (req, res) => {
       });
     }
 
+    // Fetch stage
     const stage = await StageModel.findById(stageId);
     if (!stage)
       return res
         .status(404)
         .json({ success: false, message: "Stage not found" });
 
-    console.log(stage.bookings);
-
+    // 1️⃣ Find valid free slot
     const availableSlotIndex =
       stage.freeTimes?.findIndex((slot: any) => {
-        const slotStart = toDateTime(slot.date, slot.start);
-        const slotEnd = toDateTime(slot.date, slot.end);
+        const slotDate = normalizeDateString(slot.date);
+        if (!slotDate) return false;
+
+        const slotStart = toDateTime(slotDate, slot.start);
+        const slotEnd = toDateTime(slotDate, slot.end);
 
         return (
+          isSameDay(slotStart, requestedStart) &&
           slotStart <= requestedStart &&
-          slotEnd >= requestedEnd &&
-          isSameDay(slotStart, requestedStart)
+          slotEnd >= requestedEnd
         );
       }) ?? -1;
 
     if (availableSlotIndex === -1) {
       return res.status(400).json({
         success: false,
-        message: "Stage is not available during the requested time",
+        message: "Stage is not available during that time",
       });
     }
 
-    // Check if already reserved
+    // 2️⃣ Check conflicts with existing bookings
     const conflict = stage.bookings?.some((booking: any) => {
-      const existingStart = toDateTime(booking.date, booking.start);
-      const existingEnd = toDateTime(booking.date, booking.end);
+      const bookingDate = normalizeDateString(booking.date);
+      if (!bookingDate) return false;
 
-      return (
-        (requestedStart >= existingStart && requestedStart < existingEnd) ||
-        (requestedEnd > existingStart && requestedEnd <= existingEnd)
-      );
+      if (bookingDate !== normalizedDate) return false;
+
+      const existingStart = toDateTime(bookingDate, booking.start);
+      const existingEnd = toDateTime(bookingDate, booking.end);
+
+      return requestedStart < existingEnd && requestedEnd > existingStart;
     });
+
     if (conflict) {
       return res.status(400).json({
         success: false,
@@ -158,48 +315,46 @@ router.post("/:id/book", async (req, res) => {
       });
     }
 
-    // Add new booking
-    stage.bookings?.push({
-      date: bookingDate,
+    // 3️⃣ Add the booking
+    stage.bookings.push({
+      date: new Date(normalizedDate), // <-- proper Date object
       start,
       end,
       eventId,
     });
-    if (Array.isArray(stage.freeTimes) && availableSlotIndex > -1) {
-      const slot = stage.freeTimes[availableSlotIndex];
-      if (!slot)
-        return res.status(400).json({
-          success: false,
-          message: "Slot not found",
-        });
-      const slotStart = toDateTime(slot.date, slot.start);
-      const slotEnd = toDateTime(slot.date, slot.end);
 
-      const updatedSlots = [];
+    // 4️⃣ Update freeTimes (cut the used part)
+    const slot = stage.freeTimes[availableSlotIndex];
+    const slotDate = normalizeDateString(slot!.date);
 
-      // Left-side remaining time (before requestedStart)
-      if (requestedStart > slotStart) {
-        updatedSlots.push({
-          date: slot.date,
-          start: slot.start,
-          end: slot.start < start ? start : slot.start, // using HH:mm format
-        });
-      }
+    const slotStart = toDateTime(slotDate!, slot!.start);
+    const slotEnd = toDateTime(slotDate!, slot!.end);
 
-      // Right-side remaining time (after requestedEnd)
-      if (requestedEnd < slotEnd) {
-        updatedSlots.push({
-          date: slot.date,
-          start: end,
-          end: slot.end,
-        });
-      }
+    const newSlots = [];
 
-      // Replace the old slot with new one(s)
-      stage.freeTimes.splice(availableSlotIndex, 1, ...updatedSlots);
+    // Left portion
+    if (requestedStart > slotStart) {
+      newSlots.push({
+        date: new Date(slotDate!), // <-- convert string back to Date
+        start: slot!.start,
+        end: start,
+      });
     }
 
+    // Right portion
+    if (requestedEnd < slotEnd) {
+      newSlots.push({
+        date: new Date(slotDate!),
+        start: end,
+        end: slot!.end,
+      });
+    }
+
+    stage.freeTimes.splice(availableSlotIndex, 1, ...newSlots);
+
+    // 5️⃣ Update status
     stage.status = "reserved";
+
     await stage.save();
 
     res.json({
@@ -208,7 +363,10 @@ router.post("/:id/book", async (req, res) => {
       data: stage,
     });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 });
 
@@ -250,8 +408,10 @@ router.post("/:id/free-times", async (req, res) => {
           .json({ success: false, message: "Invalid slot date" });
       }
 
-      const slotStart = toDateTime(slotDate, start);
-      const slotEnd = toDateTime(slotDate, end);
+      // Fix: toDateTime expects a string as the first argument, not a Date.
+      // Use date string (from slot), not Date object
+      const slotStart = toDateTime(date, start);
+      const slotEnd = toDateTime(date, end);
 
       if (slotEnd <= slotStart) {
         return res.status(400).json({

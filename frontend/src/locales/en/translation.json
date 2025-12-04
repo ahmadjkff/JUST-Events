@@ -139,7 +139,8 @@
     "spotsLeft": "Spots Left",
     "startsAt": "Starts At",
     "endsAt": "Ends At",
-    "location": "Location"
+    "location": "Location",
+    "volunteers": "Volunteers"
   },
   "categories": {
     "Technology": "Technology",

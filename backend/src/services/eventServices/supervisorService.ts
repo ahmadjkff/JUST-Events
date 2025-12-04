@@ -23,6 +23,9 @@ interface IBody {
   category: EventCategory;
   img: string;
   supervisorId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
 }
 
 export const createEvent = async ({
@@ -35,25 +38,15 @@ export const createEvent = async ({
   category,
   img,
   supervisorId,
+  date,
+  startTime,
+  endTime,
 }: IBody): Promise<IResponseStructure> => {
   try {
-    const response = await fetch(`http://localhost:5000/api/stage/${stageId}`);
-
-    if (!response.ok) {
+    const eventDate = new Date(date);
+    if (Number.isNaN(eventDate.getTime())) {
       return {
-        message: `${response.statusText}`,
-        statusCode: response.status,
-        success: false,
-      };
-    }
-
-    const data = await response.json();
-
-    console.log(data);
-
-    if (data?.data?.status === "reserved") {
-      return {
-        message: "Stage is reserved",
+        message: "Invalid event date",
         statusCode: 400,
         success: false,
       };
@@ -65,15 +58,47 @@ export const createEvent = async ({
       location,
       department,
       category,
-      date: data.data.date,
-      startTime: data.data.startTime,
-      endTime: data.data.endTime,
+      date: eventDate,
+      startTime,
+      endTime,
       img,
       createdBy: supervisorId,
       status: "pending",
     });
 
     await event.save();
+
+    // Book the stage in the simulator API
+    const bookingResponse = await fetch(
+      `http://localhost:5000/api/stage/${stageId}/book`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stageId,
+          date,
+          start: startTime,
+          end: endTime,
+          eventId: event._id,
+        }),
+      }
+    );
+
+    if (!bookingResponse.ok) {
+      const bookingError = await bookingResponse.json().catch(() => ({}));
+      // Roll back created event if booking fails
+      await eventModel.deleteOne({ _id: event._id });
+
+      return {
+        message:
+          bookingError.message ||
+          `Failed to book stage (status ${bookingResponse.status})`,
+        statusCode: bookingResponse.status,
+        success: false,
+      };
+    }
 
     return {
       data: { event },

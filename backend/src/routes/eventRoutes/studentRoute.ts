@@ -246,11 +246,13 @@ router.get(
     try {
       const events = await eventModel.find({ status: EventStatus.APPROVED });
 
-      const completedEvents = events?.filter(
-        (event: IEvent) =>
+      const completedEvents = events?.filter((event: IEvent) => {
+        if (!event.date) return false;
+        return (
           event.registeredStudents.includes(studentId) &&
           event.date < new Date()
-      );
+        );
+      });
 
       res.status(200).json({
         success: true,
@@ -290,7 +292,7 @@ router.get(
       res,
       student.firstName + " " + student.lastName,
       event.title,
-      event.date
+      event.date ?? new Date()
     );
   }
 );
