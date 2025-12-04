@@ -4,6 +4,16 @@ import StageModel, { IStage } from "../models/stagesModel";
 
 const router = express.Router();
 
+const toDateTime = (dateInput: string | Date, time: string) => {
+  const base = new Date(dateInput);
+  const [hours, minutes] = time.split(":").map(Number);
+  base.setHours(hours || 0, minutes || 0, 0, 0);
+  return base;
+};
+
+const isSameDay = (first: Date, second: Date) =>
+  first.toISOString().slice(0, 10) === second.toISOString().slice(0, 10);
+
 // get All Stages
 router.get("/", async (req, res) => {
   try {
@@ -85,18 +95,62 @@ router.post("/:id/availability", async (req, res) => {
 router.post("/:id/book", async (req, res) => {
   try {
     const { stageId, date, start, end, eventId } = req.body;
+    console.log(req.body);
+
+    const bookingDate = new Date(date);
+    if (Number.isNaN(bookingDate.getTime())) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid booking date" });
+    }
+
+    const requestedStart = toDateTime(bookingDate, start);
+    const requestedEnd = toDateTime(bookingDate, end);
+
+    if (requestedEnd <= requestedStart) {
+      return res.status(400).json({
+        success: false,
+        message: "End time must be after start time",
+      });
+    }
+
     const stage = await StageModel.findById(stageId);
     if (!stage)
       return res
         .status(404)
         .json({ success: false, message: "Stage not found" });
 
+    console.log(stage.bookings);
+
+    const availableSlotIndex =
+      stage.freeTimes?.findIndex((slot: any) => {
+        const slotStart = toDateTime(slot.date, slot.start);
+        const slotEnd = toDateTime(slot.date, slot.end);
+
+        return (
+          slotStart <= requestedStart &&
+          slotEnd >= requestedEnd &&
+          isSameDay(slotStart, requestedStart)
+        );
+      }) ?? -1;
+
+    if (availableSlotIndex === -1) {
+      return res.status(400).json({
+        success: false,
+        message: "Stage is not available during the requested time",
+      });
+    }
+
     // Check if already reserved
-    const conflict = stage.bookings?.some(
-      (booking: any) =>
-        (start >= booking.start && start < booking.end) ||
-        (end > booking.start && end <= booking.end)
-    );
+    const conflict = stage.bookings?.some((booking: any) => {
+      const existingStart = toDateTime(booking.date, booking.start);
+      const existingEnd = toDateTime(booking.date, booking.end);
+
+      return (
+        (requestedStart >= existingStart && requestedStart < existingEnd) ||
+        (requestedEnd > existingStart && requestedEnd <= existingEnd)
+      );
+    });
     if (conflict) {
       return res.status(400).json({
         success: false,
@@ -105,7 +159,15 @@ router.post("/:id/book", async (req, res) => {
     }
 
     // Add new booking
-    stage.bookings?.push({ date, start, end, eventId });
+    stage.bookings?.push({
+      date: bookingDate,
+      start,
+      end,
+      eventId,
+    });
+    if (Array.isArray(stage.freeTimes) && availableSlotIndex > -1) {
+      stage.freeTimes.splice(availableSlotIndex, 1);
+    }
     stage.status = "reserved";
     await stage.save();
 
