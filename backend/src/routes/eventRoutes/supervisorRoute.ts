@@ -34,6 +34,7 @@ router.post(
         date,
         startTime,
         endTime,
+        capacity,
       } = req.body;
       const img = req.file ? `/eventsimage/${req.file.filename}` : null;
       if (
@@ -45,7 +46,8 @@ router.post(
         !img ||
         !date ||
         !startTime ||
-        !endTime
+        !endTime ||
+        !capacity
       ) {
         return res
           .status(400)
@@ -77,6 +79,7 @@ router.post(
         date,
         startTime,
         endTime,
+        capacity,
       });
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {

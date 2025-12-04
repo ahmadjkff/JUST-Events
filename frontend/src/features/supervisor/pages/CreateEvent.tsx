@@ -19,6 +19,7 @@ interface IStage {
   name: string;
   status: "free" | "reserved";
   freeTimes?: IFreeTimeSlot[];
+  capacity: number;
 }
 
 const EventForm: React.FC = () => {
@@ -38,6 +39,7 @@ const EventForm: React.FC = () => {
     date: "",
     startTime: "",
     endTime: "",
+    capacity: 0,
   });
   const [img, setImg] = useState<File | null>(null);
   const [stages, setStages] = useState<IStage[]>([]);
@@ -138,6 +140,7 @@ const EventForm: React.FC = () => {
         form.date,
         form.startTime,
         form.endTime,
+        form.capacity,
       );
 
       if (!result.success) {
@@ -164,6 +167,7 @@ const EventForm: React.FC = () => {
       date: slot.date ? slot.date.split("T")[0] : prev.date,
       startTime: slot.start,
       endTime: slot.end,
+      capacity: stage.capacity,
     }));
     setShowFreeTimesDialog(false);
     setShowDialog(false);

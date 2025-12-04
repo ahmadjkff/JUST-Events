@@ -29,6 +29,7 @@ export interface IEvent extends Document {
   volunteers: IVolunteer[];
   registeredStudents: mongoose.Types.ObjectId[];
   img: string;
+  capacity: number;
 }
 
 const feedbackSchema = new Schema(
@@ -73,6 +74,7 @@ const eventSchema = new Schema<IEvent>(
     volunteers: [volunteerSchema],
     registeredStudents: [{ type: Schema.Types.ObjectId, ref: "User" }],
     img: { type: String }, // To-Do: add required img field
+    capacity: { type: Number },
   },
   { timestamps: true }
 );

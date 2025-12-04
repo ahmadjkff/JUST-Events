@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { EventCategory, EventDepartment } from "../../../types/eventTypes";
 
 export const createEvent = async (
@@ -11,6 +12,7 @@ export const createEvent = async (
   date: string,
   startTime: string,
   endTime: string,
+  capacity: number,
 ) => {
   try {
     const formData = new FormData();
@@ -24,6 +26,7 @@ export const createEvent = async (
     formData.append("date", date);
     formData.append("startTime", startTime);
     formData.append("endTime", endTime);
+    formData.append("capacity", capacity.toString());
 
     const response = await fetch(
       `${import.meta.env.VITE_BASE_URL}/supervisor`,
@@ -146,6 +149,7 @@ export const updateApplicationStatus = async (
       throw new Error(data.message || "Failed to update application status");
     }
     console.log("Updated application status:", data.data);
+    toast.success(data.message);
     return { success: true, data: data.data, message: data.message };
   } catch (error: unknown) {
     const message =
@@ -153,6 +157,7 @@ export const updateApplicationStatus = async (
         ? error.message
         : "Failed to update application status";
     console.error("Error updating application status:", error);
+    toast.error(message);
     return { success: false, message };
   }
 };

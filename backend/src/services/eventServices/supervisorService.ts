@@ -26,6 +26,7 @@ interface IBody {
   date: string;
   startTime: string;
   endTime: string;
+  capacity: number;
 }
 
 export const createEvent = async ({
@@ -41,6 +42,7 @@ export const createEvent = async ({
   date,
   startTime,
   endTime,
+  capacity,
 }: IBody): Promise<IResponseStructure> => {
   try {
     const eventDate = new Date(date);
@@ -64,6 +66,7 @@ export const createEvent = async ({
       img,
       createdBy: supervisorId,
       status: "pending",
+      capacity,
     });
 
     await event.save();
@@ -81,6 +84,7 @@ export const createEvent = async ({
           date,
           start: startTime,
           end: endTime,
+          capacity,
           eventId: event._id,
         }),
       }
@@ -260,6 +264,17 @@ export const approveOrRejectStudentApplacition = async ({
       };
     }
 
+    if (
+      action === "approved" &&
+      event.capacity === event.registeredStudents.length
+    ) {
+      return {
+        message: "Capacity is full",
+        statusCode: 400,
+        success: false,
+      };
+    }
+
     if (event.createdBy.toString() !== supervisorId.toString()) {
       return { message: "Not authorized", statusCode: 404, success: false };
     }
@@ -289,7 +304,10 @@ export const approveOrRejectStudentApplacition = async ({
 
     isRegistered.status = action;
 
-    if (action === RegistrationStatus.REJECTED) {
+    if (
+      action === RegistrationStatus.REJECTED ||
+      action === RegistrationStatus.PENDING
+    ) {
       await RegistrationModel.findOneAndDelete({
         student: studentId,
         event: eventId,
@@ -305,10 +323,11 @@ export const approveOrRejectStudentApplacition = async ({
       event.registeredStudents.push(new mongoose.Types.ObjectId(studentId));
     }
     if (
-      event.registeredStudents.includes(
+      (event.registeredStudents.includes(
         new mongoose.Types.ObjectId(studentId)
       ) &&
-      action === RegistrationStatus.REJECTED
+        action === RegistrationStatus.REJECTED) ||
+      action === RegistrationStatus.PENDING
     ) {
       event.registeredStudents = event.registeredStudents.filter(
         (id) => id.toString() !== studentId.toString()
