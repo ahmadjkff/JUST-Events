@@ -116,7 +116,7 @@ function EventDetails() {
             <CardContent className="text-muted-foreground space-y-3">
               <p className="flex items-center gap-2">
                 📅 <span className="font-medium">{t("event.date")}:</span>
-                {` ${event?.date.split("T")[0]} ${t("event.at")} ${
+                {` ${event?.date?.split("T")[0]} ${t("event.at")} ${
                   event?.startTime ?? t("event.nA")
                 }${event?.endTime ? ` - ${event.endTime}` : ""}`}
               </p>

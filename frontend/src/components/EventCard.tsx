@@ -154,7 +154,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
         <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            {event.date.split("T")[0]}
+            {event?.date?.split("T")[0]}
           </div>
           <div className="flex items-center gap-1">
             <Clock className="h-4 w-4" />

@@ -6,14 +6,19 @@ import { createEvent } from "../services/supervisorRequests";
 import { Button } from "../../../components/ui/Button";
 import toast from "react-hot-toast";
 
+interface IFreeTimeSlot {
+  _id?: string;
+  date: string;
+  start: string;
+  end: string;
+}
+
 interface IStage {
   _id: string;
   location: string;
   name: string;
-  date?: string;
-  startTime?: string;
-  endTime?: string;
   status: "free" | "reserved";
+  freeTimes?: IFreeTimeSlot[];
 }
 
 const EventForm: React.FC = () => {
@@ -37,6 +42,8 @@ const EventForm: React.FC = () => {
   const [img, setImg] = useState<File | null>(null);
   const [stages, setStages] = useState<IStage[]>([]);
   const [showDialog, setShowDialog] = useState(false);
+  const [showFreeTimesDialog, setShowFreeTimesDialog] = useState(false);
+  const [selectedStage, setSelectedStage] = useState<IStage | null>(null);
 
   // ✅ Fetch available stages
   const openStageDialog = async () => {
@@ -146,12 +153,16 @@ const EventForm: React.FC = () => {
     }
   };
 
-  const hanldelSeletetStage = async (id: string, location: string) => {
-    if (!form.startTime || !form.endTime) {
-      toast.error("Please select start time and end time for the stage");
-      return;
-    }
-    setForm({ ...form, stageId: id, location });
+  const hanldelSeletetStage = async (stage: IStage, slot: IFreeTimeSlot) => {
+    setForm((prev) => ({
+      ...prev,
+      stageId: stage._id,
+      location: stage.name,
+      date: slot.date ? slot.date.split("T")[0] : prev.date,
+      startTime: slot.start,
+      endTime: slot.end,
+    }));
+    setShowFreeTimesDialog(false);
     setShowDialog(false);
   };
 
@@ -349,10 +360,6 @@ const EventForm: React.FC = () => {
               <thead>
                 <tr className="border-b">
                   <th className="px-2 py-1">Location</th>
-                  <th className="px-2 py-1">Date</th>
-                  <th className="px-2 py-1">Start Time</th>
-                  <th className="px-2 py-1">End Time</th>
-                  <th className="px-2 py-1">Status</th>
                   <th className="px-2 py-1">Action</th>
                 </tr>
               </thead>
@@ -360,14 +367,7 @@ const EventForm: React.FC = () => {
                 {stages?.map((stage) => (
                   <tr key={stage._id} className="border-b">
                     <td className="px-2 py-1">{stage.name}</td>
-                    <td className="px-2 py-1">
-                      {stage.date
-                        ? new Date(stage.date).toLocaleDateString()
-                        : "-"}
-                    </td>
-                    <td className="px-2 py-1">{stage.startTime || "-"}</td>
-                    <td className="px-2 py-1">{stage.endTime || "-"}</td>
-                    <td className="px-2 py-1">{stage.status}</td>
+
                     <td className="px-2 py-1">
                       <button
                         disabled={stage.status === "reserved"}
@@ -377,10 +377,11 @@ const EventForm: React.FC = () => {
                             : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
                         onClick={() => {
-                          hanldelSeletetStage(stage._id, stage.name);
+                          setSelectedStage(stage);
+                          setShowFreeTimesDialog(true);
                         }}
                       >
-                        Select
+                        View Free Times
                       </button>
                     </td>
                   </tr>
@@ -396,33 +397,60 @@ const EventForm: React.FC = () => {
                 Close
               </button>
 
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="startTime">Start Time</label>
-                  <input
-                    id="startTime"
-                    type="time"
-                    step="60" // minutes only, no seconds
-                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    onChange={(e) => {
-                      setForm({ ...form, startTime: e.target.value });
-                    }}
-                  />
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <label htmlFor="endTime">Start Time</label>
-                  <input
-                    id="endTime"
-                    type="time"
-                    step="60" // minutes only, no seconds
-                    className="w-fit rounded-md border border-gray-300 px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    onChange={(e) => {
-                      setForm({ ...form, endTime: e.target.value });
-                    }}
-                  />
-                </div>
-              </div>
+              {/* Time selection moved into free-times dialog */}
+            </div>
+          </div>
+        </div>
+      )}
+      {showFreeTimesDialog && selectedStage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="w-11/12 max-w-xl rounded-xl bg-white p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-bold">
+              Free Times for {selectedStage.name}
+            </h2>
+            {selectedStage.freeTimes && selectedStage.freeTimes.length > 0 ? (
+              <table className="w-full border text-left">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-2 py-1">Date</th>
+                    <th className="px-2 py-1">Start</th>
+                    <th className="px-2 py-1">End</th>
+                    <th className="px-2 py-1">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedStage.freeTimes.map((slot) => (
+                    <tr
+                      key={slot._id || `${slot.date}-${slot.start}`}
+                      className="border-b"
+                    >
+                      <td className="px-2 py-1">{slot.date.split("T")[0]}</td>
+                      <td className="px-2 py-1">{slot.start}</td>
+                      <td className="px-2 py-1">{slot.end}</td>
+                      <td className="px-2 py-1">
+                        <button
+                          className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                          onClick={() =>
+                            hanldelSeletetStage(selectedStage, slot)
+                          }
+                        >
+                          Use Slot
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No free times available for this stage.</p>
+            )}
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400"
+                onClick={() => setShowFreeTimesDialog(false)}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

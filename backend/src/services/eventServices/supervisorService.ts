@@ -49,7 +49,9 @@ export const createEvent = async ({
 
     const data = await response.json();
 
-    if (data.data.stage.status === "reserved") {
+    console.log(data);
+
+    if (data?.data?.status === "reserved") {
       return {
         message: "Stage is reserved",
         statusCode: 400,
@@ -63,9 +65,9 @@ export const createEvent = async ({
       location,
       department,
       category,
-      date: data.data.stage.date,
-      startTime: data.data.stage.startTime,
-      endTime: data.data.stage.endTime,
+      date: data.data.date,
+      startTime: data.data.startTime,
+      endTime: data.data.endTime,
       img,
       createdBy: supervisorId,
       status: "pending",
