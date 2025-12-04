@@ -1,9 +1,11 @@
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import userModel from "../../models/userModel";
 import AppError from "../../types/AppError";
+dotenv.config();
 
 export const login = async (email: string, password: string) => {
-  const response = await fetch("http://localhost:5000/api/auth/login", {
+  const response = await fetch(`${process.env.SIMULATOR_API}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),

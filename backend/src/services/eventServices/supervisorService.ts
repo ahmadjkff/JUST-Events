@@ -73,7 +73,7 @@ export const createEvent = async ({
 
     // Book the stage in the simulator API
     const bookingResponse = await fetch(
-      `http://localhost:5000/api/stage/${stageId}/book`,
+      `${process.env.SIMULATOR_API}/stage/${stageId}/book`,
       {
         method: "POST",
         headers: {

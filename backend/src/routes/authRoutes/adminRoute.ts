@@ -29,7 +29,7 @@ router.put("/:id", validateJWT, isAdmin, async (req, res) => {
     }
 
     const response = await fetch(
-      `http://localhost:5000/api/admin/${user.email}`,
+      `${process.env.SIMULATOR_API}/admin/${user.email}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

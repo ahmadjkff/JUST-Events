@@ -13,11 +13,14 @@ export const editRole = async (
     }
 
     // Send to simulator
-    const response = await fetch("http://localhost:5000/api/admin/edit-role", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: user.email, newRole }),
-    });
+    const response = await fetch(
+      `${process.env.SIMULATOR_API}/admin/edit-role`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: user.email, newRole }),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
