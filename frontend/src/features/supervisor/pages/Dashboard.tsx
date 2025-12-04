@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { Calendar, CalendarCheck, User, XCircle, Clock } from "lucide-react";
-import { useTranslation } from "react-i18next"; 
+import { useTranslation } from "react-i18next";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 
 function Dashboard() {
-  const { t } = useTranslation();  
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { fetchSupervisorApplications } = useSupervisor();
 
@@ -21,9 +21,9 @@ function Dashboard() {
     const fetchCounts = async () => {
       try {
         // Fetch approved events
-        const approved = await fetchSupervisorApplications("approved");
-        const pending = await fetchSupervisorApplications("pending");
-        const rejected = await fetchSupervisorApplications("rejected");
+        const approved: any = await fetchSupervisorApplications("approved");
+        const pending: any = await fetchSupervisorApplications("pending");
+        const rejected: any = await fetchSupervisorApplications("rejected");
         // Fetch my created events (for now just use total of all statuses)
         const myEvents =
           (approved.data?.totalEvents || 0) +
@@ -98,14 +98,13 @@ function Dashboard() {
     <div className="p-8">
       <header className="mb-8">
         <h1 className="text-4xl font-extrabold">{t("dashboard.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("dashboard.subtitle")}
-        </p>
+        <p className="text-muted-foreground">{t("dashboard.subtitle")}</p>
       </header>
 
       <div className="space-y-6">
-
-        <h2 className="text-center text-2xl font-bold">{t("dashboard.systemManagementTitle")}</h2>
+        <h2 className="text-center text-2xl font-bold">
+          {t("dashboard.systemManagementTitle")}
+        </h2>
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
           {DASHBOARD_ITEMS.map((item) => (
             <Card
@@ -128,7 +127,9 @@ function Dashboard() {
           ))}
         </div>
 
-        <h2 className="text-center text-2xl font-bold">{t("dashboard.systemSummaryTitle")}</h2>
+        <h2 className="text-center text-2xl font-bold">
+          {t("dashboard.systemSummaryTitle")}
+        </h2>
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
           {SYSTEM_SUMMARY.map((item) => (
             <Card
@@ -152,7 +153,6 @@ function Dashboard() {
             </Card>
           ))}
         </div>
-
       </div>
     </div>
   );
