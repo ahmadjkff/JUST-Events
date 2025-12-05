@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { FileText, Type, Search, Bell, User } from "lucide-react";
+import { FileText, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
-import { Button } from "../../../components/ui/Button";
 import toast from "react-hot-toast";
 
 interface IFreeTimeSlot {
@@ -188,7 +187,7 @@ const EventForm: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="bg-card border-border border-b p-4">
         <div className="flex items-center justify-between">
@@ -198,22 +197,6 @@ const EventForm: React.FC = () => {
             </h1>
             <p className="text-muted-foreground">Manage Events</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="relative bg-transparent"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500"></span>
-            </Button>
-            <Button variant="outline" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </header>
 
@@ -221,7 +204,7 @@ const EventForm: React.FC = () => {
       <main className="flex flex-1 items-center justify-center p-6">
         <form
           onSubmit={handleCreateEvent}
-          className="w-full max-w-lg space-y-6 rounded-2xl bg-white p-8 shadow-xl"
+          className="w-full max-w-lg space-y-6 rounded-2xl p-8 shadow-xl"
         >
           <h2 className="text-center text-2xl font-bold text-gray-800">
             Create New Event
@@ -292,7 +275,7 @@ const EventForm: React.FC = () => {
             </label>
             <button
               type="button"
-              className="w-full rounded-lg border bg-white px-3 py-2 text-left"
+              className="w-full rounded-lg border px-3 py-2 text-left"
               onClick={openStageDialog}
             >
               {form.location || "Select Stage"}
@@ -374,27 +357,40 @@ const EventForm: React.FC = () => {
 
       {/* Stage Selection Modal */}
       {showDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-11/12 max-w-2xl rounded-xl bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">Select a Stage</h2>
-            <table className="w-full border text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+          <div className="w-11/12 max-w-2xl rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+            <h2 className="mb-4 text-xl font-bold text-black dark:text-white">
+              Select a Stage
+            </h2>
+
+            <table className="w-full border border-gray-300 text-left dark:border-gray-700">
               <thead>
-                <tr className="border-b">
-                  <th className="px-2 py-1">Location</th>
-                  <th className="px-2 py-1">Action</th>
+                <tr className="border-b border-gray-300 dark:border-gray-700">
+                  <th className="px-2 py-1 text-black dark:text-white">
+                    Location
+                  </th>
+                  <th className="px-2 py-1 text-black dark:text-white">
+                    Action
+                  </th>
                 </tr>
               </thead>
+
               <tbody>
                 {stages?.map((stage) => (
-                  <tr key={stage._id} className="border-b">
-                    <td className="px-2 py-1">{stage.name}</td>
+                  <tr
+                    key={stage._id}
+                    className="border-b border-gray-300 dark:border-gray-700"
+                  >
+                    <td className="px-2 py-1 text-black dark:text-gray-200">
+                      {stage.name}
+                    </td>
 
                     <td className="px-2 py-1">
                       <button
                         disabled={stage?.freeTimes?.length === 0}
                         className={`rounded px-2 py-1 ${
                           stage.freeTimes?.length === 0
-                            ? "cursor-not-allowed bg-gray-300"
+                            ? "cursor-not-allowed bg-gray-300 dark:bg-gray-700 dark:text-gray-400"
                             : "bg-blue-500 text-white hover:bg-blue-600"
                         }`}
                         onClick={() => {
@@ -417,37 +413,55 @@ const EventForm: React.FC = () => {
               >
                 Close
               </button>
-
-              {/* Time selection moved into free-times dialog */}
             </div>
           </div>
         </div>
       )}
+
       {showFreeTimesDialog && selectedStage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-11/12 max-w-xl rounded-xl bg-white p-6 shadow-lg">
-            <h2 className="mb-4 text-xl font-bold">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+          <div className="w-11/12 max-w-xl rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+            <h2 className="mb-4 text-xl font-bold text-black dark:text-white">
               Free Times for {selectedStage.name}
             </h2>
+
             {selectedStage.freeTimes && selectedStage.freeTimes.length > 0 ? (
-              <table className="w-full border text-left">
+              <table className="w-full border border-gray-300 text-left dark:border-gray-700">
                 <thead>
-                  <tr className="border-b">
-                    <th className="px-2 py-1">Date</th>
-                    <th className="px-2 py-1">Start</th>
-                    <th className="px-2 py-1">End</th>
-                    <th className="px-2 py-1">Action</th>
+                  <tr className="border-b border-gray-300 dark:border-gray-700">
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Date
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Start
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      End
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Action
+                    </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {selectedStage.freeTimes.map((slot) => (
                     <tr
                       key={slot._id || `${slot.date}-${slot.start}`}
-                      className="border-b"
+                      className="border-b border-gray-300 dark:border-gray-700"
                     >
-                      <td className="px-2 py-1">{slot.date.split("T")[0]}</td>
-                      <td className="px-2 py-1">{slot.start}</td>
-                      <td className="px-2 py-1">{slot.end}</td>
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.date.split("T")[0]}
+                      </td>
+
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.start}
+                      </td>
+
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.end}
+                      </td>
+
                       <td className="px-2 py-1">
                         <button
                           className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
@@ -463,11 +477,14 @@ const EventForm: React.FC = () => {
                 </tbody>
               </table>
             ) : (
-              <p>No free times available for this stage.</p>
+              <p className="text-black dark:text-gray-300">
+                No free times available for this stage.
+              </p>
             )}
+
             <div className="mt-4 flex justify-end gap-2">
               <button
-                className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400"
+                className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                 onClick={() => setShowFreeTimesDialog(false)}
               >
                 Close
