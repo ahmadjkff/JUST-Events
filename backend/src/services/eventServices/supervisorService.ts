@@ -145,6 +145,39 @@ export const deleteEvent = async ({
       }
     }
 
+    // Fetch all stages and find the booking for this event
+    try {
+      const stagesResponse = await fetch(`${process.env.SIMULATOR_API}/stage`, {
+        method: "GET",
+      });
+
+      if (stagesResponse.ok) {
+        const stagesData = await stagesResponse.json();
+        const stages = stagesData.data || [];
+
+        // Map through stages to find and delete the booking
+        await Promise.all(
+          stages.map(async (stage: any) => {
+            if (stage.bookings && Array.isArray(stage.bookings)) {
+              const booking = stage.bookings.find(
+                (b: any) => b.eventId?.toString() === eventId.toString()
+              );
+
+              if (booking && booking._id) {
+                await fetch(
+                  `${process.env.SIMULATOR_API}/stage/${stage._id}/bookings/${booking._id}`,
+                  { method: "DELETE" }
+                );
+              }
+            }
+          })
+        );
+      }
+    } catch (error: any) {
+      // Log the error but continue with event deletion
+      console.error("Error deleting booking from stage:", error.message);
+    }
+
     await eventModel.deleteOne({ _id: eventId });
 
     return {
