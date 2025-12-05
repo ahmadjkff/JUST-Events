@@ -263,7 +263,6 @@ export const approveOrRejectStudentApplacition = async ({
         success: false,
       };
     }
-
     if (
       action === "approved" &&
       event.capacity === event.registeredStudents.length
@@ -317,7 +316,6 @@ export const approveOrRejectStudentApplacition = async ({
       event.registeredStudents = event.registeredStudents.filter(
         (id) => id.toString() !== studentId.toString()
       );
-
       await event.save();
 
       return {
@@ -405,8 +403,9 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell("A4").value =
-    `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell(
+    "A4"
+  ).value = `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row

@@ -127,6 +127,20 @@ const EventForm: React.FC = () => {
       setLoading(false);
       return;
     }
+    const stageRes = await fetch(
+      `http://localhost:5000/api/stage/${form.stageId}`,
+    );
+    const stageData = await stageRes.json();
+
+    if (!stageData.success || !stageData.data) {
+      return {
+        success: false,
+        statusCode: 404,
+        message: "Stage not found",
+      };
+    }
+
+    const maxCapacity = stageData.data.capacity;
 
     try {
       const result = await createEvent(
@@ -140,7 +154,7 @@ const EventForm: React.FC = () => {
         form.date,
         form.startTime,
         form.endTime,
-        form.capacity,
+        maxCapacity,
       );
 
       if (!result.success) {
