@@ -1,27 +1,79 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, MapPin, FileText, Type } from "lucide-react";
+import { Calendar, FileText, Type } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
+
+interface IFreeTimeSlot {
+  _id?: string;
+  date: string;
+  start: string;
+  end: string;
+}
+
+interface IStage {
+  _id: string;
+  location: string;
+  name: string;
+  status: "free" | "reserved";
+  freeTimes?: IFreeTimeSlot[];
+  capacity: number;
+}
 
 const EditForm: React.FC = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
+  const [loadingDescription, setLoadingDescription] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [descError, setDescError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { eventId } = useParams<{ eventId: string }>();
   const [img, setImg] = useState<File | null>(null);
   const { getEventById } = useSupervisor();
   const [form, setForm] = useState({
+    stageId: "",
     title: "",
     description: "",
     location: "",
     category: "" as EventCategory | "",
     department: "" as EventDepartment | "",
     date: "",
+    startTime: "",
+    endTime: "",
+    capacity: 0,
   });
+  const [stages, setStages] = useState<IStage[]>([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [showFreeTimesDialog, setShowFreeTimesDialog] = useState(false);
+  const [selectedStage, setSelectedStage] = useState<IStage | null>(null);
+
+  const openStageDialog = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/stage");
+      const data = await res.json();
+      setStages(data.data);
+      setShowDialog(true);
+    } catch (err) {
+      console.error("Failed to fetch stages", err);
+    }
+  };
+
+  const handleSelectStage = (stage: IStage, slot: IFreeTimeSlot) => {
+    setForm((prev) => ({
+      ...prev,
+      stageId: stage._id,
+      location: stage.name,
+      date: slot.date ? slot.date.split("T")[0] : prev.date,
+      startTime: slot.start,
+      endTime: slot.end,
+      capacity: stage.capacity,
+    }));
+    setShowFreeTimesDialog(false);
+    setShowDialog(false);
+  };
 
   const handleEditEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,15 +85,25 @@ const EditForm: React.FC = () => {
       return;
     }
 
+    if (!form.stageId) {
+      setError("Please select a stage");
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await editEvent(
         eventId || "",
+        form.stageId,
         form.title,
         form.description,
         form.location,
         form.department,
         form.category,
-        new Date(form.date),
+        form.date,
+        form.startTime,
+        form.endTime,
+        form.capacity,
         img ? img : new File([], ""),
       );
 
@@ -69,34 +131,76 @@ const EditForm: React.FC = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFetchEvent = async (eventId: string) => {
-    setLoading(true);
+  const handleGenerateDescription = async () => {
+    if (!form.title.trim()) {
+      setDescError("Please enter a title before generating description");
+      toast.error("Please enter a title before generating description");
+      return;
+    }
+
+    setLoadingDescription(true);
+    setDescError(null);
+
     try {
-      const result = await getEventById(eventId);
-      if (!result.success) return;
-      const fetchedEvent = result.data.event;
-      if (fetchedEvent) {
-        setForm({
-          title: fetchedEvent.title || "",
-          description: fetchedEvent.description || "",
-          location: fetchedEvent.location || "",
-          category: fetchedEvent.category || "",
-          department: fetchedEvent.department || "",
-          date: fetchedEvent.date ? fetchedEvent.date.split("T")[0] : "",
-        });
+      const response = await fetch(
+        "http://localhost:3001/ai/generate-description",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: form.title }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.description) {
+        setForm((prev) => ({ ...prev, description: data.description }));
+      } else {
+        setDescError(data.error || "Failed to generate description");
+        toast.error(data.error || "Failed to generate description");
       }
-      setLoading(false);
     } catch (error) {
-      console.log(error);
-      setError(t("editForm.errors.fetchEvent"));
-      setLoading(false);
+      console.error(error);
+      setDescError("Something went wrong while generating description");
+    } finally {
+      setLoadingDescription(false);
     }
   };
 
   useEffect(() => {
     if (!eventId) return;
-    handleFetchEvent(eventId);
-  }, []);
+
+    const fetchEvent = async () => {
+      setLoading(true);
+      try {
+        const result = await getEventById(eventId);
+        if (!result.success) return;
+        const fetchedEvent = result.data.event;
+        if (fetchedEvent) {
+          setForm({
+            stageId: "",
+            title: fetchedEvent.title || "",
+            description: fetchedEvent.description || "",
+            location: fetchedEvent.location || "",
+            category: fetchedEvent.category || "",
+            department: fetchedEvent.department || "",
+            date: fetchedEvent.date ? fetchedEvent.date.split("T")[0] : "",
+            startTime: fetchedEvent.startTime || "",
+            endTime: fetchedEvent.endTime || "",
+            capacity: fetchedEvent.capacity || 0,
+          });
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setError(t("editForm.errors.fetchEvent"));
+        setLoading(false);
+      }
+    };
+
+    fetchEvent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventId]);
 
   if (loading && !form.title) {
     return (
@@ -164,24 +268,27 @@ const EditForm: React.FC = () => {
                 required
               />
             </div>
-          </div>
 
-          <div>
-            <label className="mb-1 block font-medium">
-              {t("editForm.fields.location")}
-            </label>
-            <div className="flex items-center gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <MapPin size={18} />
-              <input
-                type="text"
-                name="location"
-                value={form.location}
-                onChange={handleChange}
-                placeholder={t("editForm.placeholders.location")}
-                className="w-full outline-none"
-                required
-              />
-            </div>
+            <button
+              type="button"
+              onClick={handleGenerateDescription}
+              disabled={loadingDescription}
+              className={`mt-2 w-full rounded-lg py-2 font-medium text-white transition ${
+                loadingDescription
+                  ? "cursor-not-allowed bg-gray-400"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
+              {loadingDescription
+                ? "Generating..."
+                : "Generate Auto Description"}
+            </button>
+
+            {descError && (
+              <p className="mt-2 text-center text-sm text-red-500">
+                {descError}
+              </p>
+            )}
           </div>
 
           <div>
@@ -193,6 +300,7 @@ const EditForm: React.FC = () => {
               value={form.category}
               onChange={handleChange}
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              aria-label={t("editForm.fields.category")}
               required
             >
               <option value="" disabled>
@@ -215,6 +323,7 @@ const EditForm: React.FC = () => {
               value={form.department}
               onChange={handleChange}
               className="w-full rounded-lg border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+              aria-label={t("editForm.fields.department")}
               required
             >
               <option value="" disabled>
@@ -229,6 +338,17 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
+            <label className="mb-1 block font-medium">Stage</label>
+            <button
+              type="button"
+              className="w-full rounded-lg border px-3 py-2 text-left"
+              onClick={openStageDialog}
+            >
+              {form.location || "Select Stage"}
+            </button>
+          </div>
+
+          <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.date")}
             </label>
@@ -240,9 +360,53 @@ const EditForm: React.FC = () => {
                 value={form.date}
                 onChange={handleChange}
                 className="w-full outline-none"
+                aria-label={t("editForm.fields.date")}
+                readOnly
                 required
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium">Start Time</label>
+            <input
+              type="time"
+              name="startTime"
+              value={form.startTime}
+              onChange={handleChange}
+              className="w-full rounded-lg border px-3 py-2 outline-none"
+              aria-label="Start Time"
+              readOnly
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium">End Time</label>
+            <input
+              type="time"
+              name="endTime"
+              value={form.endTime}
+              onChange={handleChange}
+              className="w-full rounded-lg border px-3 py-2 outline-none"
+              aria-label="End Time"
+              readOnly
+              required
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block font-medium">Capacity</label>
+            <input
+              type="number"
+              name="capacity"
+              value={form.capacity}
+              onChange={handleChange}
+              className="w-full rounded-lg border px-3 py-2 outline-none"
+              aria-label="Capacity"
+              readOnly
+              required
+            />
           </div>
 
           <div>
@@ -254,6 +418,7 @@ const EditForm: React.FC = () => {
               accept="image/*"
               onChange={(e) => setImg(e.target.files?.[0] || null)}
               className="w-full rounded-lg border px-3 py-2 outline-none"
+              aria-label={t("editForm.fields.eventImage")}
             />
           </div>
 
@@ -270,6 +435,143 @@ const EditForm: React.FC = () => {
           {error && <p className="text-center text-red-500">{error}</p>}
         </form>
       </main>
+
+      {/* Stage Selection Modal */}
+      {showDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+          <div className="w-11/12 max-w-2xl rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+            <h2 className="mb-4 text-xl font-bold text-black dark:text-white">
+              Select a Stage
+            </h2>
+
+            <table className="w-full border border-gray-300 text-left dark:border-gray-700">
+              <thead>
+                <tr className="border-b border-gray-300 dark:border-gray-700">
+                  <th className="px-2 py-1 text-black dark:text-white">
+                    Location
+                  </th>
+                  <th className="px-2 py-1 text-black dark:text-white">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {stages?.map((stage) => (
+                  <tr
+                    key={stage._id}
+                    className="border-b border-gray-300 dark:border-gray-700"
+                  >
+                    <td className="px-2 py-1 text-black dark:text-gray-200">
+                      {stage.name}
+                    </td>
+
+                    <td className="px-2 py-1">
+                      <button
+                        disabled={stage?.freeTimes?.length === 0}
+                        className={`rounded px-2 py-1 ${
+                          stage.freeTimes?.length === 0
+                            ? "cursor-not-allowed bg-gray-300 dark:bg-gray-700 dark:text-gray-400"
+                            : "bg-blue-500 text-white hover:bg-blue-600"
+                        }`}
+                        onClick={() => {
+                          setSelectedStage(stage);
+                          setShowFreeTimesDialog(true);
+                        }}
+                      >
+                        View Free Times
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="mt-4 flex items-center justify-between">
+              <button
+                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                onClick={() => setShowDialog(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showFreeTimesDialog && selectedStage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70">
+          <div className="w-11/12 max-w-xl rounded-xl bg-white p-6 shadow-lg dark:bg-gray-900">
+            <h2 className="mb-4 text-xl font-bold text-black dark:text-white">
+              Free Times for {selectedStage.name}
+            </h2>
+
+            {selectedStage.freeTimes && selectedStage.freeTimes.length > 0 ? (
+              <table className="w-full border border-gray-300 text-left dark:border-gray-700">
+                <thead>
+                  <tr className="border-b border-gray-300 dark:border-gray-700">
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Date
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Start
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      End
+                    </th>
+                    <th className="px-2 py-1 text-black dark:text-white">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {selectedStage.freeTimes.map((slot) => (
+                    <tr
+                      key={slot._id || `${slot.date}-${slot.start}`}
+                      className="border-b border-gray-300 dark:border-gray-700"
+                    >
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.date.split("T")[0]}
+                      </td>
+
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.start}
+                      </td>
+
+                      <td className="px-2 py-1 text-black dark:text-gray-200">
+                        {slot.end}
+                      </td>
+
+                      <td className="px-2 py-1">
+                        <button
+                          className="rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
+                          onClick={() => handleSelectStage(selectedStage, slot)}
+                        >
+                          Use Slot
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p className="text-black dark:text-gray-300">
+                No free times available for this stage.
+              </p>
+            )}
+
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                className="rounded bg-gray-300 px-4 py-2 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                onClick={() => setShowFreeTimesDialog(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -121,8 +121,18 @@ router.put(
   upload.single("img"),
   async (req: IExtendRequest, res) => {
     try {
-      const { title, description, location, department, category, date } =
-        req.body;
+      const {
+        stageId,
+        title,
+        description,
+        location,
+        department,
+        category,
+        date,
+        startTime,
+        endTime,
+        capacity,
+      } = req.body;
       const eventId = req.params.eventId;
       const img = req.file ? `/eventsimage/${req.file.filename}` : null;
 
@@ -130,18 +140,55 @@ router.put(
         return res.status(400).json({ message: "EventId is required" });
       }
 
+      // Validate fields similar to create route
+      if (
+        !title ||
+        !description ||
+        !location ||
+        !department ||
+        !category ||
+        !date ||
+        !startTime ||
+        !endTime ||
+        !capacity
+      ) {
+        if (req.file) fs.unlinkSync(req.file.path);
+        return res
+          .status(400)
+          .json({ message: "All fields are required, including time slot" });
+      }
+
+      if (title.length < 3) {
+        if (req.file) fs.unlinkSync(req.file.path);
+        return res
+          .status(400)
+          .json({ message: "Title must be at least 3 characters long" });
+      }
+
+      if (description.length < 10) {
+        if (req.file) fs.unlinkSync(req.file.path);
+        return res.status(400).json({
+          message: "Description must be at least 10 characters long",
+        });
+      }
+
       const supervisorId = req.user._id;
       const { data, statusCode, message, success } = await editEvent({
         eventId,
         supervisorId,
+        stageId,
         title,
         description,
         location,
         department,
         category,
         date,
+        startTime,
+        endTime,
+        capacity: Number(capacity),
         img,
       });
+
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {
       res.status(500).send(`Server error ${error.message}`);

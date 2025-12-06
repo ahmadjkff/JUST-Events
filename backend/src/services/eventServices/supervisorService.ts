@@ -203,8 +203,12 @@ interface IEditEvent {
   location: string;
   department: EventDepartment;
   category: EventCategory;
-  date: Date;
+  date: Date | string;
   img: string | null;
+  stageId?: string;
+  startTime?: string;
+  endTime?: string;
+  capacity?: number;
 }
 
 export const editEvent = async ({
@@ -217,6 +221,10 @@ export const editEvent = async ({
   category,
   date,
   img,
+  stageId,
+  startTime,
+  endTime,
+  capacity,
 }: IEditEvent): Promise<IResponseStructure> => {
   try {
     const event = await eventModel.findById(eventId);
@@ -251,7 +259,129 @@ export const editEvent = async ({
       event.category = category;
     }
     if (date) {
-      event.date = date;
+      const d = date instanceof Date ? date : new Date(date);
+      if (!Number.isNaN(d.getTime())) event.date = d;
+    }
+    if (startTime) {
+      event.startTime = startTime;
+    }
+    if (endTime) {
+      event.endTime = endTime;
+    }
+    if (typeof capacity !== "undefined" && capacity !== null) {
+      event.capacity = capacity;
+    }
+
+    // If stage/time/capacity changed, update booking on simulator: delete old booking then add new booking
+    try {
+      const stagesResponse = await fetch(`${process.env.SIMULATOR_API}/stage`, {
+        method: "GET",
+      });
+
+      if (stagesResponse.ok) {
+        const stagesJson = await stagesResponse.json();
+        const stages = stagesJson.data || [];
+
+        // find existing booking by eventId
+        let originalStageId: string | null = null;
+        let originalBooking: any = null;
+        stages.forEach((s: any) => {
+          if (s.bookings && Array.isArray(s.bookings)) {
+            const b = s.bookings.find(
+              (bk: any) => bk.eventId?.toString() === eventId.toString()
+            );
+            if (b) {
+              originalStageId = s._id;
+              originalBooking = b;
+            }
+          }
+        });
+
+        // delete original booking if found
+        if (originalStageId && originalBooking && originalBooking._id) {
+          try {
+            await fetch(
+              `${process.env.SIMULATOR_API}/stage/${originalStageId}/bookings/${originalBooking._id}`,
+              { method: "DELETE" }
+            );
+          } catch (err: any) {
+            console.error(
+              "Failed to delete original booking:",
+              err?.message || err
+            );
+          }
+        }
+
+        // create new booking on provided stageId (if provided) or do nothing
+        if (stageId) {
+          const bookingDate =
+            date instanceof Date
+              ? date.toISOString().split("T")[0]
+              : String(date || event.date).split("T")[0];
+          const bookingBody = {
+            stageId,
+            date: bookingDate,
+            start: startTime || event.startTime,
+            end: endTime || event.endTime,
+            capacity:
+              typeof capacity !== "undefined" && capacity !== null
+                ? capacity
+                : event.capacity,
+            eventId: eventId,
+          };
+
+          const createRes = await fetch(
+            `${process.env.SIMULATOR_API}/stage/${stageId}/book`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(bookingBody),
+            }
+          );
+
+          if (!createRes.ok) {
+            const createErr = await createRes.json().catch(() => ({}));
+            console.error(
+              "Failed to create new booking:",
+              createErr || createRes.statusText
+            );
+
+            // rollback: try to recreate original booking if we deleted it
+            if (originalStageId && originalBooking) {
+              try {
+                const rbDate = originalBooking.date
+                  ? new Date(originalBooking.date).toISOString().split("T")[0]
+                  : originalBooking.date;
+                await fetch(
+                  `${process.env.SIMULATOR_API}/stage/${originalStageId}/book`,
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      stageId: originalStageId,
+                      date: rbDate,
+                      start: originalBooking.start,
+                      end: originalBooking.end,
+                      capacity: originalBooking.capacity ?? event.capacity,
+                      eventId: eventId,
+                    }),
+                  }
+                );
+              } catch (rbErr: any) {
+                console.error(
+                  "Rollback failed to recreate original booking:",
+                  rbErr?.message || rbErr
+                );
+              }
+            }
+          }
+        }
+      }
+    } catch (err: any) {
+      console.error(
+        "Error while updating stage bookings:",
+        err?.message || err
+      );
     }
 
     await event.save();

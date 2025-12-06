@@ -82,23 +82,31 @@ export const deleteEvent = async (eventId: string) => {
 
 export const editEvent = async (
   eventId: string,
+  stageId: string,
   title: string,
   description: string,
   location: string,
   department: EventDepartment,
   category: EventCategory,
-  date: Date,
+  date: string,
+  startTime: string,
+  endTime: string,
+  capacity: number,
   img: File,
 ) => {
   try {
     const formData = new FormData();
 
+    formData.append("stageId", stageId);
     formData.append("title", title);
     formData.append("description", description);
     formData.append("location", location);
     formData.append("department", department);
     formData.append("category", category);
-    formData.append("date", date.toISOString());
+    formData.append("date", date);
+    formData.append("startTime", startTime);
+    formData.append("endTime", endTime);
+    formData.append("capacity", capacity.toString());
     formData.append("img", img);
 
     const response = await fetch(
