@@ -11,14 +11,18 @@ import type { IEvent } from "../../../types/eventTypes";
 function BrowseEvents() {
   const { i18n, t } = useTranslation();
   const [myEvents, setMyEvents] = useState<IEvent[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const EVENTS_PER_PAGE = 10;
 
   useTitle(`${t("browseEvents.title")} - JUST Events`);
 
-  // ✅ هذا السطر هو ما يجعلها تعمل مثل Notifications
+  // Set page direction based on language
   useEffect(() => {
     document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
 
+  // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -30,7 +34,7 @@ function BrowseEvents() {
               "Content-Type": "application/json",
               authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          },
+          }
         );
         const data = await response.json();
         setMyEvents(data.data);
@@ -41,6 +45,16 @@ function BrowseEvents() {
     fetchEvents();
   }, []);
 
+  // Pagination logic
+  const totalPages = Math.ceil(myEvents.length / EVENTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+  const currentEvents = myEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
+
+  // Reset page when events change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [myEvents.length]);
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Header */}
@@ -50,9 +64,7 @@ function BrowseEvents() {
             <h1 className="text-foreground text-2xl font-bold">
               {t("browseEvents.title")}
             </h1>
-            <p className="text-muted-foreground">
-              {t("browseEvents.subtitle")}
-            </p>
+            <p className="text-muted-foreground">{t("browseEvents.subtitle")}</p>
           </div>
         </div>
       </header>
@@ -82,9 +94,9 @@ function BrowseEvents() {
           {/* Events List */}
           <div defaultValue="available" className="space-y-6">
             <div className="space-y-4">
-              {myEvents?.length > 0 ? (
+              {currentEvents.length > 0 ? (
                 <div className="grid gap-4">
-                  {myEvents.map((event) => (
+                  {currentEvents.map((event) => (
                     <EventCard key={event._id} event={event} />
                   ))}
                 </div>
@@ -101,6 +113,40 @@ function BrowseEvents() {
                 </Card>
               )}
             </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center gap-2">
+                <Button
+                  variant="outline"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                >
+                  {t("common.previous")}
+                </Button>
+
+                {Array.from({ length: totalPages }).map((_, index) => {
+                  const page = index + 1;
+                  return (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  );
+                })}
+
+                <Button
+                  variant="outline"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                >
+                  {t("common.next")}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </main>
