@@ -18,6 +18,7 @@ export interface IEvent {
   category: EventCategory;
   department: EventDepartment;
   img: string;
+  capacity: number;
 }
 
 export enum EventStatus {
