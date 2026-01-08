@@ -118,7 +118,7 @@ function SupervisorApplications() {
                       : "text-yellow-600"
                   }
                 >
-                  {event.status.toUpperCase()}
+                  {t(`eventApplicationsStatus.${event.status}`)}
                 </span>
               </p>
               <p className="mt-1 text-sm font-medium">

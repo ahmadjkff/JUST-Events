@@ -82,9 +82,9 @@
     "nA": "N/A"
   },
   "eventStatus": {
-    "Pending": "Pending",
-    "Approved": "Approved",
-    "Rejected": "Rejected"
+    "pending": "pending",
+    "approved": "approved",
+    "rejected": "rejected"
   },
   "myCertificates": {
     "title": "My Certificates",
@@ -249,7 +249,9 @@
     "setPending": "Set to Pending"
   },
   "common": {
-    "na": "N/A"
+    "na": "N/A",
+    "previous": "Previous",
+    "next": "Next"
   },
   "manageRoles": {
     "title": "All Users",
@@ -352,7 +354,8 @@
       "unexpectedErrorExport": "An unexpected error occurred while exporting.",
       "deleteFailed": "Failed to delete event",
       "unexpectedErrorDelete": "An unexpected error occurred while deleting."
-    }
+    },
+    "capacity": "Capacity"
   },
   "eventApplications": {
     "loading": "Loading...",
@@ -362,6 +365,11 @@
     "status": "Status",
     "approve": "Approve",
     "reject": "Reject",
+    "pending": "Pending"
+  },
+   "eventApplicationsStatus": {
+    "approved": "Approve",
+    "rejected": "Reject",
     "pending": "Pending"
   }
 }

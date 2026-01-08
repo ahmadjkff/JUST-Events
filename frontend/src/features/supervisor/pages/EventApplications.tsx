@@ -80,7 +80,7 @@ export default function EventApplications() {
                         : "text-yellow-600"
                   }
                 >
-                  {app.status.toUpperCase()}
+                  {t(`eventApplicationsStatus.${app.status}`)}
                 </span>
               </p>
             </div>

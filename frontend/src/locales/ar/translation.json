@@ -82,9 +82,9 @@
     "nA": "غير متوفر"
   },
   "eventStatus": {
-    "Pending": "قيد الانتظار",
-    "Approved": "تمت الموافقة",
-    "Rejected": "مرفوض"
+    "pending": "قيد الانتظار",
+    "approved": "تمت الموافقة",
+    "rejected": "مرفوض"
   },
   "myCertificates": {
     "title": "شهاداتي",
@@ -249,7 +249,9 @@
     "setPending": "تعيين كمعلق"
   },
   "common": {
-    "na": "غير متوفر"
+    "na": "غير متوفر",
+    "previous": "السابق",
+    "next": "التالي"
   },
   "manageRoles": {
     "title": "جميع المستخدمين",
@@ -352,7 +354,8 @@
       "unexpectedErrorExport": "حدث خطأ غير متوقع أثناء التصدير.",
       "deleteFailed": "فشل في حذف الفعالية",
       "unexpectedErrorDelete": "حدث خطأ غير متوقع أثناء الحذف."
-    }
+    },
+    "capacity": "السعة"
   },
   "eventApplications": {
     "loading": "جاري التحميل...",
@@ -362,6 +365,11 @@
     "status": "الحالة",
     "approve": "قبول",
     "reject": "رفض",
+    "pending": "معلق"
+  },
+    "eventApplicationsStatus": {
+    "approved": "موافقة",
+    "rejected": "مرفوض",
     "pending": "معلق"
   }
 }
