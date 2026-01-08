@@ -8,7 +8,7 @@ import RegistrationModel from "../../models/registrationModel";
 
 const router = express.Router();
 
-router.get("/", validateJWT, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { status } = req.query;
 
@@ -36,7 +36,7 @@ router.get("/", validateJWT, async (req, res) => {
   }
 });
 
-router.get("/:eventId", validateJWT, async (req, res) => {
+router.get("/:eventId", async (req, res) => {
   try {
     const eventId = req.params.eventId;
     if (!eventId) {
