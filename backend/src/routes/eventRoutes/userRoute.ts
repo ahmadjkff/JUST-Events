@@ -5,6 +5,7 @@ import AppError from "../../types/AppError";
 import { getSpecificEvent } from "../../services/eventServices/userService";
 import eventModel from "../../models/eventModel";
 import RegistrationModel from "../../models/registrationModel";
+import { IExtendRequest } from "../../types/extendedRequest";
 
 const router = express.Router();
 
@@ -35,6 +36,32 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+
+router.get(
+  "/student-registrations",
+  validateJWT,
+  async (req:IExtendRequest, res) => {
+    try {
+      const studentId = req.user._id;
+
+      const registrations = await RegistrationModel.find({
+        student: studentId,
+        status: { $in: ["pending", "approved"] },
+      }).select("event status isVolunteer");
+
+      res.status(200).json({
+        success: true,
+        data: registrations,
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: error.message || "Failed to fetch student registrations",
+      });
+    }
+  }
+);
 
 router.get("/:eventId", async (req, res) => {
   try {
@@ -96,29 +123,6 @@ router.get("/volunteered-students/:eventId", validateJWT, async (req, res) => {
   }
 });
 
-router.get(
-  "/student-registrations/:studentId",
-  validateJWT,
-  async (req, res) => {
-    try {
-      const { studentId } = req.params;
 
-      const registrations = await RegistrationModel.find({
-        student: studentId,
-        status: { $in: ["pending", "approved"] },
-      }).select("event status isVolunteer");
-
-      res.status(200).json({
-        success: true,
-        data: registrations,
-      });
-    } catch (error: any) {
-      res.status(500).json({
-        success: false,
-        message: error.message || "Failed to fetch student registrations",
-      });
-    }
-  }
-);
 
 export default router;

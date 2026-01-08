@@ -1,7 +1,7 @@
-export const fetchStudentRegistrations = async (studentId: string) => {
+export const fetchStudentRegistrations = async () => {
   try {
     const res = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/event/student-registrations/${studentId}`,
+      `${import.meta.env.VITE_BASE_URL}/event/student-registrations`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/Button";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, MapPin, Users } from "lucide-react";
+import { Box, Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useEvent } from "../context/event/EventContext";
 import { EventStatus, type IEvent } from "../types/eventTypes";
@@ -26,7 +26,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
     if (!user?._id) return;
 
     const getRegistrations = async () => {
-      const result = await fetchStudentRegistrations(user._id);
+      const result = await fetchStudentRegistrations();
       if (result.success) {
         setRegistrations(result.data);
       }
@@ -99,6 +99,9 @@ const EventCard = ({ event }: { event: IEvent }) => {
   const registrationStatus = getRegistrationStatus(event._id);
   const volunteerStatus = getVolunteerStatus(event._id);
 
+  const currentRegistration = registrations.find((r) => r.event === event._id);
+  const currentVolunteer = registrations.find((r) => r.event === event._id && r.isVolunteer);
+
   return (
     <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
       {/* Make flex full height without internal gaps */}
@@ -130,19 +133,51 @@ const EventCard = ({ event }: { event: IEvent }) => {
                 </Button>
               )}
               {registrationStatus && !volunteerStatus && (
-                <Button
-                  className="bg-red-500 text-white hover:bg-red-600"
-                  onClick={() =>
-                    handleRegistrationCancel(event._id, user?._id!)
-                  }
-                >
-                  {t("eventDetails.cancelRegistration")}
-                </Button>
+                <div className="flex items-center gap-3">
+                  {/* Status label */}
+                  <p
+                    className={`rounded-full px-3 py-1 text-sm font-medium ${
+                      currentRegistration?.status === "approved"
+                        ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                        : currentRegistration?.status === "pending"
+                          ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                          : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                    }`}
+                  >
+                   {currentRegistration?.status}
+                  </p>
+
+                  {/* Cancel button (unchanged) */}
+                  <Button
+                    className="bg-red-500 text-white hover:bg-red-600"
+                    size="sm"
+                    onClick={() =>
+                      handleRegistrationCancel(event._id, user?._id!)
+                    }
+                  >
+                    {t("eventDetails.cancelRegistration")}
+                  </Button>
+                </div>
               )}
               {!registrationStatus && !volunteerStatus && (
                 <Button onClick={() => handleVolunteer(event._id, user?._id!)}>
                   volunteer
                 </Button>
+              )}
+              {volunteerStatus && !registrationStatus && (
+                <div className="flex items-center gap-3">
+                  <p
+                    className={`rounded-full px-3 py-1 text-sm font-medium ${
+                      currentVolunteer?.status === "approved"
+                        ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                        : currentVolunteer?.status === "pending"
+                          ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                          : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                    }`}
+                  >
+                    {currentVolunteer?.status}
+                  </p>
+                </div>
               )}
               {volunteerStatus && !registrationStatus && (
                 <Button
