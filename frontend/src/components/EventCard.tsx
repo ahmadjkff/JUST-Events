@@ -100,83 +100,101 @@ const EventCard = ({ event }: { event: IEvent }) => {
   const volunteerStatus = getVolunteerStatus(event._id);
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-lg">{event.title}</CardTitle>
-            <Badge className={getCategoryColor(event.category)}>
-              {event.category}
-            </Badge>
+    <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
+      {/* Make flex full height without internal gaps */}
+      <div className="flex h-60">
+        {/* LEFT IMAGE */}
+        <div className="w-56 shrink-0">
+          <img
+            src={`${import.meta.env.VITE_BASE_URL}${event?.img}`}
+            alt={event.title}
+            className="h-full w-full object-cover"
+          />
+        </div>
+
+        {/* RIGHT CONTENT */}
+        <div className="flex flex-1 flex-col">
+          {/* Remove CardHeader padding to align top */}
+          <div className="flex items-start justify-between p-4">
+            <div className="space-y-2">
+              <CardTitle className="text-lg">{event.title}</CardTitle>
+              <Badge className={getCategoryColor(event.category)}>
+                {event.category}
+              </Badge>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {!registrationStatus && !volunteerStatus && (
+                <Button onClick={() => handleRegister(event._id, user?._id!)}>
+                  {t("eventDetails.register")}
+                </Button>
+              )}
+              {registrationStatus && !volunteerStatus && (
+                <Button
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  onClick={() =>
+                    handleRegistrationCancel(event._id, user?._id!)
+                  }
+                >
+                  {t("eventDetails.cancelRegistration")}
+                </Button>
+              )}
+              {!registrationStatus && !volunteerStatus && (
+                <Button onClick={() => handleVolunteer(event._id, user?._id!)}>
+                  volunteer
+                </Button>
+              )}
+              {volunteerStatus && !registrationStatus && (
+                <Button
+                  className="bg-red-500 text-white hover:bg-red-600"
+                  onClick={() =>
+                    handleRegistrationCancel(event._id, user?._id!)
+                  }
+                >
+                  cancel Volunteer
+                </Button>
+              )}
+              <Link to={`/event/${event._id}`}>
+                <Button variant="outline" size="sm">
+                  {t("eventDetails.details")}
+                </Button>
+              </Link>
+            </div>
           </div>
-          <div className="flex gap-2">
-            {!registrationStatus && !volunteerStatus && (
-              <Button onClick={() => handleRegister(event._id, user?._id!)}>
-                {t("eventDetails.register")}
-              </Button>
-            )}
 
-            {registrationStatus && !volunteerStatus && (
-              <Button
-                className="bg-red-500 text-white hover:bg-red-600"
-                onClick={() => handleRegistrationCancel(event._id, user?._id!)}
-              >
-                {t("eventDetails.cancelRegistration")}
-              </Button>
-            )}
+          <div className="flex flex-1 flex-col justify-between p-4">
+            <p className="text-muted-foreground mb-4">{event.description}</p>
 
-            {!registrationStatus && !volunteerStatus && (
-              <Button onClick={() => handleVolunteer(event._id, user?._id!)}>
-                {"volunteer"}
-              </Button>
-            )}
-            {volunteerStatus && !registrationStatus && (
-              <Button
-                className="bg-red-500 text-white hover:bg-red-600"
-                onClick={() => handleRegistrationCancel(event._id, user?._id!)}
-              >
-                cancel Volunteer
-              </Button>
-            )}
-
-            <Link to={`/event/${event._id}`}>
-              <Button variant="outline" size="sm">
-                {t("eventDetails.details")}
-              </Button>
-            </Link>
+            <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <Calendar className="h-4 w-4" />
+                {event?.date?.split("T")[0]}
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="h-4 w-4" />
+                {event.startTime}-{event.endTime}
+              </div>
+              <div className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                {t("eventDetails.location")}: {event.location}
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                <Link to={`/registred-students/${event._id}`}>
+                  {event?.registeredStudents?.length} / {event.capacity}{" "}
+                  {t("eventDetails.attendees")}
+                </Link>
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                <Link to={`/volunteered-students/${event._id}`}>
+                  {event?.volunteers?.length} {t("eventDetails.volunteers")}
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </CardHeader>
-
-      <CardContent>
-        <p className="text-muted-foreground mb-4">{event.description}</p>
-        <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-          <div className="flex items-center gap-1">
-            <Calendar className="h-4 w-4" />
-            {event?.date?.split("T")[0]}
-          </div>
-          <div className="flex items-center gap-1">
-            <Clock className="h-4 w-4" />
-            {event.startTime}-{event.endTime}
-          </div>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            {t("eventDetails.location")}: {event.location}
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            <Link to={`/registred-students/${event._id}`}>
-              {event?.registeredStudents?.length} / {event.capacity} {t("eventDetails.attendees")}
-            </Link>
-          </div>
-          <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            <Link to={`/volunteered-students/${event._id}`}>
-              {event?.volunteers?.length} {t("eventDetails.volunteers")}
-            </Link>
-          </div>
-        </div>
-      </CardContent>
+      </div>
     </Card>
   );
 };
