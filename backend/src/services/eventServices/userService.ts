@@ -14,7 +14,7 @@ export const getEventsByStatus = async (status?: string) => {
 
   const query = normalizedStatus ? { status: normalizedStatus } : {};
 
-  const events = await eventModel.find(query).populate("volunteers");
+  const events = await eventModel.find(query).populate("volunteers").sort({ createdAt: -1 });
 
   return events;
 };
@@ -24,7 +24,9 @@ export const getSpecificEvent = async (eventId: string) => {
     const event = await eventModel
       .findOne({ _id: eventId })
       .populate("feedback.student", "firstName lastName img")
+      .sort({ createdAt: -1 })
       .lean();
+      
     if (!event)
       return { message: "Event not found ", statusCode: 403, success: false };
 

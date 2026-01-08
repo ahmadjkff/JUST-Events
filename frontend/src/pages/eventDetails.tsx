@@ -131,7 +131,7 @@ function EventDetails() {
               </p>
               <p className="flex items-center gap-2">
                 👥 <span className="font-medium">{t("event.attendees")}:</span>
-                {event?.registeredStudents.length}
+                {event?.registeredStudents.length} / {event?.capacity}
               </p>
               <p className="flex items-center gap-2">
                 📌 <span className="font-medium">{t("event.status")}:</span>
