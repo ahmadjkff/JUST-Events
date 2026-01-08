@@ -27,7 +27,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
-  const { logout, user } = useAuth();
+  const { logout, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
@@ -64,7 +64,7 @@ export default function Sidebar({ className }: SidebarProps) {
       icon: Calendar,
       label: t("sidebar.events"),
       href: "/browse-events",
-      allowed: ["student", "supervisor", "admin"],
+      allowed: ["all"],
     },
     {
       icon: CalendarClock,
@@ -137,7 +137,11 @@ export default function Sidebar({ className }: SidebarProps) {
         {/* Navigation */}
         <nav className="flex-1 space-y-1 p-2">
           {navigationItems.map((item) => {
-            if (!item.allowed.includes(user?.role!)) return null;
+            if (
+              !item.allowed.includes(user?.role!) &&
+              !item.allowed.includes("all")
+            )
+              return null;
             const isActive =
               item.href === "/"
                 ? currentPath === "/"
@@ -191,7 +195,7 @@ export default function Sidebar({ className }: SidebarProps) {
             <LogOut className="h-4 w-4 flex-shrink-0" />
             {!isCollapsed && (
               <span className={cn(isRTL ? "text-right" : "text-left")}>
-                {t("sidebar.signOut")}
+                {isAuthenticated ? t("sidebar.signOut") : t("sidebar.signIn")}
               </span>
             )}
           </Button>

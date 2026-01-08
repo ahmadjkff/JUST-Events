@@ -13,7 +13,6 @@ import Unauthorized from "./pages/Unauthorized";
 import Sidebar from "./components/Sidebar";
 import BrowseEvents from "./pages/browseEvents";
 import Profile from "./pages/profile";
-import { useAuth } from "./context/auth/AuthContext";
 import Setting from "./pages/setting";
 import Notifications from "./pages/notifications";
 import AboutUs from "./pages/aboutUs";
@@ -22,36 +21,23 @@ import RegistredStudents from "./pages/RegistredStudents";
 import VolunteeredStudents from "./pages/VolunteeredStudents";
 
 function App() {
-  const { isAuthenticated } = useAuth();
   return (
     <Router>
       <Header />
       <div className="flex">
-        {isAuthenticated && <Sidebar />}
+        <Sidebar />
 
         <div className="flex-grow p-4">
+          {/* <Sidebar /> */}
+
           <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute allowedRoles={["student", "supervisor"]}>
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/browse-events" element={<BrowseEvents />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/settings" element={<Setting />} />
-            <Route
-              path="/event/:id"
-              element={
-                <ProtectedRoute>
-                  <EventDetails />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/event/:id" element={<EventDetails />} />
             <Route path="/admin/*" element={<AdminRoutes />} />
             <Route path="/supervisor/*" element={<SupervisorRoutes />} />
             <Route path="/student/*" element={<StudentRoutes />} />
