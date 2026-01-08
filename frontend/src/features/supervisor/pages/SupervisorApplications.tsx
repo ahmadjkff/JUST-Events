@@ -127,6 +127,12 @@ function SupervisorApplications() {
                   {applications.filter((app: any) => app.status === "approved").length}
                 </span>
               </p>
+               <p className="mt-1 text-sm font-medium">
+                {t("supervisorApplications.capacity")}:{" "}
+                <span className="text-blue-600">
+                  {event.capacity}
+                </span>
+              </p>
             </div>
 
             {/* Buttons */}

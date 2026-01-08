@@ -149,6 +149,10 @@ function EventDetails() {
                   {t(`eventStatus.${event?.status}`)}
                 </Badge>
               </p>
+              <p>
+                Supervised by : {event?.createdBy?.firstName}{" "}
+                {event?.createdBy?.lastName}
+              </p>
             </CardContent>
           </Card>
 

@@ -638,7 +638,6 @@ export const getSupervisorAppliactions = async (
     // 1. Get all events by supervisor
     const events = await eventModel
       .find({ createdBy: supervisorId, status })
-      .select("_id title description location date status department category")
       .sort({ createdAt: -1 })
       .lean();
 
