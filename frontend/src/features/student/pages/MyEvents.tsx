@@ -1,4 +1,4 @@
-import { Calendar, ChartBarStacked, Filter, Search } from "lucide-react";
+import { Calendar, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTitle } from "../../../hooks/useTitle";
@@ -12,6 +12,9 @@ function BrowseEvents() {
   const { i18n, t } = useTranslation();
   const [myEvents, setMyEvents] = useState<IEvent[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
 
   const EVENTS_PER_PAGE = 10;
 
@@ -34,7 +37,7 @@ function BrowseEvents() {
               "Content-Type": "application/json",
               authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
         const data = await response.json();
         setMyEvents(data.data);
@@ -46,14 +49,31 @@ function BrowseEvents() {
   }, []);
 
   // Pagination logic
-  const totalPages = Math.ceil(myEvents.length / EVENTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
-  const currentEvents = myEvents.slice(startIndex, startIndex + EVENTS_PER_PAGE);
+  const filteredEvents = myEvents.filter((event) => {
+    const matchesSearch = event.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      !selectedCategory ||
+      event.category.toLowerCase() === selectedCategory.toLowerCase();
+    const matchesDepartment =
+      !selectedDepartment ||
+      event.department.toLowerCase() === selectedDepartment.toLowerCase();
 
-  // Reset page when events change
+    return matchesSearch && matchesCategory && matchesDepartment;
+  });
+
+  const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
+  const currentEvents = filteredEvents.slice(
+    startIndex,
+    startIndex + EVENTS_PER_PAGE,
+  );
+
+  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [myEvents.length]);
+  }, [searchTerm, selectedCategory, selectedDepartment]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -64,7 +84,9 @@ function BrowseEvents() {
             <h1 className="text-foreground text-2xl font-bold">
               {t("browseEvents.title")}
             </h1>
-            <p className="text-muted-foreground">{t("browseEvents.subtitle")}</p>
+            <p className="text-muted-foreground">
+              {t("browseEvents.subtitle")}
+            </p>
           </div>
         </div>
       </header>
@@ -79,16 +101,36 @@ function BrowseEvents() {
               <Input
                 placeholder={t("browseEvents.searchPlaceholder")}
                 className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" />
-              {t("browseEvents.filter")}
-            </Button>
-            <Button variant="outline">
-              <ChartBarStacked className="mr-2 h-4 w-4" />
-              {t("browseEvents.category")}
-            </Button>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800"
+            >
+              <option value="">{t("browseEvents.category")}</option>
+              <option value="tech">{t("categories.Technology")}</option>
+              <option value="health">{t("categories.Health")}</option>
+              <option value="education">{t("categories.Education")}</option>
+              <option value="community">{t("categories.Community")}</option>
+              <option value="arts">{t("categories.Arts")}</option>
+              <option value="other">{t("categories.Other")}</option>
+            </select>
+            <select
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800"
+            >
+              <option value="">{t("browseEvents.department")}</option>
+              <option value="it">{t("departments.it")}</option>
+              <option value="engineering">
+                {t("departments.engineering")}
+              </option>
+              <option value="medical">{t("departments.medical")}</option>
+              <option value="science">{t("departments.science")}</option>
+            </select>
           </div>
 
           {/* Events List */}

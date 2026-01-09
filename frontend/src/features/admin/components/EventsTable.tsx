@@ -11,6 +11,7 @@ import { statusColors } from "../../../constantColors";
 function EventsTable({
   value,
   icon,
+  searchTerm = "",
   category = null,
   department = null,
   setCategory = () => {},
@@ -21,6 +22,7 @@ function EventsTable({
   value: string;
   status: string;
   icon: any;
+  searchTerm?: string;
   category?: string | null;
   department?: string | null;
   setCategory?: React.Dispatch<React.SetStateAction<string | null>>;
@@ -34,6 +36,13 @@ function EventsTable({
   const filteredEvents = useMemo(
     () => (status: EventStatus) => {
       let events = eventsByStatus[status as keyof typeof eventsByStatus] || [];
+
+      if (searchTerm) {
+        events = events.filter((e: IEvent) =>
+          e.title.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+      }
+
       if (category) {
         events = events.filter(
           (e: IEvent) =>
@@ -50,7 +59,7 @@ function EventsTable({
 
       return events;
     },
-    [eventsByStatus, category, department],
+    [eventsByStatus, searchTerm, category, department],
   );
 
   return (
