@@ -25,6 +25,9 @@ function BrowseEvents() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
 
+  /* ---------------- Loading State ---------------- */
+  const [loading, setLoading] = useState(true);
+
   const approvedEvents = eventsByStatus.approved || [];
 
   // Filter events
@@ -43,30 +46,38 @@ function BrowseEvents() {
   });
 
   const totalPages = Math.ceil(filteredEvents.length / EVENTS_PER_PAGE);
-
   const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
   const currentEvents = filteredEvents.slice(
     startIndex,
-    startIndex + EVENTS_PER_PAGE,
+    startIndex + EVENTS_PER_PAGE
   );
-  /* --------------------------------------------------------- */
+
+  /* ---------------- Effects ---------------- */
 
   useEffect(() => {
     document.body.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);
 
+  // Initial fetch
   useEffect(() => {
-    fetchEvents("approved");
+    const loadEvents = async () => {
+      setLoading(true);
+      await fetchEvents("approved");
+      setLoading(false);
+    };
+
+    loadEvents();
   }, []);
 
-  // Listen for newly approved events (show to students without refresh)
+  // Listen for newly approved events
   useEffect(() => {
-    const handleEventApproved = () => {
-      fetchEvents("approved");
+    const handleEventApproved = async () => {
+      setLoading(true);
+      await fetchEvents("approved");
+      setLoading(false);
     };
 
     onEventApproved(handleEventApproved);
-
     return () => removeApprovedEventListener(handleEventApproved);
   }, []);
 
@@ -105,6 +116,7 @@ function BrowseEvents() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -118,6 +130,7 @@ function BrowseEvents() {
               <option value="arts">{t("categories.Arts")}</option>
               <option value="other">{t("categories.Other")}</option>
             </select>
+
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
@@ -134,7 +147,13 @@ function BrowseEvents() {
           </div>
 
           {/* Events List */}
-          {approvedEvents.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="text-muted-foreground text-sm animate-pulse">
+                {t("common.loading")}...
+              </div>
+            </div>
+          ) : approvedEvents.length > 0 ? (
             <>
               <div className="grid gap-4">
                 {currentEvents.map((event) => (
