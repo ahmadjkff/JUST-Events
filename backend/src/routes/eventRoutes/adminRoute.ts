@@ -24,6 +24,7 @@ router.put(
     try {
       const { eventId } = req.params;
       const { action } = req.body;
+      const io = req.app.get("io");
 
       if (!action || !eventId) {
         return res.status(400).json({
@@ -32,7 +33,7 @@ router.put(
         });
       }
 
-      const data = await changeEventStatus(eventId, action);
+      const data = await changeEventStatus(eventId, action, io);
       return res.status(200).json({
         success: true,
         message: `Event status changed to ${data.status}`,

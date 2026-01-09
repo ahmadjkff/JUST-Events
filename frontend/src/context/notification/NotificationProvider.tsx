@@ -1,6 +1,13 @@
 import { useState, type FC, type PropsWithChildren, useEffect } from "react";
 import { NotificationContext } from "./NotificationContext";
 import type { INotification } from "../../types/notificationTypes";
+import {
+  initializeSocket,
+  disconnectSocket,
+  onNewNotification,
+  removeNotificationListener,
+} from "../../services/socketService";
+import { jwtDecode } from "jwt-decode";
 
 const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
   const [notifications, setNotifications] = useState<INotification[]>([]);
@@ -224,6 +231,47 @@ const NotificationProvider: FC<PropsWithChildren> = ({ children }) => {
 
     return () => clearInterval(interval);
   }, []);
+    // Fetch notifications on mount
+    useEffect(() => {
+      fetchNotifications();
+
+      // Initialize Socket.io
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded: any = jwtDecode(token);
+          const userId = decoded.userId || decoded._id;
+          const userRole = decoded.role;
+
+          initializeSocket(token, userId, userRole);
+
+          // Listen for real-time notifications
+          const handleNewNotification = (data: any) => {
+            const { notification } = data;
+            // Add notification to the beginning of the list
+            setNotifications((prev) => [notification, ...prev]);
+            setUnreadCount((prev) => prev + 1);
+          };
+
+          onNewNotification(handleNewNotification);
+
+          // Cleanup listener on unmount
+          return () => {
+            removeNotificationListener(handleNewNotification);
+            disconnectSocket();
+          };
+        } catch (error) {
+          console.error("Error initializing socket:", error);
+        }
+      }
+
+      // Set up auto-refresh every 30 seconds (as fallback)
+      const interval = setInterval(() => {
+        fetchNotifications();
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }, []);
 
   return (
     <NotificationContext.Provider

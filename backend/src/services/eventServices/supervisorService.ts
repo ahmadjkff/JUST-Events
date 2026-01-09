@@ -17,6 +17,8 @@ import userModel from "../../models/userModel";
 import * as notificationService from "../notificationService";
 import { NotificationType } from "../../types/notificationTypes";
 import { Roles } from "../../types/userTypes";
+import { Server } from "socket.io";
+import { broadcastNewEvent, broadcastNotification } from "../socketService";
 
 interface IBody {
   stageId: string;
@@ -47,7 +49,8 @@ export const createEvent = async ({
   startTime,
   endTime,
   capacity,
-}: IBody): Promise<IResponseStructure> => {
+  io,
+}: IBody & { io?: Server }): Promise<IResponseStructure> => {
   try {
     const eventDate = new Date(date);
     if (Number.isNaN(eventDate.getTime())) {
@@ -82,13 +85,23 @@ export const createEvent = async ({
     // Send notification to all admins about new event creation
     const admins = await userModel.find({ role: Roles.ADMIN });
     for (const admin of admins) {
-      await notificationService.createNotification(
+      const notification = await notificationService.createNotification(
         (admin._id as any).toString(),
         `New Event "${supervisorName?.firstName} ${supervisorName?.lastName}" Created: "${title}"`,
         `Supervisor "${supervisorName?.firstName} ${supervisorName?.lastName}" has created a new event "${title}" pending your approval.`,
         NotificationType.NEW_EVENT_AVAILABLE,
         (event._id as any).toString()
       );
+
+      // Broadcast notification via socket
+      if (io) {
+        broadcastNotification(io, (admin._id as any).toString(), notification);
+      }
+    }
+
+    // Broadcast new event to all admins
+    if (io) {
+      broadcastNewEvent(io, event);
     }
 
     // Book the stage in the simulator API
@@ -426,6 +439,7 @@ interface IApproveOrReject {
   eventId: string;
   action: RegistrationStatus;
   supervisorId: string;
+  io?: Server;
 }
 export const approveOrRejectStudentApplacition = async ({
   //To-Do: remove the application when application is rejected
@@ -433,6 +447,7 @@ export const approveOrRejectStudentApplacition = async ({
   eventId,
   action,
   supervisorId,
+  io,
 }: IApproveOrReject): Promise<IResponseStructure> => {
   try {
     const event = await eventModel.findById(eventId);
@@ -506,7 +521,7 @@ export const approveOrRejectStudentApplacition = async ({
           ? `Your registration for "${event.title}" has been approved by ${supervisor.firstName} ${supervisor.lastName}.`
           : `Your registration for "${event.title}" has been rejected by ${supervisor.firstName} ${supervisor.lastName}.`;
 
-      await notificationService.createNotification(
+      const notification = await notificationService.createNotification(
         studentId,
         notificationTitle,
         notificationMessage,
@@ -514,6 +529,11 @@ export const approveOrRejectStudentApplacition = async ({
         eventId,
         (supervisorId as any).toString()
       );
+
+      // Broadcast notification via socket
+      if (io) {
+        broadcastNotification(io, studentId, notification);
+      }
     }
 
     if (

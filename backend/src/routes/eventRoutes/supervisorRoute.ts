@@ -67,6 +67,7 @@ router.post(
       }
 
       const supervisorId = req.user._id;
+      const io = req.app.get("io");
       const { data, statusCode, message, success } = await createEvent({
         stageId,
         title,
@@ -80,6 +81,7 @@ router.post(
         startTime,
         endTime,
         capacity,
+        io,
       });
       res.status(statusCode).json({ success, message, data });
     } catch (error: any) {
@@ -218,12 +220,14 @@ router.put(
       if (!action) {
         res.status(401).json({ message: "event status is required" });
       }
+      const io = req.app.get("io");
       const { data, statusCode, success, message } =
         await approveOrRejectStudentApplacition({
           studentId,
           eventId,
           action,
           supervisorId,
+          io,
         });
 
       res.status(statusCode).json({ success, message, data });
