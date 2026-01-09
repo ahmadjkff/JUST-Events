@@ -284,7 +284,7 @@
   "manageRoles": {
     "title": "All Users",
     "subtitle": "Manage user roles and permissions",
-    "searchPlaceholder": "🔍 Search users",
+    "searchPlaceholder": "Search users",
     "id": "ID",
     "name": "Name",
     "role": "Role",
