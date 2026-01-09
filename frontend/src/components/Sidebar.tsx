@@ -11,6 +11,7 @@ import {
   LogOut,
   Award,
   ChartColumnBig,
+  CalendarCheck,
 } from "lucide-react";
 import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
@@ -58,6 +59,18 @@ export default function Sidebar({ className }: SidebarProps) {
       icon: Gauge,
       label: t("sidebar.dashboard"),
       href: "/supervisor/dashboard",
+      allowed: ["supervisor"],
+    },
+    {
+      icon: User,
+      label: t("sidebar.Control Applications"),
+      href: "/supervisor/control-applications",
+      allowed: ["supervisor"],
+    },
+     {
+      icon: CalendarCheck,
+      label: t("sidebar.Create Event"),
+      href: "/supervisor/create-event",
       allowed: ["supervisor"],
     },
     {

@@ -15,7 +15,9 @@
     "profile": "Profile",
     "statistics": "Statistics",
     "signOut": "Sign Out",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "Control Applications": "Control Applications",
+    "Create Event": "Create Event"
   },
   "footer": {
     "aboutUs": "About Us",

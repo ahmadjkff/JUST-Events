@@ -15,7 +15,9 @@
     "profile": "الملف الشخصي",
     "statistics": "الإحصائيات",
     "signOut": "تسجيل الخروج",
-    "signIn": "تسجيل الدخول"
+    "signIn": "تسجيل الدخول",
+    "Control Applications":" إدارة الطلبات",
+    "Create Event": "إنشاء فعالية"
   },
   "footer": {
     "aboutUs": "من نحن",
