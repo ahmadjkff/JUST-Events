@@ -5,7 +5,6 @@ import { Input } from "../../../components/ui/input";
 import { useEvent } from "../../../context/event/EventContext";
 import { useEffect, useState } from "react";
 import { changeEventStatus } from "../services/APIRequests";
-import Menu from "../../../components/ui/Menu";
 import { EventStatus } from "../../../types/eventTypes";
 import toast from "react-hot-toast";
 import Loading from "../../../components/ui/Loading";
@@ -19,6 +18,7 @@ function ControlEvents() {
 
   useTitle(`${t("controlEvents.title")} - JUST Events`);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState<string | null>(null);
   const [department, setDepartment] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -55,16 +55,16 @@ function ControlEvents() {
   if (loading) return <Loading />;
 
   return (
-    <div className={`flex flex-1 flex-col overflow-hidden ${isRTL ? "text-right" : "text-left"}`}>
+    <div
+      className={`flex flex-1 flex-col overflow-hidden ${isRTL ? "text-right" : "text-left"}`}
+    >
       {/* ===== Header ===== */}
       <header className="bg-card border-border flex items-center justify-between border-b p-4">
         <div className={isRTL ? "text-right" : "text-left"}>
           <h1 className="text-foreground text-2xl font-bold">
             {t("controlEvents.title")}
           </h1>
-          <p className="text-muted-foreground">
-            {t("controlEvents.subtitle")}
-          </p>
+          <p className="text-muted-foreground">{t("controlEvents.subtitle")}</p>
         </div>
       </header>
 
@@ -72,7 +72,9 @@ function ControlEvents() {
       <main className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-7xl">
           {/* === Search and Filters === */}
-          <div className={`mb-6 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div
+            className={`mb-6 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <div className="relative flex-1">
               <Search
                 className={`text-muted-foreground absolute top-1/2 ${
@@ -82,34 +84,38 @@ function ControlEvents() {
               <Input
                 placeholder={t("controlEvents.searchPlaceholder")}
                 className={`${isRTL ? "pr-10" : "pl-10"}`}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <Menu
-              title={t("controlEvents.category")}
-              items={[
-                t("categories.Technology"),
-                t("categories.Health"),
-                t("categories.Education"),
-                t("categories.Culture"),
-                t("categories.Sports"),
-                t("categories.Other"),
-              ]}
-              selected={category || t("controlEvents.category")}
-              setSelected={setCategory}
-            />
+            <select
+              value={category || ""}
+              onChange={(e) => setCategory(e.target.value || null)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800"
+            >
+              <option value="">{t("controlEvents.category")}</option>
+              <option value="tech">{t("categories.Technology")}</option>
+              <option value="health">{t("categories.Health")}</option>
+              <option value="education">{t("categories.Education")}</option>
+              <option value="community">{t("categories.Community")}</option>
+              <option value="arts">{t("categories.Arts")}</option>
+              <option value="other">{t("categories.Other")}</option>
+            </select>
 
-            <Menu
-              title={t("controlEvents.department")}
-              items={[
-                t("departments.it"),
-                t("departments.engineering"),
-                t("departments.medical"),
-                t("departments.science"),
-              ]}
-              selected={department || t("controlEvents.department")}
-              setSelected={setDepartment}
-            />
+            <select
+              value={department || ""}
+              onChange={(e) => setDepartment(e.target.value || null)}
+              className="rounded-md border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-600 dark:bg-gray-800"
+            >
+              <option value="">{t("controlEvents.department")}</option>
+              <option value="it">{t("departments.it")}</option>
+              <option value="engineering">
+                {t("departments.engineering")}
+              </option>
+              <option value="medical">{t("departments.medical")}</option>
+              <option value="science">{t("departments.science")}</option>
+            </select>
           </div>
 
           {/* === Events Tabs === */}
@@ -135,6 +141,7 @@ function ControlEvents() {
               value="approved"
               status="Approved"
               icon={Calendar}
+              searchTerm={searchTerm}
               updateStatus={updateStatus}
               category={category}
               department={department}
@@ -146,6 +153,7 @@ function ControlEvents() {
               value="pending"
               status="Pending"
               icon={Clock}
+              searchTerm={searchTerm}
               updateStatus={updateStatus}
               category={category}
               department={department}
@@ -157,6 +165,7 @@ function ControlEvents() {
               value="rejected"
               status="Rejected"
               icon={X}
+              searchTerm={searchTerm}
               updateStatus={updateStatus}
               category={category}
               department={department}

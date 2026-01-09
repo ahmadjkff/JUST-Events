@@ -6,6 +6,8 @@ import { certificateModel, ICertificate } from "../../models/certificateModel";
 import PDFDocument from "pdfkit";
 import { Response } from "express";
 import userModel from "../../models/userModel";
+import * as notificationService from "../notificationService";
+import { NotificationType } from "../../types/notificationTypes";
 
 export const generateCertificate = async (
   res: Response,
@@ -86,11 +88,23 @@ export const register = async (
   });
   if (existing) throw new Error("Already registered for this event");
 
-  return await RegistrationModel.create({
+  const registration = await RegistrationModel.create({
     student: studentId,
     event: eventId,
     isVolunteer: false,
   });
+
+  // Create notification for successful registration
+  await notificationService.createNotification(
+    studentId,
+    `Registered for "${event.title}"`,
+    `You have successfully registered for the event "${event.title}".`,
+    NotificationType.NEW_EVENT_AVAILABLE,
+    eventId,
+    undefined
+  );
+
+  return registration;
 };
 
 export const cancel = async (
