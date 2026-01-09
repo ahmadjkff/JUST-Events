@@ -1,19 +1,65 @@
 import { Calendar, Users, BellRing, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Button } from "./ui/Button";
+import { useEvent } from "../context/event/EventContext";
+import { fetchStudentRegistrations } from "../features/student/services/StudentService";
 
 const ICONS = { Calendar, Users, BellRing, Award } as const;
 
 type IconName = keyof typeof ICONS;
 
-const DASHBOARD_CARDS = [
+
+
+export default function DashboardCards() {
+  const {eventsByStatus , fetchEvents} = useEvent();
+  const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
+  const approvedEvents = eventsByStatus.approved || [];
+  console.log("Approved Events Count:", approvedEvents.length);
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
+  useEffect(() => {
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+  }, [i18n.language]);
+
+   useEffect(() => {
+    const loadEvents = async () => {
+      await fetchEvents("approved");
+    };
+    loadEvents();
+  }, []);
+
+     useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/student/my-events`,
+          {
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        setRegisteredEvents(data.data || []);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const DASHBOARD_CARDS = [
   {
     id: 1,
     titleKey: "dashboardCards.upcomingEvents",
-    count: 12,
+    count: approvedEvents.length,
     icon: "Calendar" as IconName,
     color: "text-blue-600",
     bgGradient: "from-blue-500/10 to-blue-600/5",
@@ -24,7 +70,7 @@ const DASHBOARD_CARDS = [
   {
     id: 2,
     titleKey: "dashboardCards.registeredEvents",
-    count: 8,
+    count: registeredEvents.length,
     icon: "Users" as IconName,
     color: "text-green-600",
     bgGradient: "from-green-500/10 to-green-600/5",
@@ -35,7 +81,7 @@ const DASHBOARD_CARDS = [
   {
     id: 3,
     titleKey: "dashboardCards.myCertificates",
-    count: 3,
+    count: registeredEvents.length,
     icon: "Award" as IconName,
     color: "text-indigo-600",
     bgGradient: "from-indigo-500/10 to-indigo-600/5",
@@ -55,15 +101,6 @@ const DASHBOARD_CARDS = [
     link: "/notifications",
   },
 ];
-
-export default function DashboardCards() {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar";
-
-  useEffect(() => {
-    document.documentElement.dir = isRTL ? "rtl" : "ltr";
-  }, [i18n.language]);
-
   return (
     <div className="space-y-6">
       {/* ===== Quick Stats ===== */}
