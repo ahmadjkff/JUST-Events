@@ -93,11 +93,7 @@ export const changeEventStatus = async (
     // Broadcast notifications and status changes via socket
     if (io) {
       registeredStudents.forEach((studentId, index) => {
-        broadcastNotification(
-          io,
-          studentId.toString(),
-          notifications[index]
-        );
+        broadcastNotification(io, studentId.toString(), notifications[index]);
         broadcastEventStatusToStudents(
           io,
           [studentId.toString()],
@@ -124,11 +120,7 @@ export const changeEventStatus = async (
     // Broadcast notifications and status changes via socket
     if (io) {
       registeredStudents.forEach((studentId, index) => {
-        broadcastNotification(
-          io,
-          studentId.toString(),
-          notifications[index]
-        );
+        broadcastNotification(io, studentId.toString(), notifications[index]);
         broadcastEventStatusToStudents(
           io,
           [studentId.toString()],

@@ -32,7 +32,9 @@ export const initializeSocket = (httpServer: HTTPServer) => {
     }
     connectedUsers.get(userId)!.add(socket.id);
 
-    console.log(`User ${userId} (${userRole}) connected with socket ${socket.id}`);
+    console.log(
+      `User ${userId} (${userRole}) connected with socket ${socket.id}`
+    );
 
     // Join user to a personal room for targeted messages
     socket.join(`user_${userId}`);
@@ -63,12 +65,27 @@ export const initializeSocket = (httpServer: HTTPServer) => {
 };
 
 // Export functions to emit events
-export const emitToUser = (io: Server, userId: string, event: string, data: any) => {
+export const emitToUser = (
+  io: Server,
+  userId: string,
+  event: string,
+  data: any
+) => {
   io.to(`user_${userId}`).emit(event, data);
 };
 
-export const emitToRole = (io: Server, role: string, event: string, data: any) => {
-  const roomName = role === "admin" ? "admins" : role === "supervisor" ? "supervisors" : "students";
+export const emitToRole = (
+  io: Server,
+  role: string,
+  event: string,
+  data: any
+) => {
+  const roomName =
+    role === "admin"
+      ? "admins"
+      : role === "supervisor"
+        ? "supervisors"
+        : "students";
   io.to(roomName).emit(event, data);
 };
 
@@ -85,7 +102,12 @@ export const broadcastNewEvent = (io: Server, event: any) => {
 };
 
 // Emit event status change to supervisor
-export const broadcastEventStatusChange = (io: Server, supervisorId: string, event: any, status: string) => {
+export const broadcastEventStatusChange = (
+  io: Server,
+  supervisorId: string,
+  event: any,
+  status: string
+) => {
   emitToUser(io, supervisorId, "event_status_changed", {
     event,
     status,
@@ -110,7 +132,11 @@ export const broadcastEventStatusToStudents = (
 };
 
 // Emit notification to specific user
-export const broadcastNotification = (io: Server, userId: string, notification: any) => {
+export const broadcastNotification = (
+  io: Server,
+  userId: string,
+  notification: any
+) => {
   emitToUser(io, userId, "new_notification", {
     notification,
     timestamp: new Date(),
@@ -118,7 +144,11 @@ export const broadcastNotification = (io: Server, userId: string, notification: 
 };
 
 // Emit bulk notifications
-export const broadcastBulkNotifications = (io: Server, userIds: string[], notification: any) => {
+export const broadcastBulkNotifications = (
+  io: Server,
+  userIds: string[],
+  notification: any
+) => {
   userIds.forEach((userId) => {
     emitToUser(io, userId, "new_notification", {
       notification,

@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import Loading from "../../../components/ui/Loading";
 import EventsTable from "../components/EventsTable";
 import { useTranslation } from "react-i18next";
+import { onEventStatusChanged, removeStatusChangeListener } from "../../../services/socketService";
 
 function ControlEvents() {
   const { t, i18n } = useTranslation();
@@ -50,6 +51,23 @@ function ControlEvents() {
       ]);
     };
     fetchAll();
+  }, []);
+
+  // Listen for real-time event status changes
+  useEffect(() => {
+    const handleStatusChange = (data: any) => {
+      const { event, status } = data;
+      Promise.all([
+        fetchEvents("approved"),
+        fetchEvents("pending"),
+        fetchEvents("rejected"),
+      ]);
+      toast.success(`Event "${event.title}" status changed to ${status}`);
+    };
+
+    onEventStatusChanged(handleStatusChange);
+
+    return () => removeStatusChangeListener(handleStatusChange);
   }, []);
 
   if (loading) return <Loading />;

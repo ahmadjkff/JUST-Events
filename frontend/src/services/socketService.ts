@@ -2,7 +2,11 @@ import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-export const initializeSocket = (token: string, userId: string, userRole: string) => {
+export const initializeSocket = (
+  token: string,
+  userId: string,
+  userRole: string,
+) => {
   if (socket) return socket;
 
   socket = io("http://localhost:3000", {
@@ -72,7 +76,9 @@ export const onEventApproved = (callback: (event: any) => void) => {
 };
 
 // Remove listeners
-export const removeNotificationListener = (callback: (notification: any) => void) => {
+export const removeNotificationListener = (
+  callback: (notification: any) => void,
+) => {
   if (socket) {
     socket.off("new_notification", callback);
   }

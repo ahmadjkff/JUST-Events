@@ -4,12 +4,19 @@ import { Calendar, CalendarCheck, User, Users, UserStar } from "lucide-react";
 import { useEvent } from "../../../context/event/EventContext";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNewEventListener } from "../../../hooks/useNewEventListener";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { eventsByStatus, fetchEvents } = useEvent();
   const [userCount, setUserCount] = useState<number>(0);
   const { i18n, t } = useTranslation();
+
+  // Listen for new events and refresh pending/overview
+  useNewEventListener(() => {
+    fetchEvents();
+    fetchEvents("pending");
+  });
 
   // ✅ ضبط اتجاه الصفحة بناءً على اللغة
   useEffect(() => {

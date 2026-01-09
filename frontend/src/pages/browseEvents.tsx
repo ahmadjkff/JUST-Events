@@ -7,6 +7,7 @@ import { useEvent } from "../context/event/EventContext";
 import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 import { useTranslation } from "react-i18next";
+import { onEventApproved, removeApprovedEventListener } from "../services/socketService";
 
 function BrowseEvents() {
   const { i18n, t } = useTranslation();
@@ -53,6 +54,17 @@ function BrowseEvents() {
 
   useEffect(() => {
     fetchEvents("approved");
+  }, []);
+
+  // Listen for newly approved events (show to students without refresh)
+  useEffect(() => {
+    const handleEventApproved = () => {
+      fetchEvents("approved");
+    };
+
+    onEventApproved(handleEventApproved);
+
+    return () => removeApprovedEventListener(handleEventApproved);
   }, []);
 
   // Reset page when filters change

@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { onNewEventCreated, removeNewEventListener } from "../services/socketService";
+import {
+  onNewEventCreated,
+  removeNewEventListener,
+} from "../services/socketService";
 import toast from "react-hot-toast";
 
 export const useNewEventListener = (callback?: (event: any) => void) => {
