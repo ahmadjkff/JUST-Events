@@ -6,32 +6,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Button } from "./ui/Button";
 import { useEvent } from "../context/event/EventContext";
 import { fetchStudentRegistrations } from "../features/student/services/StudentService";
+import { useNotification } from "../context/notification/NotificationContext";
 
 const ICONS = { Calendar, Users, BellRing, Award } as const;
 
 type IconName = keyof typeof ICONS;
 
-
-
 export default function DashboardCards() {
-  const {eventsByStatus , fetchEvents} = useEvent();
+  const { eventsByStatus, fetchEvents } = useEvent();
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
   const approvedEvents = eventsByStatus.approved || [];
-  console.log("Approved Events Count:", approvedEvents.length);
+  const { notifications } = useNotification();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
   useEffect(() => {
     document.documentElement.dir = isRTL ? "rtl" : "ltr";
   }, [i18n.language]);
 
-   useEffect(() => {
+  useEffect(() => {
     const loadEvents = async () => {
       await fetchEvents("approved");
     };
     loadEvents();
   }, []);
 
-     useEffect(() => {
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const response = await fetch(
@@ -42,7 +41,7 @@ export default function DashboardCards() {
               "Content-Type": "application/json",
               authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-          }
+          },
         );
 
         const data = await response.json();
@@ -56,51 +55,51 @@ export default function DashboardCards() {
   }, []);
 
   const DASHBOARD_CARDS = [
-  {
-    id: 1,
-    titleKey: "dashboardCards.upcomingEvents",
-    count: approvedEvents.length,
-    icon: "Calendar" as IconName,
-    color: "text-blue-600",
-    bgGradient: "from-blue-500/10 to-blue-600/5",
-    hoverGradient: "hover:from-blue-500/20 hover:to-blue-600/10",
-    iconBg: "bg-blue-500/10",
-    link: "/browse-events",
-  },
-  {
-    id: 2,
-    titleKey: "dashboardCards.registeredEvents",
-    count: registeredEvents.length,
-    icon: "Users" as IconName,
-    color: "text-green-600",
-    bgGradient: "from-green-500/10 to-green-600/5",
-    hoverGradient: "hover:from-green-500/20 hover:to-green-600/10",
-    iconBg: "bg-green-500/10",
-    link: "/student/my-events",
-  },
-  {
-    id: 3,
-    titleKey: "dashboardCards.myCertificates",
-    count: registeredEvents.length,
-    icon: "Award" as IconName,
-    color: "text-indigo-600",
-    bgGradient: "from-indigo-500/10 to-indigo-600/5",
-    hoverGradient: "hover:from-indigo-500/20 hover:to-indigo-600/10",
-    iconBg: "bg-indigo-500/10",
-    link: "/student/my-certificates",
-  },
-  {
-    id: 4,
-    titleKey: "dashboardCards.notifications",
-    count: 5,
-    icon: "BellRing" as IconName,
-    color: "text-orange-600",
-    bgGradient: "from-orange-500/10 to-orange-600/5",
-    hoverGradient: "hover:from-orange-500/20 hover:to-orange-600/10",
-    iconBg: "bg-orange-500/10",
-    link: "/notifications",
-  },
-];
+    {
+      id: 1,
+      titleKey: "dashboardCards.upcomingEvents",
+      count: approvedEvents.length,
+      icon: "Calendar" as IconName,
+      color: "text-blue-600",
+      bgGradient: "from-blue-500/10 to-blue-600/5",
+      hoverGradient: "hover:from-blue-500/20 hover:to-blue-600/10",
+      iconBg: "bg-blue-500/10",
+      link: "/browse-events",
+    },
+    {
+      id: 2,
+      titleKey: "dashboardCards.registeredEvents",
+      count: registeredEvents.length,
+      icon: "Users" as IconName,
+      color: "text-green-600",
+      bgGradient: "from-green-500/10 to-green-600/5",
+      hoverGradient: "hover:from-green-500/20 hover:to-green-600/10",
+      iconBg: "bg-green-500/10",
+      link: "/student/my-events",
+    },
+    {
+      id: 3,
+      titleKey: "dashboardCards.myCertificates",
+      count: registeredEvents.length,
+      icon: "Award" as IconName,
+      color: "text-indigo-600",
+      bgGradient: "from-indigo-500/10 to-indigo-600/5",
+      hoverGradient: "hover:from-indigo-500/20 hover:to-indigo-600/10",
+      iconBg: "bg-indigo-500/10",
+      link: "/student/my-certificates",
+    },
+    {
+      id: 4,
+      titleKey: "dashboardCards.notifications",
+      count: notifications.length,
+      icon: "BellRing" as IconName,
+      color: "text-orange-600",
+      bgGradient: "from-orange-500/10 to-orange-600/5",
+      hoverGradient: "hover:from-orange-500/20 hover:to-orange-600/10",
+      iconBg: "bg-orange-500/10",
+      link: "/notifications",
+    },
+  ];
   return (
     <div className="space-y-6">
       {/* ===== Quick Stats ===== */}
