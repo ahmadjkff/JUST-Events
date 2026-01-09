@@ -127,22 +127,16 @@ function Dashboard() {
 
   return (
     <div
-      className={`p-8 transition-all ${isRTL ? "text-right" : "text-left"
-        }`}
+      className={`p-8 transition-all ${isRTL ? "text-right" : "text-left"}`}
       dir={isRTL ? "rtl" : "ltr"}
     >
       {/* Header */}
-      <header
-        className={`mb-8 ${isRTL ? "text-right" : "text-left"
-          }`}
-      >
+      <header className={`mb-8 ${isRTL ? "text-right" : "text-left"}`}>
         <h1 className="text-4xl font-extrabold">{t("adminDashboard.title")}</h1>
         <p className="text-muted-foreground">{t("adminDashboard.subtitle")}</p>
       </header>
 
       <div className="space-y-6">
-
-
         {/* System Management */}
         <h2 className="text-center text-2xl font-bold">
           {t("adminDashboard.systemManagement")}
@@ -156,10 +150,9 @@ function Dashboard() {
             >
               <CardContent className="p-4">
                 <div
-                  className={`flex items-center ${isRTL
-                      ? "flex-row-reverse space-x-reverse"
-                      : "space-x-2"
-                    }`}
+                  className={`flex items-center ${
+                    isRTL ? "flex-row-reverse space-x-reverse" : "space-x-2"
+                  }`}
                 >
                   <item.icon className={`h-8 w-8 text-${item.color}-500`} />
                   <div>
@@ -180,13 +173,15 @@ function Dashboard() {
         </h2>
         <div className="flex flex-col gap-4 md:grid md:grid-cols-3">
           {SYSTEM_SUMMARY.map((item) => (
-            <Card key={item.title} className="transition-shadow hover:shadow-lg">
+            <Card
+              key={item.title}
+              className="transition-shadow hover:shadow-lg"
+            >
               <CardContent className="p-4">
                 <div
-                  className={`flex items-center ${isRTL
-                      ? "flex-row-reverse space-x-reverse"
-                      : "space-x-2"
-                    }`}
+                  className={`flex items-center ${
+                    isRTL ? "flex-row-reverse space-x-reverse" : "space-x-2"
+                  }`}
                 >
                   <item.icon className={`h-8 w-8 text-${item.color}-500`} />
                   <div>
@@ -203,7 +198,6 @@ function Dashboard() {
             </Card>
           ))}
         </div>
-
       </div>
     </div>
   );

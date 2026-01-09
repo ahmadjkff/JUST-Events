@@ -10,7 +10,10 @@ import toast from "react-hot-toast";
 import Loading from "../../../components/ui/Loading";
 import EventsTable from "../components/EventsTable";
 import { useTranslation } from "react-i18next";
-import { onEventStatusChanged, removeStatusChangeListener } from "../../../services/socketService";
+import {
+  onEventStatusChanged,
+  removeStatusChangeListener,
+} from "../../../services/socketService";
 
 function ControlEvents() {
   const { t, i18n } = useTranslation();

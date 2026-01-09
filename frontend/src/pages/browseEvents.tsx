@@ -7,7 +7,10 @@ import { useEvent } from "../context/event/EventContext";
 import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 import { useTranslation } from "react-i18next";
-import { onEventApproved, removeApprovedEventListener } from "../services/socketService";
+import {
+  onEventApproved,
+  removeApprovedEventListener,
+} from "../services/socketService";
 
 function BrowseEvents() {
   const { i18n, t } = useTranslation();
