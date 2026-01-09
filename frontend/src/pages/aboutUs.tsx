@@ -136,6 +136,34 @@ const AboutUs: React.FC = () => {
             </div>
           </div>
         </section>
+
+        {/* Common Questions */}
+        <section>
+          <h2 className="mb-12 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-bold text-transparent">
+            {t("aboutUsPage.commonQuestions")}
+          </h2>
+
+          <div className="mx-auto max-w-4xl space-y-8">
+            {[
+              { question: t("aboutUsPage.question0"), answer: t("aboutUsPage.answer0") },
+              { question: t("aboutUsPage.question1"), answer: t("aboutUsPage.answer1") },
+              { question: t("aboutUsPage.question2"), answer: t("aboutUsPage.answer2") },
+              { question: t("aboutUsPage.question3"), answer: t("aboutUsPage.answer3") },
+              { question: t("aboutUsPage.question4"), answer: t("aboutUsPage.answer4") },
+              { question: t("aboutUsPage.question5"), answer: t("aboutUsPage.answer5") },
+            ].map((qa, index) => (    
+              <div
+                key={index}
+                className="rounded-2xl border border-gray-100 p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              >
+                <h3 className="mb-2 text-xl font-semibold">
+                  {qa.question}
+                </h3>
+                <p className="text-gray-600">{qa.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );

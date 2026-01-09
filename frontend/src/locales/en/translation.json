@@ -14,7 +14,8 @@
     "myCertificates": "My Certificates",
     "profile": "Profile",
     "statistics": "Statistics",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "signIn": "Sign In"
   },
   "footer": {
     "aboutUs": "About Us",
@@ -27,7 +28,20 @@
     "meetTeam": "Meet Our Team",
     "studentId": "Student ID",
     "email": "Email",
-    "teamSupervisor": "Team Supervisor"
+    "teamSupervisor": "Team Supervisor",
+    "commonQuestions": "Common Questions",
+    "question0": "How do I login in Just Events?",
+    "answer0": "using your university email and student services password to login to Just Events platform.",
+    "question1": "How do I register for an event?",
+    "answer1": "To register for an event, simply browse the available events on the platform, select the one you're interested in, and click the 'Register Now' button. You may need to log in to your account first",
+    "question2": "Can I volunteer for events?",
+    "answer2": "Yes, you can volunteer for events by selecting the volunteer option during the event registration process. Make sure to check the event details for any specific requirements",
+    "question3": "How do I provide feedback after attending an event?",
+    "answer3": "After attending an event, you can provide feedback by navigating to the event page and clicking the 'Add Feedback' button. Your feedback will be submitted and visible to organizers",
+    "question4": "How do I download my participation certificate?",
+    "answer4": "Once you have attended an event, you can download your participation certificate from the 'My Certificates' section in your dashboard",
+    "question5": "Who can use the Events JUST platform?",
+    "answer5": "The JUST events platform is available to all students and faculty members at Jordan University of Science and Technology."
   },
   "browseEvents": {
     "title": "Browse Events",
