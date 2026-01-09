@@ -7,7 +7,6 @@ import StudentRoutes from "./features/student";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import ProtectedRoute from "./protectedRoutes";
 import NotFound from "./pages/NotFound";
 import Unauthorized from "./pages/Unauthorized";
 import Sidebar from "./components/Sidebar";
@@ -28,8 +27,6 @@ function App() {
         <Sidebar />
 
         <div className="flex-grow p-4">
-          {/* <Sidebar /> */}
-
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />

@@ -9,6 +9,7 @@ import supervisorRoute from "./routes/eventRoutes/supervisorRoute";
 import eventAdminRoute from "./routes/eventRoutes/adminRoute";
 import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRoute";
 import eventUserRoute from "./routes/eventRoutes/userRoute";
+import notificationRoute from "./routes/notificationRoute";
 import path from "path";
 import aiRoute from "./routes/aiRoute";
 dotenv.config();
@@ -36,6 +37,7 @@ app.use("/student", studentRoute);
 app.use("/supervisor", supervisorRoute);
 app.use("/event/admin", eventAdminRoute);
 app.use("/event/supervisor-admin", supervisorAndAdminRoute);
+app.use("/notifications", notificationRoute);
 app.use("/ai", aiRoute);
 
 app.listen(port, () => {

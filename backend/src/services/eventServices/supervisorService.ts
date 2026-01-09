@@ -13,6 +13,10 @@ import ExcelJS from "exceljs";
 import mongoose from "mongoose";
 import path from "path";
 import fs from "fs";
+import userModel from "../../models/userModel";
+import * as notificationService from "../notificationService";
+import { NotificationType } from "../../types/notificationTypes";
+import { Roles } from "../../types/userTypes";
 
 interface IBody {
   stageId: string;
@@ -70,6 +74,22 @@ export const createEvent = async ({
     });
 
     await event.save();
+
+    const supervisorName = await userModel
+      .findById(supervisorId)
+      .select("firstName lastName");
+
+    // Send notification to all admins about new event creation
+    const admins = await userModel.find({ role: Roles.ADMIN });
+    for (const admin of admins) {
+      await notificationService.createNotification(
+        (admin._id as any).toString(),
+        `New Event "${supervisorName?.firstName} ${supervisorName?.lastName}" Created: "${title}"`,
+        `Supervisor "${supervisorName?.firstName} ${supervisorName?.lastName}" has created a new event "${title}" pending your approval.`,
+        NotificationType.NEW_EVENT_AVAILABLE,
+        (event._id as any).toString()
+      );
+    }
 
     // Book the stage in the simulator API
     const bookingResponse = await fetch(
@@ -466,6 +486,36 @@ export const approveOrRejectStudentApplacition = async ({
 
     isRegistered.status = action;
 
+    // Send notification to student about registration decision
+    const supervisor = await userModel.findById(supervisorId);
+    const student = await userModel.findById(studentId);
+
+    if (supervisor && student) {
+      const notificationType =
+        action === RegistrationStatus.APPROVED
+          ? NotificationType.REGISTRATION_APPROVED
+          : NotificationType.REGISTRATION_REJECTED;
+
+      const notificationTitle =
+        action === RegistrationStatus.APPROVED
+          ? `Registration Approved for "${event.title}"`
+          : `Registration Rejected for "${event.title}"`;
+
+      const notificationMessage =
+        action === RegistrationStatus.APPROVED
+          ? `Your registration for "${event.title}" has been approved by ${supervisor.firstName} ${supervisor.lastName}.`
+          : `Your registration for "${event.title}" has been rejected by ${supervisor.firstName} ${supervisor.lastName}.`;
+
+      await notificationService.createNotification(
+        studentId,
+        notificationTitle,
+        notificationMessage,
+        notificationType,
+        eventId,
+        (supervisorId as any).toString()
+      );
+    }
+
     if (
       action === RegistrationStatus.REJECTED ||
       action === RegistrationStatus.PENDING
@@ -566,9 +616,8 @@ export const exportRegisteredStudent = async ({
   worksheet.getCell("A3").font = { bold: true };
 
   worksheet.mergeCells("A4:D4");
-  worksheet.getCell(
-    "A4"
-  ).value = `Total Registered Students: ${registrations.length}`;
+  worksheet.getCell("A4").value =
+    `Total Registered Students: ${registrations.length}`;
   worksheet.getCell("A4").font = { bold: true };
 
   worksheet.addRow([]); // spacer row

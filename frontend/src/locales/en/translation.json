@@ -109,7 +109,19 @@
     "headerDescription": "Stay updated with the latest news and alerts from your events.",
     "exampleTitle": "New Event Available",
     "exampleDescription": "A new workshop on \"Advanced React Techniques\" has been added. Check it out!",
-    "exampleTime": "2 hours ago"
+    "exampleTime": "2 hours ago",
+    "empty": "No Notifications Yet",
+    "noNotifications": "You don't have any notifications at this time. Check back later for updates!",
+    "noUnread": "Great! You've read all your notifications.",
+    "loading": "Loading notifications...",
+    "filterAll": "All",
+    "filterUnread": "Unread",
+    "markAllAsRead": "Mark All as Read",
+    "clearAll": "Clear All",
+    "deleteSuccess": "Notification deleted successfully",
+    "deleteAllSuccess": "All notifications cleared successfully",
+    "markAsReadSuccess": "Marked as read",
+    "markAllAsReadSuccess": "All notifications marked as read"
   },
   "registeredStudents": {
     "title": "Registered Students",
@@ -367,7 +379,7 @@
     "reject": "Reject",
     "pending": "Pending"
   },
-   "eventApplicationsStatus": {
+  "eventApplicationsStatus": {
     "approved": "Approve",
     "rejected": "Reject",
     "pending": "Pending"

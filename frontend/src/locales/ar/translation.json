@@ -109,7 +109,19 @@
     "headerDescription": "ابقَ على اطلاع بأحدث الأخبار والتنبيهات من فعالياتك.",
     "exampleTitle": "فعالية جديدة متاحة",
     "exampleDescription": "تمت إضافة ورشة عمل جديدة حول \"تقنيات React المتقدمة\". تحقق منها!",
-    "exampleTime": "منذ ساعتين"
+    "exampleTime": "منذ ساعتين",
+    "empty": "لا توجد إشعارات حتى الآن",
+    "noNotifications": "ليس لديك أي إشعارات في الوقت الحالي. تحقق لاحقاً للحصول على التحديثات!",
+    "noUnread": "ممتاز! لقد قرأت جميع إشعاراتك.",
+    "loading": "جاري تحميل الإشعارات...",
+    "filterAll": "الكل",
+    "filterUnread": "غير المقروءة",
+    "markAllAsRead": "ضع علامة على الكل كمقروء",
+    "clearAll": "حذف الكل",
+    "deleteSuccess": "تم حذف الإشعار بنجاح",
+    "deleteAllSuccess": "تم مسح جميع الإشعارات بنجاح",
+    "markAsReadSuccess": "تم وضع علامة كمقروء",
+    "markAllAsReadSuccess": "تم وضع علامة على جميع الإشعارات كمقروءة"
   },
   "registeredStudents": {
     "title": "الطلاب المسجلين",
@@ -367,7 +379,7 @@
     "reject": "رفض",
     "pending": "معلق"
   },
-    "eventApplicationsStatus": {
+  "eventApplicationsStatus": {
     "approved": "موافقة",
     "rejected": "مرفوض",
     "pending": "معلق"
