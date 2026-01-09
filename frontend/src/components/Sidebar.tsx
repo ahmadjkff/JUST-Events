@@ -12,6 +12,7 @@ import {
   Award,
   ChartColumnBig,
   CalendarCheck,
+  UserStar,
 } from "lucide-react";
 import { Card } from "./ui/Card";
 import { cn } from "../lib/utils";
@@ -67,7 +68,7 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/supervisor/control-applications",
       allowed: ["supervisor"],
     },
-     {
+    {
       icon: CalendarCheck,
       label: t("sidebar.Create Event"),
       href: "/supervisor/create-event",
@@ -78,6 +79,30 @@ export default function Sidebar({ className }: SidebarProps) {
       label: t("sidebar.events"),
       href: "/browse-events",
       allowed: ["all"],
+    },
+    {
+      icon: ChartColumnBig,
+      label: t("sidebar.statistics"),
+      href: "/admin/statistics",
+      allowed: ["admin"],
+    },
+    {
+      icon: CalendarCheck,
+      label: t("adminDashboard.controlEventsTitle"),
+      href: "/admin/control-events",
+      allowed: ["admin"],
+    },
+    {
+      icon: User,
+      label: t("adminDashboard.manageRolesTitle"),
+      href: "/admin/manage-roles",
+      allowed: ["admin"],
+    },
+    {
+      icon: UserStar,
+      label: t("adminDashboard.volunteerManagementTitle"),
+      href: "/admin/volunteer-control",
+      allowed: ["admin"],
     },
     {
       icon: CalendarClock,
@@ -102,12 +127,6 @@ export default function Sidebar({ className }: SidebarProps) {
       label: t("sidebar.profile"),
       href: "/profile",
       allowed: ["student", "supervisor", "admin"],
-    },
-    {
-      icon: ChartColumnBig,
-      label: t("sidebar.statistics"),
-      href: "/admin/statistics",
-      allowed: ["admin"],
     },
   ];
 

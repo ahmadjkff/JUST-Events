@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import { Button } from "./ui/Button";
 import { useEvent } from "../context/event/EventContext";
-import { fetchStudentRegistrations } from "../features/student/services/StudentService";
 import { useNotification } from "../context/notification/NotificationContext";
 
 const ICONS = { Calendar, Users, BellRing, Award } as const;
