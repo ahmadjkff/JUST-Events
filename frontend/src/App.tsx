@@ -18,6 +18,7 @@ import AboutUs from "./pages/aboutUs";
 import EventDetails from "./pages/eventDetails";
 import RegistredStudents from "./pages/RegistredStudents";
 import VolunteeredStudents from "./pages/VolunteeredStudents";
+import ProtectedRoute from "./protectedRoutes";
 
 function App() {
   return (
@@ -31,8 +32,22 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/browse-events" element={<BrowseEvents />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/settings" element={<Setting />} />
             <Route path="/event/:id" element={<EventDetails />} />
             <Route path="/admin/*" element={<AdminRoutes />} />
