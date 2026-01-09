@@ -57,6 +57,9 @@ function Dashboard() {
       subtitle: counts.approved,
       icon: CalendarCheck,
       description: t("dashboard.systemSummary.approvedByAdmin"),
+      onClick: () => {
+        navigate("/supervisor/control-applications");
+      },
       color: "green",
     },
     {
@@ -64,6 +67,9 @@ function Dashboard() {
       subtitle: counts.pending,
       icon: Clock,
       description: t("dashboard.systemSummary.awaitingApproval"),
+      onClick: () => {
+        navigate("/supervisor/pending-events");
+      },
       color: "yellow",
     },
     {
@@ -71,6 +77,9 @@ function Dashboard() {
       subtitle: counts.rejected,
       icon: XCircle,
       description: t("dashboard.systemSummary.rejectedByAdmin"),
+      onClick: () => {
+        navigate("/supervisor/rejected-events");
+      },
       color: "red",
     },
   ];
@@ -133,8 +142,9 @@ function Dashboard() {
         <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
           {SYSTEM_SUMMARY.map((item) => (
             <Card
+              onClick={item.onClick}
               key={item.title}
-              className="transition-shadow hover:shadow-lg"
+              className="cursor-pointer transition-shadow hover:shadow-lg"
             >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2">

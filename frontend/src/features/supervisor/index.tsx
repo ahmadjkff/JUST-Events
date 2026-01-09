@@ -9,6 +9,8 @@ import EditForm from "./pages/EditEvents";
 import SupervisorApplications from "./pages/SupervisorApplications";
 import EventCard from "./pages/EventCard";
 import EventApplications from "./pages/EventApplications";
+import SupervisorRejectedEvents from "./pages/SupervisorRejectedEvents";
+import SupervisorPendingEvents from "./pages/SupervisorPendingEvents";
 
 const SupervisorRoutes: React.FC = () => (
   <Routes>
@@ -41,6 +43,22 @@ const SupervisorRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["supervisor"]}>
           <SupervisorApplications />
+        </ProtectedRoute>
+      }
+    />
+     <Route
+      path="rejected-events"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <SupervisorRejectedEvents />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="pending-events"
+      element={
+        <ProtectedRoute allowedRoles={["supervisor"]}>
+          <SupervisorPendingEvents />
         </ProtectedRoute>
       }
     />

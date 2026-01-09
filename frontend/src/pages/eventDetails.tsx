@@ -164,6 +164,7 @@ function EventDetails() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Add Feedback FIRST */}
+              { event?.status === EventStatus.Approved &&
               <div className="space-y-3 border-b pb-4">
                 <p className="font-semibold">{t("event.addFeedback")}</p>
 
@@ -223,7 +224,7 @@ function EventDetails() {
                     ? t("event.submitting")
                     : t("event.submitFeedback")}
                 </Button>
-              </div>
+              </div>}
 
               {/* Display Feedbacks */}
               {event?.feedback.map((fb) => (
@@ -244,7 +245,7 @@ function EventDetails() {
                         {`${fb.student.firstName} ${fb.student.lastName}`}
                       </p>
 
-                      {(user?._id === event?.createdBy ||
+                      {(user?._id === event?.createdBy._id ||
                         user?._id ===
                           (typeof fb.student === "string"
                             ? fb.student
