@@ -5,11 +5,15 @@ import { useEvent } from "../../../context/event/EventContext";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNewEventListener } from "../../../hooks/useNewEventListener";
+import Loading from "../../../components/ui/Loading";
 
 function Dashboard() {
   const navigate = useNavigate();
   const { eventsByStatus, fetchEvents } = useEvent();
   const [userCount, setUserCount] = useState<number>(0);
+  const [supervisors, setSupervisors] = useState<number>();
+  const [volunteers, setVolunteers] = useState<number>();
+  const [loading, setLoading] = useState<boolean>(true);
   const { i18n, t } = useTranslation();
 
   // Listen for new events and refresh pending/overview
@@ -32,6 +36,7 @@ function Dashboard() {
     // Fetch users once
     const getUsers = async () => {
       try {
+        setLoading(true);
         const response = await fetch(`${import.meta.env.VITE_BASE_URL}/admin`, {
           headers: {
             "Content-Type": "application/json",
@@ -48,10 +53,75 @@ function Dashboard() {
           error instanceof Error ? error.message : "Failed to fetch users";
         console.error("Error fetching users:", message);
         setUserCount(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const getSupervisorsCount = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/admin/dashboard/supervisors`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
+
+        const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.message || "Failed to fetch users");
+        console.log(data);
+
+        setSupervisors(data);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch supervisors";
+        console.error("Error fetching supervisors:", message);
+        setSupervisors(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const getVolunteersCount = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/admin/dashboard/volunteers`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
+
+        const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.message || "Failed to fetch users");
+
+        setVolunteers(data);
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch supervisors";
+        console.error("Error fetching supervisors:", message);
+        setVolunteers(0);
+      } finally {
+        setLoading(false);
       }
     };
 
     getUsers();
+    getSupervisorsCount();
+    getVolunteersCount();
   }, []);
 
   const SYSTEM_SUMMARY = [
@@ -71,14 +141,14 @@ function Dashboard() {
     },
     {
       title: t("adminDashboard.supervisorsTitle"),
-      subtitle: "25",
+      subtitle: supervisors,
       icon: User,
       description: t("adminDashboard.supervisorsDescription"),
       color: "orange",
     },
     {
       title: t("adminDashboard.volunteersTitle"),
-      subtitle: "300",
+      subtitle: volunteers,
       icon: UserStar,
       description: t("adminDashboard.volunteersDescription"),
       color: "purple",
@@ -124,6 +194,8 @@ function Dashboard() {
   ];
 
   const isRTL = i18n.language === "ar";
+
+  if (loading) return <Loading />;
 
   return (
     <div

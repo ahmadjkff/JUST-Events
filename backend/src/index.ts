@@ -11,6 +11,7 @@ import eventAdminRoute from "./routes/eventRoutes/adminRoute";
 import supervisorAndAdminRoute from "./routes/eventRoutes/supervisorAndAdminRoute";
 import eventUserRoute from "./routes/eventRoutes/userRoute";
 import notificationRoute from "./routes/notificationRoute";
+import adminDashboard from "./routes/adminDashboard";
 import path from "path";
 import aiRoute from "./routes/aiRoute";
 import { initializeSocket } from "./services/socketService";
@@ -41,6 +42,7 @@ app.set("io", io);
 
 app.use("/user", userRoute);
 app.use("/admin", adminRoute);
+app.use("/admin/dashboard", adminDashboard);
 app.use("/event", eventUserRoute);
 app.use("/student", studentRoute);
 app.use("/supervisor", supervisorRoute);
