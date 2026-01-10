@@ -416,7 +416,7 @@ export const editEvent = async ({
         err?.message || err
       );
     }
-
+    event.status = EventStatus.PENDING; 
     await event.save();
 
     return {
