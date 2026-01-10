@@ -6,6 +6,7 @@ import "../styles/globals.css";
 import "../styles/LoginForm.css";
 import { useAuth } from "../context/auth/AuthContext";
 import { Button } from "../components/ui/Button";
+import mainBg from "../assets/main-background.png";
 
 type FormData = {
   email: string;
@@ -50,7 +51,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div
+      className="min-h-screen bg-fixed bg-cover bg-center flex min-h-screen flex-col items-center justify-center"
+      style={{ backgroundImage: `url(${mainBg})` }}
+    >
       <div className="login-container">
         <div className="container">
           <div className="login-form-wrapper">
