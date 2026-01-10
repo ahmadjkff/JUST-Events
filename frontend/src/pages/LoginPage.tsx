@@ -52,15 +52,13 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen bg-fixed bg-cover bg-center flex min-h-screen flex-col items-center justify-center"
+      className="flex min-h-screen flex-col items-center justify-center bg-cover bg-fixed bg-center dark:opacity-50"
       style={{ backgroundImage: `url(${mainBg})` }}
     >
       <div className="login-container">
         <div className="container">
           <div className="login-form-wrapper">
-            <h2 className="login-form-title">
-              {t("login.welcomeTitle")}
-            </h2>
+            <h2 className="login-form-title">{t("login.welcomeTitle")}</h2>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">

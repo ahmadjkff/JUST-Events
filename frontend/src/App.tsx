@@ -27,7 +27,7 @@ function App() {
       <div className="flex">
         <Sidebar />
 
-        <div className="flex-grow p-4">
+        <div className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
