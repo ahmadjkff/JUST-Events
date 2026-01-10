@@ -338,13 +338,13 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium">Stage</label>
+            <label className="mb-1 block font-medium">{t("editForm.fields.stage")}</label>
             <button
               type="button"
               className="w-full rounded-lg border px-3 py-2 text-left"
               onClick={openStageDialog}
             >
-              {form.location || "Select Stage"}
+              {form.location || t("editForm.placeholders.selectStage")}
             </button>
           </div>
 
@@ -368,7 +368,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium">Start Time</label>
+            <label className="mb-1 block font-medium">{t("editForm.fields.startTime")}</label>
             <input
               type="time"
               name="startTime"
@@ -382,7 +382,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium">End Time</label>
+            <label className="mb-1 block font-medium">{t("editForm.fields.endTime")}</label>
             <input
               type="time"
               name="endTime"
@@ -396,7 +396,7 @@ const EditForm: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-1 block font-medium">Capacity</label>
+            <label className="mb-1 block font-medium">{t("editForm.fields.capacity")}</label>
             <input
               type="number"
               name="capacity"

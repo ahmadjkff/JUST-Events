@@ -340,7 +340,11 @@
       "category": "الفئة",
       "department": "القسم",
       "date": "التاريخ",
-      "eventImage": "صورة الفعالية"
+      "eventImage": "صورة الفعالية",
+      "stage" : "القاعة",
+      "startTime" : "وقت البدء",
+      "endTime" : "وقت الانتهاء",
+      "capacity": "السعة"
     },
     "placeholders": {
       "title": "أدخل عنوان الفعالية",
@@ -362,6 +366,45 @@
       "editEvent": "تعديل الفعالية"
     }
   },
+    "createForm": {
+    "header": {
+      "title": "نموذج إنشاء الفعالية",
+      "subtitle": "إدارة الفعاليات"
+    },
+    "formTitle": "إنشاء فعالية",
+    "fields": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "location": "الموقع",
+      "category": "الفئة",
+      "department": "القسم",
+      "date": "التاريخ",
+      "eventImage": "صورة الفعالية",
+      "stage" : "القاعة"
+    },
+    "placeholders": {
+      "title": "أدخل عنوان الفعالية",
+      "description": "أدخل وصف الفعالية",
+      "location": "أدخل موقع الفعالية",
+      "selectCategory": "اختر الفئة",
+      "selectDepartment": "اختر القسم",
+      "selectStage": "اختر القاعة"
+    },
+    "errors": {
+      "categoryAndDepartment": "يرجى اختيار الفئة والقسم",
+      "uploadImage": "يرجى تحميل صورة الفعالية",
+      "editEventFailed": "فشل في إنشاء الفعالية",
+      "unexpectedError": "حدث خطأ غير متوقع",
+      "fetchEvent": "خطأ في جلب الفعالية"
+    },
+    "loadingEvent": "جاري تحميل الفعالية...",
+    "submit": {
+      "creating": "جاري الإنشاء...",
+      "createEvent": "إنشاء فعالية",
+      "generating": "جاري إنشاء وصف تلقائي...",
+      "generateDescription": "إنشاء وصف تلقائي"
+    }
+  },
   "supervisorApplications": {
     "header": {
       "title": "فعاليات المشرف"
@@ -373,6 +416,7 @@
     "exportRegisteredStudents": "تصدير الطلاب المسجلين",
     "editEvent": "تعديل",
     "deleteEvent": "حذف",
+    "createEvent": "إنشاء فعالية",
     "deleteEventTitle": "حذف الفعالية",
     "deleteEventDescription": "هل أنت متأكد أنك تريد حذف هذه الفعالية؟ هذه العملية لا يمكن التراجع عنها وسيفقد الحضور الوصول إليها.",
     "close": "إغلاق",

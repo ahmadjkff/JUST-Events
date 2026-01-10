@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 interface IFreeTimeSlot {
   _id?: string;
@@ -22,6 +23,7 @@ interface IStage {
 }
 
 const EventForm: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [loadingDescription, setLoadingDescription] = useState(false);
   const [descError, setDescError] = useState<string | null>(null);
@@ -193,9 +195,11 @@ const EventForm: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-foreground text-2xl font-bold">
-              Create Event Form
+              {t("createForm.header.title")}
             </h1>
-            <p className="text-muted-foreground">Manage Events</p>
+            <p className="text-muted-foreground">
+              {t("createForm.header.subtitle")}
+            </p>
           </div>
         </div>
       </header>
@@ -207,13 +211,13 @@ const EventForm: React.FC = () => {
           className="w-full max-w-lg space-y-6 rounded-2xl p-8 shadow-xl"
         >
           <h2 className="text-center text-2xl font-bold text-gray-800">
-            Create New Event
+            {t("createForm.formTitle")}
           </h2>
 
           {/* Title */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Title
+              {t("createForm.fields.title")}
             </label>
             <div className="flex items-center gap-2 rounded-lg border px-3 py-2">
               <Type className="text-gray-400" size={18} />
@@ -222,7 +226,7 @@ const EventForm: React.FC = () => {
                 name="title"
                 value={form.title}
                 onChange={handleChange}
-                placeholder="Enter event title"
+                placeholder={t("createForm.placeholders.title")}
                 className="w-full outline-none"
                 required
               />
@@ -232,7 +236,7 @@ const EventForm: React.FC = () => {
           {/* Description + AI Button */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Description
+              {t("createForm.fields.description")}
             </label>
             <div className="flex items-start gap-2 rounded-lg border px-3 py-2">
               <FileText className="mt-1 text-gray-400" size={18} />
@@ -240,7 +244,7 @@ const EventForm: React.FC = () => {
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Enter or generate event description"
+                placeholder={t("createForm.placeholders.description")}
                 className="h-40 w-full outline-none"
                 required
               />
@@ -257,8 +261,8 @@ const EventForm: React.FC = () => {
               }`}
             >
               {loadingDescription
-                ? "Generating..."
-                : "Generate Auto Description"}
+                ? t("createForm.submit.generating")
+                : t("createForm.submit.generateDescription")}
             </button>
 
             {descError && (
@@ -269,33 +273,29 @@ const EventForm: React.FC = () => {
           </div>
 
           {/* Stage */}
-          <div>
-            <label className="mb-1 block font-medium text-gray-700">
-              Stage
-            </label>
-            <button
-              type="button"
-              className="w-full rounded-lg border px-3 py-2 text-left"
-              onClick={openStageDialog}
-            >
-              {form.location || "Select Stage"}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="w-full rounded-lg border px-3 py-2 text-start"
+            onClick={openStageDialog}
+          >
+            {form.location || t("createForm.placeholders.selectStage")}
+          </button>
 
           {/* Category */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Category
+              {t("createForm.fields.category")}
             </label>
             <select
               name="category"
               value={form.category}
               onChange={handleChange}
               className="w-full rounded-lg border px-3 py-2 outline-none"
+              aria-label={t("createForm.fields.category")}
               required
             >
               <option value="" disabled>
-                Select category
+                {t("createForm.placeholders.selectCategory")}
               </option>
               {Object.values(EventCategory).map((cat) => (
                 <option key={cat} value={cat}>
@@ -308,7 +308,7 @@ const EventForm: React.FC = () => {
           {/* Department */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Department
+              {t("createForm.fields.department")}
             </label>
             <select
               name="department"
@@ -318,7 +318,7 @@ const EventForm: React.FC = () => {
               required
             >
               <option value="" disabled>
-                Select department
+                {t("createForm.placeholders.selectDepartment")}
               </option>
               {Object.values(EventDepartment).map((dep) => (
                 <option key={dep} value={dep}>
@@ -331,7 +331,7 @@ const EventForm: React.FC = () => {
           {/* Image Upload */}
           <div>
             <label className="mb-1 block font-medium text-gray-700">
-              Event Image
+              {t("createForm.fields.eventImage")}
             </label>
             <input
               type="file"
@@ -348,7 +348,9 @@ const EventForm: React.FC = () => {
             className="w-full rounded-xl bg-blue-500 py-3 font-semibold text-white shadow-md transition hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Create Event"}
+            {loading
+              ? t("createForm.submit.editing")
+              : t("createForm.submit.createEvent")}
           </button>
 
           {error && <p className="text-center text-red-500">{error}</p>}
