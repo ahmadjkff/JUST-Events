@@ -164,67 +164,68 @@ function EventDetails() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Add Feedback FIRST */}
-              { event?.status === EventStatus.Approved &&
-              <div className="space-y-3 border-b pb-4">
-                <p className="font-semibold">{t("event.addFeedback")}</p>
+              {event?.status === EventStatus.Approved && (
+                <div className="space-y-3 border-b pb-4">
+                  <p className="font-semibold">{t("event.addFeedback")}</p>
 
-                {/* ⭐ Star Rating */}
-                <div className="flex gap-1 text-yellow-500">
-                  {Array.from({ length: 5 }).map((_, i) => {
-                    const fullValue = i + 1;
-                    const halfValue = i + 0.5;
+                  {/* ⭐ Star Rating */}
+                  <div className="flex gap-1 text-yellow-500">
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const fullValue = i + 1;
+                      const halfValue = i + 0.5;
 
-                    return (
-                      <div
-                        key={i}
-                        className="relative flex cursor-pointer"
-                        onMouseLeave={() => setHoverRating(0)}
-                      >
+                      return (
                         <div
-                          className="absolute top-0 left-0 h-full w-1/2"
-                          onMouseEnter={() => setHoverRating(halfValue)}
-                          onClick={() => setRating(halfValue)}
-                        />
-                        <div
-                          className="absolute top-0 right-0 h-full w-1/2"
-                          onMouseEnter={() => setHoverRating(fullValue)}
-                          onClick={() => setRating(fullValue)}
-                        />
+                          key={i}
+                          className="relative flex cursor-pointer"
+                          onMouseLeave={() => setHoverRating(0)}
+                        >
+                          <div
+                            className="absolute top-0 left-0 h-full w-1/2"
+                            onMouseEnter={() => setHoverRating(halfValue)}
+                            onClick={() => setRating(halfValue)}
+                          />
+                          <div
+                            className="absolute top-0 right-0 h-full w-1/2"
+                            onMouseEnter={() => setHoverRating(fullValue)}
+                            onClick={() => setRating(fullValue)}
+                          />
 
-                        <Star
-                          className={`h-7 w-7 transition-colors duration-200 ${
-                            (hoverRating || rating) >= fullValue
-                              ? "fill-yellow-500 text-yellow-500"
-                              : (hoverRating || rating) >= halfValue
-                                ? "fill-yellow-300 text-yellow-300"
-                                : "fill-none text-gray-400"
-                          }`}
-                        />
-                      </div>
-                    );
-                  })}
+                          <Star
+                            className={`h-7 w-7 transition-colors duration-200 ${
+                              (hoverRating || rating) >= fullValue
+                                ? "fill-yellow-500 text-yellow-500"
+                                : (hoverRating || rating) >= halfValue
+                                  ? "fill-yellow-300 text-yellow-300"
+                                  : "fill-none text-gray-400"
+                            }`}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-sm text-gray-500">
+                    {rating > 0 ? `${t("event.yourRating")}: ${rating}` : ""}
+                  </p>
+
+                  <Textarea
+                    placeholder={t("event.writeComment")}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+
+                  <Button
+                    className="mt-2"
+                    onClick={handleSubmitFeedback}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting
+                      ? t("event.submitting")
+                      : t("event.submitFeedback")}
+                  </Button>
                 </div>
-
-                <p className="text-sm text-gray-500">
-                  {rating > 0 ? `${t("event.yourRating")}: ${rating}` : ""}
-                </p>
-
-                <Textarea
-                  placeholder={t("event.writeComment")}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                />
-
-                <Button
-                  className="mt-2"
-                  onClick={handleSubmitFeedback}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting
-                    ? t("event.submitting")
-                    : t("event.submitFeedback")}
-                </Button>
-              </div>}
+              )}
 
               {/* Display Feedbacks */}
               {event?.feedback.map((fb) => (

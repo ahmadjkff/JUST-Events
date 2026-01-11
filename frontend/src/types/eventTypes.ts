@@ -8,7 +8,7 @@ export interface IEvent {
   date: string; // ISO string
   startTime?: string; // "HH:MM" format
   endTime?: string; // "HH:MM" format
-  createdBy: string; // User ID
+  createdBy: { firstName: string; lastName: string; _id: string }; // User ID
   status: EventStatus;
   volunteers: User[]; // Array of User IDs
   registeredStudents: string[]; // Array of User IDs

@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
+import { Card, CardTitle } from "./ui/Card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/Button";
 import { Link } from "react-router-dom";
-import { Box, Calendar, Clock, MapPin, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useEvent } from "../context/event/EventContext";
 import { EventStatus, type IEvent } from "../types/eventTypes";
@@ -100,7 +100,9 @@ const EventCard = ({ event }: { event: IEvent }) => {
   const volunteerStatus = getVolunteerStatus(event._id);
 
   const currentRegistration = registrations.find((r) => r.event === event._id);
-  const currentVolunteer = registrations.find((r) => r.event === event._id && r.isVolunteer);
+  const currentVolunteer = registrations.find(
+    (r) => r.event === event._id && r.isVolunteer,
+  );
 
   return (
     <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
@@ -144,7 +146,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
                           : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
                     }`}
                   >
-                   {currentRegistration?.status}
+                    {currentRegistration?.status}
                   </p>
 
                   {/* Cancel button (unchanged) */}

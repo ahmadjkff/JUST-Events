@@ -17,7 +17,7 @@ function VolunteeredStudents() {
     const res = fetchVolunteeredStudents!(eventId as string);
     res.then((data) => {
       if (data.success) {
-        setVolunteeredStudents(data.data);
+        setVolunteeredStudents(data.data || []);
       } else {
         setVolunteeredStudents([]);
       }
@@ -28,12 +28,12 @@ function VolunteeredStudents() {
   const totalPages = Math.ceil(volunteeredStudents.length / PAGE_SIZE);
   const paginatedStudents = volunteeredStudents.slice(
     (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    currentPage * PAGE_SIZE,
   );
 
   return (
-    <div className="max-w-5xl mx-auto px-4">
-      <h2 className="text-xl font-medium text-neutral-900 dark:text-neutral-100 mb-4">
+    <div className="mx-auto max-w-5xl px-4">
+      <h2 className="mb-4 text-xl font-medium text-neutral-900 dark:text-neutral-100">
         {t("registeredStudents.title")}
       </h2>
 
@@ -63,20 +63,15 @@ function VolunteeredStudents() {
                 {paginatedStudents.map((item: any) => (
                   <tr
                     key={item._id}
-                    className="
-                      bg-white dark:bg-neutral-900
-                      hover:bg-neutral-50 dark:hover:bg-neutral-800
-                      transition
-                      rounded-lg
-                    "
+                    className="rounded-lg bg-white transition hover:bg-neutral-50 dark:bg-neutral-900 dark:hover:bg-neutral-800"
                   >
-                    <td className="px-4 py-3 text-neutral-900 dark:text-neutral-100 rounded-l-lg">
+                    <td className="rounded-l-lg px-4 py-3 text-neutral-900 dark:text-neutral-100">
                       {item.student.firstName}
                     </td>
                     <td className="px-4 py-3 text-neutral-900 dark:text-neutral-100">
                       {item.student.lastName}
                     </td>
-                    <td className="px-4 py-3 text-neutral-500 dark:text-neutral-400 rounded-r-lg">
+                    <td className="rounded-r-lg px-4 py-3 text-neutral-500 dark:text-neutral-400">
                       {item.student.email}
                     </td>
                   </tr>

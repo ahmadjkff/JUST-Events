@@ -18,7 +18,7 @@ function RegistredStudents() {
     const res = fetchRegistredStudents!(eventId as string);
     res.then((data) => {
       if (data.success) {
-        setRegisteredStudents(data.data);
+        setRegisteredStudents(data.data || []);
       } else {
         setRegisteredStudents([]);
       }
@@ -26,16 +26,11 @@ function RegistredStudents() {
   }, [eventId]);
 
   // 🔹 Pagination logic
-  const totalPages = Math.ceil(
-    registeredStudents.length / ITEMS_PER_PAGE
-  );
+  const totalPages = Math.ceil(registeredStudents.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  const paginatedStudents = registeredStudents.slice(
-    startIndex,
-    endIndex
-  );
+  const paginatedStudents = registeredStudents.slice(startIndex, endIndex);
 
   return (
     <div className="mx-auto max-w-5xl px-4">
@@ -69,12 +64,7 @@ function RegistredStudents() {
                 {paginatedStudents.map((student: any) => (
                   <tr
                     key={student._id}
-                    className="
-                      bg-white dark:bg-neutral-900
-                      hover:bg-neutral-50 dark:hover:bg-neutral-800
-                      transition
-                      rounded-lg
-                    "
+                    className="rounded-lg bg-white transition hover:bg-neutral-50 dark:bg-neutral-900 dark:hover:bg-neutral-800"
                   >
                     <td className="rounded-l-lg px-4 py-3 text-neutral-900 dark:text-neutral-100">
                       {student.firstName}
@@ -99,9 +89,7 @@ function RegistredStudents() {
                 return (
                   <Button
                     key={page}
-                    variant={
-                      currentPage === page ? "default" : "outline"
-                    }
+                    variant={currentPage === page ? "default" : "outline"}
                     onClick={() => setCurrentPage(page)}
                   >
                     {page}
