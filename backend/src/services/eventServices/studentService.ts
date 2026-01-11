@@ -4,6 +4,8 @@ import RegistrationModel, {
 } from "../../models/registrationModel";
 import { certificateModel, ICertificate } from "../../models/certificateModel";
 import PDFDocument from "pdfkit";
+import fs from "fs";
+import path from "path";
 import { Response } from "express";
 import userModel from "../../models/userModel";
 import * as notificationService from "../notificationService";
@@ -13,7 +15,8 @@ export const generateCertificate = async (
   res: Response,
   studentName: string,
   eventTitle: string,
-  date: Date
+  date: Date,
+  supervisorName: string
 ) => {
   const doc = new PDFDocument({ size: "A4", layout: "landscape" });
 
@@ -26,6 +29,25 @@ export const generateCertificate = async (
 
   // Background (optional - use .image if you have template)
   doc.rect(0, 0, doc.page.width, doc.page.height).fill("#fdfdfd");
+
+  // University logo (centered at top) - safe fallback if file missing
+  try {
+    const logoPath = path.resolve(
+      __dirname,
+      "..",
+      "..",
+      "eventsimage",
+      "just-logo.png"
+    );
+    if (fs.existsSync(logoPath)) {
+      const logoWidth = 70;
+
+      doc.image(logoPath, 530, 340, { width: logoWidth, height: 70 });
+      doc.moveDown();
+    }
+  } catch (err) {
+    // ignore logo errors and continue generating certificate
+  }
 
   // Title
   doc
@@ -56,6 +78,7 @@ export const generateCertificate = async (
 
   // Signatures (optional)
   doc.moveDown().moveDown();
+  doc.text(`${supervisorName}`, 150, 390);
   doc.text("__________________", 150, 400);
   doc.text("Event Organizer", 150, 420);
 

@@ -282,17 +282,22 @@ router.get(
         .json({ success: false, message: "Not eligible for certificate" });
     }
 
-    const student = await userModel.findById(userId);
+    const student = await userModel.findById(userId).lean();
     if (!student)
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
 
+    const supervisor = await userModel.findById(event.createdBy).lean();
+
+    if (!supervisor) return;
+
     await generateCertificate(
       res,
       student.firstName + " " + student.lastName,
       event.title,
-      event.date ?? new Date()
+      event.date ?? new Date(),
+      `${supervisor.firstName} ${supervisor.lastName}`
     );
   }
 );

@@ -27,7 +27,7 @@ function MyCertificates() {
     fetchCertificates();
   }, []);
 
-  const handleDownload = async (eventId: string) => {
+  const handleDownload = async (eventId: string, title: string) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_BASE_URL}/student/certificate/${eventId}`,
@@ -45,6 +45,7 @@ function MyCertificates() {
 
       // Convert response to blob
       const blob = await res.blob();
+      console.log(blob);
 
       // Create a temporary URL for the blob
       const url = window.URL.createObjectURL(blob);
@@ -52,7 +53,7 @@ function MyCertificates() {
       // Create a temporary <a> element to trigger download
       const a = document.createElement("a");
       a.href = url;
-      a.download = "certificate.pdf"; // Or you can use `${eventTitle}.pdf`
+      a.download = `JUST-${title} certificate.pdf`; // Or you can use `${eventTitle}.pdf`
       document.body.appendChild(a);
       a.click();
 
@@ -115,7 +116,9 @@ function MyCertificates() {
                     </p>
                     <button
                       className="w-full rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-                      onClick={() => handleDownload(certificate._id)}
+                      onClick={() =>
+                        handleDownload(certificate._id, certificate.title)
+                      }
                     >
                       {t("myCertificates.download")}
                     </button>

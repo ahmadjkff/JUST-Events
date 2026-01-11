@@ -16,7 +16,7 @@ export interface IEvent extends Document {
   date?: Date;
   startTime?: string;
   endTime?: string;
-  createdBy: mongoose.Types.ObjectId;
+  createdBy: mongoose.Types.ObjectId | { firstName: string; lastName: string };
   status: EventStatus;
   category: EventCategory;
   department: EventDepartment;
