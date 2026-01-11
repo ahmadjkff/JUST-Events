@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEvent } from "../context/event/EventContext";
 import { useEffect, useState } from "react";
+import Loading from "../components/ui/Loading";
 import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/Button";
 
@@ -10,18 +11,23 @@ function VolunteeredStudents() {
   const { eventId } = useParams();
   const [volunteeredStudents, setVolunteeredStudents] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState<boolean>(true);
   const { fetchVolunteeredStudents } = useEvent();
   const { t } = useTranslation();
 
   useEffect(() => {
-    const res = fetchVolunteeredStudents!(eventId as string);
-    res.then((data) => {
-      if (data.success) {
-        setVolunteeredStudents(data.data || []);
-      } else {
-        setVolunteeredStudents([]);
+    const load = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchVolunteeredStudents!(eventId as string);
+        if (data.success) setVolunteeredStudents(data.data || []);
+        else setVolunteeredStudents([]);
+      } finally {
+        setLoading(false);
       }
-    });
+    };
+
+    load();
   }, [eventId]);
 
   // Pagination logic
@@ -37,7 +43,9 @@ function VolunteeredStudents() {
         {t("registeredStudents.title")}
       </h2>
 
-      {volunteeredStudents.length === 0 ? (
+      {loading ? (
+        <Loading />
+      ) : volunteeredStudents.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
           {t("registeredStudents.empty")}
         </p>

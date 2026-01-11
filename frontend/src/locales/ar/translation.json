@@ -279,7 +279,8 @@
   "common": {
     "na": "غير متوفر",
     "previous": "السابق",
-    "next": "التالي"
+    "next": "التالي",
+    "loading": "جاري التحميل..."
   },
   "manageRoles": {
     "title": "جميع المستخدمين",
@@ -341,9 +342,9 @@
       "department": "القسم",
       "date": "التاريخ",
       "eventImage": "صورة الفعالية",
-      "stage" : "القاعة",
-      "startTime" : "وقت البدء",
-      "endTime" : "وقت الانتهاء",
+      "stage": "القاعة",
+      "startTime": "وقت البدء",
+      "endTime": "وقت الانتهاء",
       "capacity": "السعة"
     },
     "placeholders": {
@@ -366,7 +367,7 @@
       "editEvent": "تعديل الفعالية"
     }
   },
-    "createForm": {
+  "createForm": {
     "header": {
       "title": "نموذج إنشاء الفعالية",
       "subtitle": "إدارة الفعاليات"
@@ -380,7 +381,7 @@
       "department": "القسم",
       "date": "التاريخ",
       "eventImage": "صورة الفعالية",
-      "stage" : "القاعة"
+      "stage": "القاعة"
     },
     "placeholders": {
       "title": "أدخل عنوان الفعالية",

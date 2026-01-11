@@ -279,7 +279,8 @@
   "common": {
     "na": "N/A",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "loading": "Loading..."
   },
   "manageRoles": {
     "title": "All Users",
@@ -341,8 +342,8 @@
       "department": "Department",
       "date": "Date",
       "eventImage": "Event Image",
-      "startTime" : "Start Time",
-      "endTime" : "End Time",
+      "startTime": "Start Time",
+      "endTime": "End Time",
       "capacity": "Capacity",
       "stage": "Stage"
     },
@@ -366,7 +367,7 @@
       "editEvent": "Edit Event"
     }
   },
-    "createForm": {
+  "createForm": {
     "header": {
       "title": "Create Event Form",
       "subtitle": "Manage Events"

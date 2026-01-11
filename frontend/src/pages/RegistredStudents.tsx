@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useEvent } from "../context/event/EventContext";
 import { useEffect, useState } from "react";
+import Loading from "../components/ui/Loading";
 import { useTranslation } from "react-i18next";
 import { Button } from "../components/ui/Button";
 
@@ -9,20 +10,25 @@ const ITEMS_PER_PAGE = 20;
 function RegistredStudents() {
   const { eventId } = useParams();
   const [registeredStudents, setRegisteredStudents] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   const { fetchRegistredStudents } = useEvent();
   const { t } = useTranslation();
 
   useEffect(() => {
-    const res = fetchRegistredStudents!(eventId as string);
-    res.then((data) => {
-      if (data.success) {
-        setRegisteredStudents(data.data || []);
-      } else {
-        setRegisteredStudents([]);
+    const load = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchRegistredStudents!(eventId as string);
+        if (data.success) setRegisteredStudents(data.data || []);
+        else setRegisteredStudents([]);
+      } finally {
+        setLoading(false);
       }
-    });
+    };
+
+    load();
   }, [eventId]);
 
   // 🔹 Pagination logic
@@ -38,7 +44,9 @@ function RegistredStudents() {
         {t("registeredStudents.title")}
       </h2>
 
-      {registeredStudents.length === 0 ? (
+      {loading ? (
+        <Loading />
+      ) : registeredStudents.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
           {t("registeredStudents.empty")}
         </p>

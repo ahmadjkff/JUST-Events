@@ -2,27 +2,34 @@ import { useTranslation } from "react-i18next";
 import { useTitle } from "../../../hooks/useTitle";
 import { Card, CardContent } from "../../../components/ui/Card";
 import { useEffect, useState } from "react";
+import Loading from "../../../components/ui/Loading";
 
 function MyCertificates() {
   const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
   useTitle(`${t("myCertificates.title")} - ${t("app.name")}`);
 
   useEffect(() => {
     const fetchCertificates = async () => {
-      const res = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/student/certificates`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/student/certificates`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           },
-        },
-      );
-      const data = await res.json();
+        );
+        const data = await res.json();
 
-      setCertificates(data.data);
+        setCertificates(data.data || []);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchCertificates();
   }, []);
@@ -98,7 +105,9 @@ function MyCertificates() {
           </Card>
 
           {/* Certificates List */}
-          {certificates.length > 0 ? (
+          {loading ? (
+            <Loading />
+          ) : certificates.length > 0 ? (
             certificates.map((certificate: any) => (
               <div
                 className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"

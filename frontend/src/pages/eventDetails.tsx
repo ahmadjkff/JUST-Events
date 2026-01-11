@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Loading from "../components/ui/Loading";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Star } from "lucide-react";
@@ -26,24 +27,32 @@ function EventDetails() {
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch event by ID
   const fetchEvent = async (eventId: string) => {
-    const response = await fetch(
-      `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
-      {
-        headers: {
-          "content-type": "application/json",
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/event/${eventId}`,
+        {
+          headers: {
+            "content-type": "application/json",
+          },
         },
-      },
-    );
-    const data = await response.json();
-    setEvent(data.data.event);
+      );
+      const data = await response.json();
+      setEvent(data.data.event);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     if (id) fetchEvent(id);
   }, [id]);
+
+  if (loading) return <Loading />;
 
   // Submit feedback
   const handleSubmitFeedback = async () => {

@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth/AuthContext";
 import type { INotification } from "../types/notificationTypes";
 import { NotificationType } from "../types/notificationTypes";
+import Loading from "../components/ui/Loading";
 
 function Notifications() {
   const { t } = useTranslation();
@@ -227,10 +228,7 @@ function Notifications() {
 
           {/* Notifications List */}
           {isLoading ? (
-            <div className="py-12 text-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-b-2 border-orange-500"></div>
-              <p className="text-muted-foreground">Loading...</p>
-            </div>
+            <Loading message={t("common.loading")} />
           ) : filteredNotifications.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">

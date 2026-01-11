@@ -11,6 +11,7 @@ import {
   onEventApproved,
   removeApprovedEventListener,
 } from "../services/socketService";
+import Loading from "../components/ui/Loading";
 
 function BrowseEvents() {
   const { i18n, t } = useTranslation();
@@ -49,7 +50,7 @@ function BrowseEvents() {
   const startIndex = (currentPage - 1) * EVENTS_PER_PAGE;
   const currentEvents = filteredEvents.slice(
     startIndex,
-    startIndex + EVENTS_PER_PAGE
+    startIndex + EVENTS_PER_PAGE,
   );
 
   /* ---------------- Effects ---------------- */
@@ -148,11 +149,7 @@ function BrowseEvents() {
 
           {/* Events List */}
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="text-muted-foreground text-sm animate-pulse">
-                {t("common.loading")}...
-              </div>
-            </div>
+            <Loading message={t("common.loading")} />
           ) : approvedEvents.length > 0 ? (
             <>
               <div className="grid gap-4">
