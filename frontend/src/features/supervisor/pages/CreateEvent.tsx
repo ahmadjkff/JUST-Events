@@ -5,6 +5,7 @@ import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import { Editor } from "@tinymce/tinymce-react";
 
 interface IFreeTimeSlot {
   _id?: string;
@@ -144,10 +145,11 @@ const EventForm: React.FC = () => {
     const maxCapacity = stageData.data.capacity;
 
     try {
+      const plainDescription = form.description.replace(/<[^>]+>/g, "");
       const result = await createEvent(
         form.stageId,
         form.title,
-        form.description,
+        plainDescription,
         form.location,
         form.department,
         form.category,
@@ -234,19 +236,41 @@ const EventForm: React.FC = () => {
           </div>
 
           {/* Description + AI Button */}
-          <div>
+          <div className="mb-4">
             <label className="mb-1 block font-medium text-gray-700">
               {t("createForm.fields.description")}
             </label>
-            <div className="flex items-start gap-2 rounded-lg border px-3 py-2">
-              <FileText className="mt-1 text-gray-400" size={18} />
-              <textarea
-                name="description"
+            <div className="relative rounded-lg border px-2 py-2">
+              <Editor
+                apiKey="y6dqbh0iqfm8uyc492r24y2b7duy9nhhyc4pf7o2ircj382d"
                 value={form.description}
-                onChange={handleChange}
-                placeholder={t("createForm.placeholders.description")}
-                className="h-40 w-full outline-none"
-                required
+                init={{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
+                    "fontfamily fontsize",
+                  ],
+                  toolbar:
+                    "undo redo | formatselect | bold italic underline | " +
+                    "fontfamily fontsize | forecolor backcolor | " +
+                    "alignleft aligncenter alignright alignjustify | " +
+                    "bullist numlist outdent indent | removeformat | help",
+                  font_formats:
+                    "Arial=arial,helvetica,sans-serif;" +
+                    "Courier New=courier new,courier,monospace;" +
+                    "Georgia=georgia,palatino,serif;" +
+                    "Tahoma=tahoma,arial,helvetica,sans-serif;" +
+                    "Times New Roman=times new roman,times,serif;" +
+                    "Verdana=verdana,geneva,sans-serif",
+                  content_style:
+                    "body { font-family:Arial,sans-serif; font-size:14px; }",
+                }}
+                onEditorChange={(content) =>
+                  setForm((prev) => ({ ...prev, description: content }))
+                }
               />
             </div>
 

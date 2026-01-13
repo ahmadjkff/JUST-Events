@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Calendar, FileText, Type } from "lucide-react";
+import { Calendar, Type } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { editEvent } from "../services/supervisorRequests";
 import { useSupervisor } from "../../../context/supervisor/SupervisorContext";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { Editor } from "@tinymce/tinymce-react";
 
 interface IFreeTimeSlot {
   _id?: string;
@@ -92,11 +93,12 @@ const EditForm: React.FC = () => {
     }
 
     try {
+      const plainDescription = form.description.replace(/<[^>]+>/g, "");
       const result = await editEvent(
         eventId || "",
         form.stageId,
         form.title,
-        form.description,
+        plainDescription,
         form.location,
         form.department,
         form.category,
@@ -233,7 +235,6 @@ const EditForm: React.FC = () => {
           <h2 className="text-center text-2xl font-bold">
             {t("editForm.formTitle")}
           </h2>
-
           <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.title")}
@@ -256,16 +257,38 @@ const EditForm: React.FC = () => {
             <label className="mb-1 block font-medium">
               {t("editForm.fields.description")}
             </label>
-            <div className="flex items-start gap-2 rounded-lg border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400">
-              <FileText className="mt-1" size={18} />
-              <textarea
-                name="description"
+
+            <div className="relative rounded-lg border px-2 py-2">
+              <Editor
+                apiKey="y6dqbh0iqfm8uyc492r24y2b7duy9nhhyc4pf7o2ircj382d" // your TinyMCE key
                 value={form.description}
-                onChange={handleChange}
-                placeholder={t("editForm.placeholders.description")}
-                className="w-full resize-none outline-none"
-                rows={3}
-                required
+                init={{
+                  height: 300,
+                  menubar: false,
+                  plugins: [
+                    "advlist autolink lists link image charmap print preview anchor",
+                    "searchreplace visualblocks code fullscreen",
+                    "insertdatetime media table paste code help wordcount",
+                    "fontfamily fontsize",
+                  ],
+                  toolbar:
+                    "undo redo | formatselect | bold italic underline | " +
+                    "fontfamily fontsize | forecolor backcolor | " +
+                    "alignleft aligncenter alignright alignjustify | " +
+                    "bullist numlist outdent indent | removeformat | help",
+                  font_formats:
+                    "Arial=arial,helvetica,sans-serif;" +
+                    "Courier New=courier new,courier,monospace;" +
+                    "Georgia=georgia,palatino,serif;" +
+                    "Tahoma=tahoma,arial,helvetica,sans-serif;" +
+                    "Times New Roman=times new roman,times,serif;" +
+                    "Verdana=verdana,geneva,sans-serif",
+                  content_style:
+                    "body { font-family: Arial, sans-serif; font-size: 14px; }",
+                }}
+                onEditorChange={(content) =>
+                  setForm((prev) => ({ ...prev, description: content }))
+                }
               />
             </div>
 
@@ -290,7 +313,6 @@ const EditForm: React.FC = () => {
               </p>
             )}
           </div>
-
           <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.category")}
@@ -313,7 +335,6 @@ const EditForm: React.FC = () => {
               ))}
             </select>
           </div>
-
           <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.department")}
@@ -336,9 +357,10 @@ const EditForm: React.FC = () => {
               ))}
             </select>
           </div>
-
           <div>
-            <label className="mb-1 block font-medium">{t("editForm.fields.stage")}</label>
+            <label className="mb-1 block font-medium">
+              {t("editForm.fields.stage")}
+            </label>
             <button
               type="button"
               className="w-full rounded-lg border px-3 py-2 text-left"
@@ -347,7 +369,6 @@ const EditForm: React.FC = () => {
               {form.location || t("editForm.placeholders.selectStage")}
             </button>
           </div>
-
           <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.date")}
@@ -366,9 +387,10 @@ const EditForm: React.FC = () => {
               />
             </div>
           </div>
-
           <div>
-            <label className="mb-1 block font-medium">{t("editForm.fields.startTime")}</label>
+            <label className="mb-1 block font-medium">
+              {t("editForm.fields.startTime")}
+            </label>
             <input
               type="time"
               name="startTime"
@@ -380,9 +402,10 @@ const EditForm: React.FC = () => {
               required
             />
           </div>
-
           <div>
-            <label className="mb-1 block font-medium">{t("editForm.fields.endTime")}</label>
+            <label className="mb-1 block font-medium">
+              {t("editForm.fields.endTime")}
+            </label>
             <input
               type="time"
               name="endTime"
@@ -394,9 +417,10 @@ const EditForm: React.FC = () => {
               required
             />
           </div>
-
           <div>
-            <label className="mb-1 block font-medium">{t("editForm.fields.capacity")}</label>
+            <label className="mb-1 block font-medium">
+              {t("editForm.fields.capacity")}
+            </label>
             <input
               type="number"
               name="capacity"
@@ -408,7 +432,6 @@ const EditForm: React.FC = () => {
               required
             />
           </div>
-
           <div>
             <label className="mb-1 block font-medium">
               {t("editForm.fields.eventImage")}
@@ -421,7 +444,6 @@ const EditForm: React.FC = () => {
               aria-label={t("editForm.fields.eventImage")}
             />
           </div>
-
           <button
             type="submit"
             className="w-full rounded-xl bg-blue-500 py-3 font-semibold text-white shadow-md transition hover:bg-blue-600"
@@ -431,7 +453,6 @@ const EditForm: React.FC = () => {
               ? t("editForm.submit.editing")
               : t("editForm.submit.editEvent")}
           </button>
-
           {error && <p className="text-center text-red-500">{error}</p>}
         </form>
       </main>
