@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FileText, Type } from "lucide-react";
+import { Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { EventCategory, EventDepartment } from "../../../types/eventTypes";
 import { createEvent } from "../services/supervisorRequests";
@@ -242,7 +242,7 @@ const EventForm: React.FC = () => {
             </label>
             <div className="relative rounded-lg border px-2 py-2">
               <Editor
-                apiKey="y6dqbh0iqfm8uyc492r24y2b7duy9nhhyc4pf7o2ircj382d"
+                apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
                 value={form.description}
                 init={{
                   height: 300,

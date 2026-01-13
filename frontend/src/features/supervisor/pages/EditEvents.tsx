@@ -260,7 +260,7 @@ const EditForm: React.FC = () => {
 
             <div className="relative rounded-lg border px-2 py-2">
               <Editor
-                apiKey="y6dqbh0iqfm8uyc492r24y2b7duy9nhhyc4pf7o2ircj382d" // your TinyMCE key
+                apiKey={import.meta.env.VITE_TINYMCE_API_KEY}
                 value={form.description}
                 init={{
                   height: 300,
