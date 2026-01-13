@@ -22,8 +22,8 @@ const httpServer = createServer(app);
 
 app.use(
   cors({
-    origin: "*",
-    credentials: true, // if you need cookies
+    origin: ["http://localhost:5173" , "*"],
+    credentials: true, 
   })
 );
 const port = process.env.PORT;

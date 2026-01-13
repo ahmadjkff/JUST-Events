@@ -12,6 +12,7 @@ import validateJWT from "../../middlewares/validateJWT";
 
 import { EventStatus } from "../../types/eventTypes";
 import { isStudentOrSupervisor } from "../../middlewares/validateUserRole";
+import e from "express";
 
 const router = express.Router();
 
@@ -52,17 +53,17 @@ router.get(
       const studentId = req.user!._id;
 
       const events = await eventModel
-        .find({ status: EventStatus.APPROVED })
-        .sort({ date: -1 });
+        .find({
+          status: EventStatus.APPROVED,
+          registeredStudents: studentId,
+        })
+        .sort({ date: -1 }).lean();
 
-      const registeredEvents = events.filter((event) =>
-        event.registeredStudents.includes(studentId)
-      );
 
       res.status(200).json({
         success: true,
         message: "Registered events fetched successfully",
-        data: registeredEvents,
+        data: events,
       });
     } catch (error: any) {
       res.status(400).json({ success: false, message: error.message });
