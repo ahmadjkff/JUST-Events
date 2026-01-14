@@ -19,6 +19,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
   const { user } = useAuth();
   const { fetchEvents } = useEvent();
   const [registrations, setRegistrations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true); // <-- added loading
   const { t } = useTranslation();
 
   // Fetch all student registrations once
@@ -26,10 +27,12 @@ const EventCard = ({ event }: { event: IEvent }) => {
     if (!user?._id) return;
 
     const getRegistrations = async () => {
+      setLoading(true); // start loading
       const result = await fetchStudentRegistrations();
       if (result.success) {
         setRegistrations(result.data);
       }
+      setLoading(false); // done loading
     };
     getRegistrations();
   }, [user?._id]);
@@ -46,7 +49,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
 
   const getVolunteerStatus = (eventId: string) => {
     const reg = registrations.find((r) => r.event === eventId);
-
     return reg
       ? reg.isVolunteer &&
           (reg.status === EventStatus.Approved ||
@@ -104,9 +106,20 @@ const EventCard = ({ event }: { event: IEvent }) => {
     (r) => r.event === event._id && r.isVolunteer,
   );
 
+  if (loading)
+    return (
+      <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
+        <div className="flex h-60 items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
+            <p className="text-muted-foreground text-sm">Loading event...</p>
+          </div>
+        </div>
+      </Card>
+    );
+
   return (
     <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
-      {/* Make flex full height without internal gaps */}
       <div className="flex h-60">
         {/* LEFT IMAGE */}
         <div className="w-56 shrink-0">
@@ -114,12 +127,12 @@ const EventCard = ({ event }: { event: IEvent }) => {
             src={`${import.meta.env.VITE_BASE_URL}${event?.img}`}
             alt={event.title}
             className="h-full w-full object-cover"
+            loading="lazy"
           />
         </div>
 
         {/* RIGHT CONTENT */}
         <div className="flex flex-1 flex-col">
-          {/* Remove CardHeader padding to align top */}
           <div className="flex items-start justify-between p-4">
             <div className="space-y-2">
               <CardTitle className="text-lg">{event.title}</CardTitle>
@@ -136,7 +149,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
               )}
               {registrationStatus && !volunteerStatus && (
                 <div className="flex items-center gap-3">
-                  {/* Status label */}
                   <p
                     className={`rounded-full px-3 py-1 text-sm font-medium ${
                       currentRegistration?.status === "approved"
@@ -149,7 +161,6 @@ const EventCard = ({ event }: { event: IEvent }) => {
                     {currentRegistration?.status}
                   </p>
 
-                  {/* Cancel button (unchanged) */}
                   <Button
                     className="bg-red-500 text-white hover:bg-red-600"
                     size="sm"
