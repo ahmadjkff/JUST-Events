@@ -210,7 +210,7 @@ export const deleteEvent = async ({
       // Log the error but continue with event deletion
       console.error("Error deleting booking from stage:", error.message);
     }
-
+    await RegistrationModel.deleteMany({ event: eventId });
     await eventModel.deleteOne({ _id: eventId });
 
     return {
