@@ -20,9 +20,18 @@ import { Button } from "./ui/Button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/auth/AuthContext";
 import { useTranslation } from "react-i18next";
+import { useNotification } from "../context/notification/NotificationContext";
 
 interface SidebarProps {
   className?: string;
+}
+
+interface NavItem {
+  icon: any;
+  label: string;
+  href: string;
+  allowed: string[];
+  badge?: number;
 }
 
 export default function Sidebar({ className }: SidebarProps) {
@@ -43,7 +52,9 @@ export default function Sidebar({ className }: SidebarProps) {
     document.body.dir = isRTL ? "rtl" : "ltr";
   }, [isRTL]);
 
-  const navigationItems = [
+  const { unreadCount } = useNotification();
+
+  const navigationItems: NavItem[] = [
     {
       icon: Home,
       label: t("sidebar.home"),
@@ -115,6 +126,7 @@ export default function Sidebar({ className }: SidebarProps) {
       label: t("sidebar.notifications"),
       href: "/notifications",
       allowed: ["student", "supervisor", "admin"],
+      badge: unreadCount,
     },
     {
       icon: Award,
@@ -174,16 +186,18 @@ export default function Sidebar({ className }: SidebarProps) {
               !item.allowed.includes("all")
             )
               return null;
+
             const isActive =
               item.href === "/"
                 ? currentPath === "/"
                 : currentPath.startsWith(item.href);
+
             return (
               <Link key={item.href} to={item.href}>
                 <Button
                   variant={isActive ? "default" : "ghost"}
                   className={cn(
-                    "flex w-full items-center justify-start gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "relative flex w-full items-center justify-start gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground"
                       : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -192,16 +206,29 @@ export default function Sidebar({ className }: SidebarProps) {
                   {/* Icon */}
                   <item.icon
                     className={cn(
-                      "h-4 w-4 flex-shrink-0 transition-transform duration-200",
+                      "h-4 w-4 flex-shrink-0",
                       isRTL ? "order-2" : "order-1",
                     )}
                   />
+
+                  {/* Badge */}
+                  {typeof item.badge === "number" && item.badge > 0 && (
+                    <span
+                      className={cn(
+                        "absolute flex h-5 min-w-[20px] items-center justify-center rounded-full bg-orange-600 px-1 text-xs font-bold text-white",
+                        isRTL ? "left-3" : "right-3",
+                        isCollapsed ? "top-2" : "top-1/2 -translate-y-1/2",
+                      )}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
 
                   {/* Label */}
                   {!isCollapsed && (
                     <span
                       className={cn(
-                        "flex-1 truncate transition-all",
+                        "flex-1 truncate",
                         isRTL ? "order-1 text-right" : "order-2 text-left",
                       )}
                     >
@@ -214,19 +241,19 @@ export default function Sidebar({ className }: SidebarProps) {
           })}
         </nav>
 
-        {/* Footer (Logout) */}
+        {/* Footer */}
         <div className="border-sidebar-border border-t p-2">
           <Button
             onClick={handleLogout}
             variant="ghost"
             className={cn(
-              "text-sidebar-foreground hover:bg-sidebar-accent flex w-full items-center justify-start gap-3",
+              "text-sidebar-foreground hover:bg-sidebar-accent flex w-full items-center gap-3",
               isRTL ? "flex-row-reverse" : "",
             )}
           >
-            <LogOut className="h-4 w-4 flex-shrink-0" />
+            <LogOut className="h-4 w-4" />
             {!isCollapsed && (
-              <span className={cn(isRTL ? "text-right" : "text-left")}>
+              <span>
                 {isAuthenticated ? t("sidebar.signOut") : t("sidebar.signIn")}
               </span>
             )}
