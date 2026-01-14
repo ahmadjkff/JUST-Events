@@ -89,6 +89,7 @@ function MyCertificates() {
 
       <main className="flex-1 overflow-auto p-6">
         <div className="mx-auto max-w-7xl">
+          {/* Heading Card */}
           <Card className="mb-6 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -108,13 +109,12 @@ function MyCertificates() {
           {loading ? (
             <Loading />
           ) : certificates.length > 0 ? (
-            certificates.map((certificate: any) => (
-              <div
-                className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
-                key={certificate._id}
-              >
-                {/* Example Certificate Card */}
-                <Card className="border border-gray-300 dark:border-gray-700">
+            <div className="flex flex-wrap gap-4 align-middle justify-center">
+              {certificates.map((certificate: any) => (
+                <Card
+                  key={certificate._id}
+                  className="w-full border border-gray-300 sm:w-1/2 md:w-1/3 lg:w-1/4 dark:border-gray-700"
+                >
                   <CardContent className="p-4">
                     <h3 className="mb-2 text-lg font-semibold">
                       {certificate.title}
@@ -133,9 +133,8 @@ function MyCertificates() {
                     </button>
                   </CardContent>
                 </Card>
-                {/* Add more certificate cards as needed */}
-              </div>
-            ))
+              ))}
+            </div>
           ) : (
             <p className="text-muted-foreground text-center">
               {t("myCertificates.noCertificates")}
