@@ -1,5 +1,6 @@
 import type React from "react";
-import { useTranslation } from "react-i18next"; 
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import anasImg from "../assets/Anas.jpg";
 import ahmadImg from "../assets/Ahmad.png";
 import omarImg from "../assets/Omar.png";
@@ -7,14 +8,54 @@ import eliasImg from "../assets/Elias.png";
 import hasanImg from "../assets/Dr-Hasan.jpg";
 import logo from "../assets/JUST-Events AboutUs Logo.jpg";
 
-
-
 const AboutUs: React.FC = () => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
+  // FAQ items
+  const faqs = [
+    { question: t("aboutUsPage.question0"), answer: t("aboutUsPage.answer0") },
+    { question: t("aboutUsPage.question1"), answer: t("aboutUsPage.answer1") },
+    { question: t("aboutUsPage.question2"), answer: t("aboutUsPage.answer2") },
+    { question: t("aboutUsPage.question3"), answer: t("aboutUsPage.answer3") },
+    { question: t("aboutUsPage.question4"), answer: t("aboutUsPage.answer4") },
+    { question: t("aboutUsPage.question5"), answer: t("aboutUsPage.answer5") },
+  ];
+
+  // Team members
+  const teamMembers = [
+    {
+      img: anasImg,
+      name: "Anas K Amoorah",
+      id: "151438",
+      color: "blue",
+      email: "akamoorah21@cit.just.edu.jo",
+    },
+    {
+      img: ahmadImg,
+      name: "Ahmad J Alfakori",
+      id: "161867",
+      color: "green",
+      email: "Ahmad@example.com",
+    },
+    {
+      img: omarImg,
+      name: "Omar M Alsaleh",
+      id: "160800",
+      color: "purple",
+      email: "omalsaleh22@cit.just.edu.jo",
+    },
+    {
+      img: eliasImg,
+      name: "Elias A Alqadi",
+      id: "154506",
+      color: "orange",
+      email: "eaalqadi21@cit.just.edu.jo",
+    },
+  ];
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <main className="mx-auto max-w-7xl px-4 py-12">
         {/* Title Section */}
         <section className="mb-16 text-center">
@@ -48,39 +89,10 @@ const AboutUs: React.FC = () => {
 
           {/* Team Members */}
           <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                img: anasImg,
-                name: "Anas K Amoorah",
-                id: "151438",
-                color: "blue",
-                email: "akamoorah21@cit.just.edu.jo",
-              },
-              {
-                img: ahmadImg,
-                name: "Ahmad J Alfakori",
-                id: "161867",
-                color: "green",
-                email: "Ahmad@example.com",
-              },
-              {
-                img: omarImg,
-                name: "Omar M Alsaleh",
-                id: "160800",
-                color: "purple",
-                email: "omalsaleh22@cit.just.edu.jo",
-              },
-              {
-                img: eliasImg,
-                name: "Elias A Alqadi",
-                id: "154506",
-                color: "orange",
-                email: "eaalqadi21@cit.just.edu.jo",
-              },
-            ].map((member) => (
+            {teamMembers.map((member) => (
               <div
                 key={member.id}
-                className="rounded-2xl border border-gray-100  p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                className="rounded-2xl border border-gray-100 p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
               >
                 <div className="text-center">
                   <img
@@ -88,9 +100,7 @@ const AboutUs: React.FC = () => {
                     alt={member.name}
                     className={`mx-auto mb-4 h-24 w-24 rounded-full object-cover ring-4 ring-${member.color}-100 transition-all duration-300 hover:ring-${member.color}-200`}
                   />
-                  <h3 className="mb-2 text-xl font-semibold">
-                    {member.name}
-                  </h3>
+                  <h3 className="mb-2 text-xl font-semibold">{member.name}</h3>
                   <p className={`mb-1 text-sm font-medium text-${member.color}-600`}>
                     {t("aboutUsPage.studentId")}: {member.id}
                   </p>
@@ -110,16 +120,14 @@ const AboutUs: React.FC = () => {
 
           {/* Supervisor */}
           <div className="flex justify-center">
-            <div className="max-w-sm rounded-2xl border-2 border-indigo-100  p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+            <div className="max-w-sm rounded-2xl border-2 border-indigo-100 p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
               <div className="text-center">
                 <img
                   src={hasanImg}
                   alt={t("aboutUsPage.teamSupervisor")}
                   className="mx-auto mb-4 h-28 w-28 rounded-full object-cover ring-4 ring-indigo-200 transition-all duration-300 hover:ring-indigo-300"
                 />
-                <h3 className="mb-2 text-2xl font-bold">
-                  Dr.Hasan K Albzoor
-                </h3>
+                <h3 className="mb-2 text-2xl font-bold">Dr.Hasan K Albzoor</h3>
                 <p className="mb-2 text-lg font-semibold text-indigo-600">
                   {t("aboutUsPage.teamSupervisor")}
                 </p>
@@ -137,35 +145,45 @@ const AboutUs: React.FC = () => {
           </div>
         </section>
 
-        {/* Common Questions */}
+        {/* FAQ Section */}
         <section>
           <h2 className="mb-12 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-center text-4xl font-bold text-transparent">
             {t("aboutUsPage.commonQuestions")}
           </h2>
 
-          <div className="mx-auto max-w-4xl space-y-8">
-            {[
-              { question: t("aboutUsPage.question0"), answer: t("aboutUsPage.answer0") },
-              { question: t("aboutUsPage.question1"), answer: t("aboutUsPage.answer1") },
-              { question: t("aboutUsPage.question2"), answer: t("aboutUsPage.answer2") },
-              { question: t("aboutUsPage.question3"), answer: t("aboutUsPage.answer3") },
-              { question: t("aboutUsPage.question4"), answer: t("aboutUsPage.answer4") },
-              { question: t("aboutUsPage.question5"), answer: t("aboutUsPage.answer5") },
-            ].map((qa, index) => (    
-              <div
-                key={index}
-                className="rounded-2xl border border-gray-100 p-6 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-              >
-                <h3 className="mb-2 text-xl font-semibold">
-                  {qa.question}
-                </h3>
-                <p className="text-gray-600">{qa.answer}</p>
-              </div>
-            ))}
+          <div className="mx-auto max-w-4xl space-y-4">
+            {faqs.map((qa, index) => {
+              const isExpanded = expandedIndex === index;
+              return (
+                <div
+                  key={index}
+                  className="cursor-pointer rounded-2xl border border-gray-100 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  onClick={() =>
+                    setExpandedIndex(isExpanded ? null : index)
+                  }
+                >
+                  <h3 className="flex justify-between text-xl font-semibold">
+                    {qa.question}
+                    <span className="ml-2 text-gray-500">{isExpanded ? "−" : "+"}</span>
+                  </h3>
+
+                  <div
+                    className={`mt-2 text-gray-600 transition-all duration-300 dark:text-gray-300 ${
+                      isExpanded
+                        ? "max-h-screen opacity-100"
+                        : "max-h-0 overflow-hidden opacity-0"
+                    }`}
+                  >
+                    {qa.answer}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       </main>
     </div>
   );
 };
+
 export default AboutUs;
