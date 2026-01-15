@@ -24,7 +24,10 @@ const EventCard = ({ event }: { event: IEvent }) => {
 
   // Fetch all student registrations once
   useEffect(() => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      setLoading(false);
+      return;
+    }
 
     const getRegistrations = async () => {
       setLoading(true); // start loading

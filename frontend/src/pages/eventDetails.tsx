@@ -173,7 +173,7 @@ function EventDetails() {
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Add Feedback FIRST */}
-              {event?.status === EventStatus.Approved && (
+              {user?._id && event?.status === EventStatus.Approved && (
                 <div className="space-y-3 border-b pb-4">
                   <p className="font-semibold">{t("event.addFeedback")}</p>
 
