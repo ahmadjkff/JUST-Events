@@ -93,12 +93,11 @@ const EditForm: React.FC = () => {
     }
 
     try {
-      const plainDescription = form.description.replace(/<[^>]+>/g, "");
       const result = await editEvent(
         eventId || "",
         form.stageId,
         form.title,
-        plainDescription,
+        form.description,
         form.location,
         form.department,
         form.category,

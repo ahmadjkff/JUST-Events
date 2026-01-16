@@ -145,11 +145,10 @@ const EventForm: React.FC = () => {
     const maxCapacity = stageData.data.capacity;
 
     try {
-      const plainDescription = form.description.replace(/<[^>]+>/g, "");
       const result = await createEvent(
         form.stageId,
         form.title,
-        plainDescription,
+        form.description,
         form.location,
         form.department,
         form.category,
