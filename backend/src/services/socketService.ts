@@ -7,7 +7,10 @@ const connectedUsers: Map<string, Set<string>> = new Map();
 export const initializeSocket = (httpServer: HTTPServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: [
+        "https://just-events-frontend-whnj.onrender.com",
+        "http://localhost:5173",
+      ],
       credentials: true,
     },
   });
