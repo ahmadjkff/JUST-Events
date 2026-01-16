@@ -112,7 +112,7 @@ const EventCard = ({ event }: { event: IEvent }) => {
   if (loading)
     return (
       <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
-        <div className="flex h-60 items-center justify-center">
+        <div className="flex min-h-[200px] items-center justify-center p-4 md:h-60">
           <div className="flex flex-col items-center gap-2">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
             <p className="text-muted-foreground text-sm">Loading event...</p>
@@ -122,127 +122,153 @@ const EventCard = ({ event }: { event: IEvent }) => {
     );
 
   return (
-    <Card className="overflow-hidden p-0 transition-shadow hover:shadow-md">
-      <div className="flex h-60">
-        {/* LEFT IMAGE */}
-        <div className="w-56 shrink-0">
-          <img
-            src={`${import.meta.env.VITE_BASE_URL}${event?.img}`}
-            alt={event.title}
-            className="h-full w-full object-cover"
-            loading="lazy"
-          />
-        </div>
+    <Card className="flex h-full flex-col overflow-hidden p-0 transition-shadow hover:shadow-md">
+      {/* IMAGE - Takes full card height */}
+      <div className="min-h-[200px] flex-1 sm:min-h-[300px]">
+        <img
+          src={`${import.meta.env.VITE_BASE_URL}${event?.img}`}
+          alt={event.title}
+          className="h-90 w-full object-cover"
+          loading="lazy"
+        />
+      </div>
 
-        {/* RIGHT CONTENT */}
-        <div className="flex flex-1 flex-col">
-          <div className="flex items-start justify-between p-4">
-            <div className="space-y-2">
-              <CardTitle className="text-lg">{event.title}</CardTitle>
-              <Badge className={getCategoryColor(event.category)}>
-                {event.category}
-              </Badge>
-            </div>
+      {/* CONTENT - Fixed at bottom */}
+      <div className="flex flex-col gap-3 p-3 sm:p-4">
+        {/* Title and Badge */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1 space-y-2">
+            <CardTitle className="text-base break-words sm:text-lg">
+              {event.title}
+            </CardTitle>
+            <Badge className={getCategoryColor(event.category)}>
+              {event.category}
+            </Badge>
+          </div>
 
-            <div className="flex flex-wrap gap-2">
-              {!registrationStatus && !volunteerStatus && (
-                <Button onClick={() => handleRegister(event._id, user?._id!)}>
-                  {t("eventDetails.register")}
-                </Button>
-              )}
-              {registrationStatus && !volunteerStatus && (
-                <div className="flex items-center gap-3">
-                  <p
-                    className={`rounded-full px-3 py-1 text-sm font-medium ${
-                      currentRegistration?.status === "approved"
-                        ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
-                        : currentRegistration?.status === "pending"
-                          ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
-                          : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
-                    }`}
-                  >
-                    {currentRegistration?.status}
-                  </p>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2 sm:flex-nowrap">
+            {!registrationStatus && !volunteerStatus && (
+              <Button
+                onClick={() => handleRegister(event._id, user?._id!)}
+                className="flex-1 text-xs sm:flex-none sm:text-sm"
+                size="sm"
+              >
+                {t("eventDetails.register")}
+              </Button>
+            )}
+            {registrationStatus && !volunteerStatus && (
+              <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                <p
+                  className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
+                    currentRegistration?.status === "approved"
+                      ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                      : currentRegistration?.status === "pending"
+                        ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                        : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                  }`}
+                >
+                  {currentRegistration?.status}
+                </p>
 
-                  <Button
-                    className="bg-red-500 text-white hover:bg-red-600"
-                    size="sm"
-                    onClick={() =>
-                      handleRegistrationCancel(event._id, user?._id!)
-                    }
-                  >
-                    {t("eventDetails.cancelRegistration")}
-                  </Button>
-                </div>
-              )}
-              {!registrationStatus && !volunteerStatus && (
-                <Button onClick={() => handleVolunteer(event._id, user?._id!)}>
-                  volunteer
-                </Button>
-              )}
-              {volunteerStatus && !registrationStatus && (
-                <div className="flex items-center gap-3">
-                  <p
-                    className={`rounded-full px-3 py-1 text-sm font-medium ${
-                      currentVolunteer?.status === "approved"
-                        ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
-                        : currentVolunteer?.status === "pending"
-                          ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
-                          : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
-                    }`}
-                  >
-                    {currentVolunteer?.status}
-                  </p>
-                </div>
-              )}
-              {volunteerStatus && !registrationStatus && (
                 <Button
-                  className="bg-red-500 text-white hover:bg-red-600"
+                  className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
+                  size="sm"
+                  onClick={() =>
+                    handleRegistrationCancel(event._id, user?._id!)
+                  }
+                >
+                  {t("eventDetails.cancelRegistration")}
+                </Button>
+              </div>
+            )}
+            {!registrationStatus && !volunteerStatus && (
+              <Button
+                onClick={() => handleVolunteer(event._id, user?._id!)}
+                className="flex-1 text-xs sm:flex-none sm:text-sm"
+                size="sm"
+              >
+                volunteer
+              </Button>
+            )}
+            {volunteerStatus && !registrationStatus && (
+              <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                <p
+                  className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
+                    currentVolunteer?.status === "approved"
+                      ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                      : currentVolunteer?.status === "pending"
+                        ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                        : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                  }`}
+                >
+                  {currentVolunteer?.status}
+                </p>
+                <Button
+                  className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
+                  size="sm"
                   onClick={() =>
                     handleRegistrationCancel(event._id, user?._id!)
                   }
                 >
                   cancel Volunteer
                 </Button>
-              )}
-              <Link to={`/event/${event._id}`}>
-                <Button variant="outline" size="sm">
-                  {t("eventDetails.details")}
-                </Button>
-              </Link>
-            </div>
+              </div>
+            )}
+            <Link to={`/event/${event._id}`} className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full text-xs sm:w-auto sm:text-sm"
+              >
+                {t("eventDetails.details")}
+              </Button>
+            </Link>
           </div>
+        </div>
 
-          <div className="flex flex-1 flex-col justify-between p-4">
-            <p className="text-muted-foreground mb-4">{event.description}</p>
+        {/* Description */}
+        <div
+          className="text-muted-foreground [&_h1]:text-foreground [&_h2]:text-foreground [&_h3]:text-foreground [&_h4]:text-foreground [&_strong]:text-foreground line-clamp-2 text-sm sm:line-clamp-3 [&_a]:text-blue-600 [&_a]:underline [&_a]:hover:text-blue-800 dark:[&_a]:text-blue-400 dark:[&_a]:hover:text-blue-300 [&_blockquote]:my-2 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-3 [&_blockquote]:italic [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs [&_code]:dark:bg-gray-800 [&_em]:italic [&_h1]:mt-1 [&_h1]:mb-2 [&_h1]:text-lg [&_h1]:font-bold [&_h2]:mt-1 [&_h2]:mb-1.5 [&_h2]:text-base [&_h2]:font-bold [&_h3]:mt-1 [&_h3]:mb-1 [&_h3]:text-sm [&_h3]:font-semibold [&_h4]:mb-1 [&_h4]:text-sm [&_h4]:font-semibold [&_li]:mb-0.5 [&_li]:text-sm [&_ol]:mb-2 [&_ol]:ml-4 [&_ol]:list-decimal [&_ol]:space-y-1 [&_p]:mb-1.5 [&_p]:leading-relaxed [&_strong]:font-semibold [&_u]:underline [&_ul]:mb-2 [&_ul]:ml-4 [&_ul]:list-disc [&_ul]:space-y-1"
+          dangerouslySetInnerHTML={{ __html: event.description }}
+        />
 
-            <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                {event?.date?.split("T")[0]}
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                {event.startTime}-{event.endTime}
-              </div>
-              <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4" />
-                {t("eventDetails.location")}: {event.location}
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <Link to={`/registred-students/${event._id}`}>
-                  {event?.registeredStudents?.length} / {event.capacity}{" "}
-                  {t("eventDetails.attendees")}
-                </Link>
-              </div>
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <Link to={`/volunteered-students/${event._id}`}>
-                  {event?.volunteers?.length} {t("eventDetails.volunteers")}
-                </Link>
-              </div>
-            </div>
+        {/* Metadata */}
+        <div className="text-muted-foreground flex flex-col gap-2 text-xs sm:flex-row sm:flex-wrap sm:gap-4 sm:text-sm">
+          <div className="flex items-center gap-1.5">
+            <Calendar className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+            <span className="truncate">{event?.date?.split("T")[0]}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Clock className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+            <span className="truncate">
+              {event.startTime}-{event.endTime}
+            </span>
+          </div>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <MapPin className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+            <span className="truncate">
+              {t("eventDetails.location")}: {event.location}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+            <Link
+              to={`/registred-students/${event._id}`}
+              className="truncate hover:underline"
+            >
+              {event?.registeredStudents?.length} / {event.capacity}{" "}
+              {t("eventDetails.attendees")}
+            </Link>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Users className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+            <Link
+              to={`/volunteered-students/${event._id}`}
+              className="truncate hover:underline"
+            >
+              {event?.volunteers?.length} {t("eventDetails.volunteers")}
+            </Link>
           </div>
         </div>
       </div>
