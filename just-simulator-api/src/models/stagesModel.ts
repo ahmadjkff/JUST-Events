@@ -1,8 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+const defaultDate = new Date("2024-2-10");
 const defaultHours = [
-  { date: new Date(), start: "08:00", end: "10:00" },
-  { date: new Date(), start: "10:00", end: "12:00" },
+  { date: defaultDate, start: "08:00", end: "10:00" },
+  { date: defaultDate, start: "10:00", end: "12:00" },
   { date: new Date(), start: "13:00", end: "15:00" },
   { date: new Date(), start: "15:00", end: "17:00" },
 ];
@@ -51,8 +52,8 @@ const stageSchema = new Schema<IStage>({
 stageSchema.pre("save", function (next) {
   if (!this.freeTimes || this.freeTimes.length === 0) {
     this.freeTimes = [
-      { date: new Date(), start: "09:00", end: "11:00" },
-      { date: new Date(), start: "11:30", end: "13:30" },
+      { date: defaultDate, start: "09:00", end: "11:00" },
+      { date: defaultDate, start: "11:30", end: "13:30" },
       { date: new Date(), start: "14:00", end: "16:00" },
       { date: new Date(), start: "16:30", end: "18:30" },
     ];
