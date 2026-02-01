@@ -5,6 +5,8 @@ import { EventStatus } from "../../types/eventTypes";
 
 export const getEventsByStatus = async (status?: string) => {
   const normalizedStatus = status ? status.toLowerCase() : null;
+
+  // Validate status
   if (
     status &&
     !Object.values(EventStatus).includes(normalizedStatus as EventStatus)
@@ -12,9 +14,26 @@ export const getEventsByStatus = async (status?: string) => {
     throw new AppError("Invalid status parameter", 400);
   }
 
+  // Build query
   const query = normalizedStatus ? { status: normalizedStatus } : {};
 
-  const events = await eventModel.find(query).populate("volunteers").populate("createdBy", "firstName lastName email").sort({ createdAt: -1 });
+  // Fetch events
+  const events = await eventModel
+    .find(query)
+    .populate("volunteers")
+    .populate("createdBy", "firstName lastName email")
+    .sort({ createdAt: -1 });
+
+  // Update past approved events
+
+    const currentDate = new Date();
+
+    for (const event of events) {
+      if (event.date  && event.date < currentDate && event.status !== EventStatus.COMPLETED) {
+        event.status = EventStatus.COMPLETED;
+        await event.save();
+      }
+    }
 
   return events;
 };
@@ -27,7 +46,7 @@ export const getSpecificEvent = async (eventId: string) => {
       .populate("createdBy", "firstName lastName email")
       .sort({ createdAt: -1 })
       .lean();
-      
+
     if (!event)
       return { message: "Event not found ", statusCode: 403, success: false };
 

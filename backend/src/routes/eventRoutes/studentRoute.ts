@@ -245,7 +245,7 @@ router.get(
   async (req: IExtendRequest, res: Response) => {
     const studentId = req.user._id;
     try {
-      const events = await eventModel.find({ status: EventStatus.APPROVED });
+      const events = await eventModel.find({ status: EventStatus.COMPLETED });
 
       const completedEvents = events?.filter((event: IEvent) => {
         if (!event.date) return false;

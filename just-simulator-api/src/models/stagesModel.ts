@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-const defaultDate = new Date("2024-2-10");
+const defaultDate = new Date("2026-2-10");
 const defaultHours = [
   { date: defaultDate, start: "08:00", end: "10:00" },
   { date: defaultDate, start: "10:00", end: "12:00" },

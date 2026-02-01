@@ -14,6 +14,7 @@ type IconName = keyof typeof ICONS;
 export default function DashboardCards() {
   const { eventsByStatus, fetchEvents } = useEvent();
   const [registeredEvents, setRegisteredEvents] = useState<any[]>([]);
+  const [certificates, setCertificates] = useState<any[]>([]);
   const approvedEvents = eventsByStatus.approved || [];
   const { notifications } = useNotification();
   const { t, i18n } = useTranslation();
@@ -27,6 +28,29 @@ export default function DashboardCards() {
       await fetchEvents("approved");
     };
     loadEvents();
+  }, []);
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/student/certificates`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
+        const data = await res.json();
+
+        setCertificates(data.data || []);
+      } catch (error) {
+        console.error("Error fetching certificates:", error);
+      }
+    };
+    fetchCertificates();
   }, []);
 
   useEffect(() => {
@@ -79,7 +103,7 @@ export default function DashboardCards() {
     {
       id: 3,
       titleKey: "dashboardCards.myCertificates",
-      count: registeredEvents.length,
+      count: certificates.length,
       icon: "Award" as IconName,
       color: "text-indigo-600",
       bgGradient: "from-indigo-500/10 to-indigo-600/5",
