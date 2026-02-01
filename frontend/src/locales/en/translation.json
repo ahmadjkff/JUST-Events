@@ -17,7 +17,8 @@
     "signOut": "Sign Out",
     "signIn": "Sign In",
     "Control Applications": "Control Applications",
-    "Create Event": "Create Event"
+    "Create Event": "Create Event",
+    "myCompletedEvents": "My Completed Events"
   },
   "footer": {
     "aboutUs": "About Us",
@@ -56,7 +57,8 @@
     "featuredEvents": "Featured Events",
     "noEvents": "No {{type}}",
     "noAvailableText": "Currently, there are no events to display. Please check back later.",
-    "noFeaturedText": "Featured events will appear here."
+    "noFeaturedText": "Featured events will appear here.",
+    "department": "Department"
   },
   "home": {
     "welcomeBack": "Welcome back, {{name}} !",

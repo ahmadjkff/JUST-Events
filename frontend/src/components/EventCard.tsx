@@ -148,72 +148,76 @@ const EventCard = ({ event }: { event: IEvent }) => {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-2 sm:flex-nowrap">
-            {!registrationStatus && !volunteerStatus && (
-              <Button
-                onClick={() => handleRegister(event._id, user?._id!)}
-                className="flex-1 text-xs sm:flex-none sm:text-sm"
-                size="sm"
-              >
-                {t("eventDetails.register")}
-              </Button>
-            )}
-            {registrationStatus && !volunteerStatus && (
-              <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-                <p
-                  className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
-                    currentRegistration?.status === "approved"
-                      ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
-                      : currentRegistration?.status === "pending"
-                        ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
-                        : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
-                  }`}
-                >
-                  {currentRegistration?.status}
-                </p>
+            {event.status === "approved" && (
+              <>
+                {!registrationStatus && !volunteerStatus && (
+                  <Button
+                    onClick={() => handleRegister(event._id, user?._id!)}
+                    className="flex-1 text-xs sm:flex-none sm:text-sm"
+                    size="sm"
+                  >
+                    {t("eventDetails.register")}
+                  </Button>
+                )}
+                {registrationStatus && !volunteerStatus && (
+                  <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                    <p
+                      className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
+                        currentRegistration?.status === "approved"
+                          ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                          : currentRegistration?.status === "pending"
+                            ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                            : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                      }`}
+                    >
+                      {currentRegistration?.status}
+                    </p>
 
-                <Button
-                  className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
-                  size="sm"
-                  onClick={() =>
-                    handleRegistrationCancel(event._id, user?._id!)
-                  }
-                >
-                  {t("eventDetails.cancelRegistration")}
-                </Button>
-              </div>
-            )}
-            {!registrationStatus && !volunteerStatus && (
-              <Button
-                onClick={() => handleVolunteer(event._id, user?._id!)}
-                className="flex-1 text-xs sm:flex-none sm:text-sm"
-                size="sm"
-              >
-                volunteer
-              </Button>
-            )}
-            {volunteerStatus && !registrationStatus && (
-              <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
-                <p
-                  className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
-                    currentVolunteer?.status === "approved"
-                      ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
-                      : currentVolunteer?.status === "pending"
-                        ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
-                        : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
-                  }`}
-                >
-                  {currentVolunteer?.status}
-                </p>
-                <Button
-                  className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
-                  size="sm"
-                  onClick={() =>
-                    handleRegistrationCancel(event._id, user?._id!)
-                  }
-                >
-                  cancel Volunteer
-                </Button>
-              </div>
+                    <Button
+                      className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
+                      size="sm"
+                      onClick={() =>
+                        handleRegistrationCancel(event._id, user?._id!)
+                      }
+                    >
+                      {t("eventDetails.cancelRegistration")}
+                    </Button>
+                  </div>
+                )}
+                {!registrationStatus && !volunteerStatus && (
+                  <Button
+                    onClick={() => handleVolunteer(event._id, user?._id!)}
+                    className="flex-1 text-xs sm:flex-none sm:text-sm"
+                    size="sm"
+                  >
+                    volunteer
+                  </Button>
+                )}
+                {volunteerStatus && !registrationStatus && (
+                  <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                    <p
+                      className={`rounded-full px-2 py-1 text-center text-xs font-medium sm:px-3 sm:text-sm ${
+                        currentVolunteer?.status === "approved"
+                          ? "bg-green-200 text-green-900 dark:bg-green-700 dark:text-green-100"
+                          : currentVolunteer?.status === "pending"
+                            ? "bg-yellow-200 text-yellow-900 dark:bg-yellow-700 dark:text-yellow-100"
+                            : "bg-red-200 text-red-900 dark:bg-red-700 dark:text-red-100"
+                      }`}
+                    >
+                      {currentVolunteer?.status}
+                    </p>
+                    <Button
+                      className="flex-1 bg-red-500 text-xs text-white hover:bg-red-600 sm:flex-none sm:text-sm"
+                      size="sm"
+                      onClick={() =>
+                        handleRegistrationCancel(event._id, user?._id!)
+                      }
+                    >
+                      cancel Volunteer
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
             <Link to={`/event/${event._id}`} className="w-full sm:w-auto">
               <Button

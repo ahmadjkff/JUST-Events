@@ -121,6 +121,12 @@ export default function Sidebar({ className }: SidebarProps) {
       href: "/student/my-events",
       allowed: ["student", "supervisor"],
     },
+     {
+      icon: CalendarCheck,
+      label: t("sidebar.myCompletedEvents"),
+      href: "/student/my-completed-events",
+      allowed: ["student", "supervisor"],
+    },
     {
       icon: Bell,
       label: t("sidebar.notifications"),

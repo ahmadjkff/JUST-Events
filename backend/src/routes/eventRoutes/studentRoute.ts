@@ -70,6 +70,33 @@ router.get(
     }
   }
 );
+// Get all completed events a student has registered for
+router.get(
+  "/my-completed-events",
+  validateJWT,
+  async (req: IExtendRequest, res: Response) => {
+    try {
+      const studentId = req.user!._id;
+
+      const events = await eventModel
+        .find({
+          status: EventStatus.COMPLETED,
+          registeredStudents: studentId,
+        })
+        .sort({ date: -1 }).lean();
+
+
+      res.status(200).json({
+        success: true,
+        message: "Registered events fetched successfully",
+        data: events,
+      });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+);
+
 
 // Cancel event registration
 // TO-DO : replace studentId with userId from JWT

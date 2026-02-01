@@ -17,7 +17,8 @@
     "signOut": "تسجيل الخروج",
     "signIn": "تسجيل الدخول",
     "Control Applications": " إدارة الطلبات",
-    "Create Event": "إنشاء فعالية"
+    "Create Event": "إنشاء فعالية",
+    "myCompletedEvents": "فعالياتي المكتملة"
   },
   "footer": {
     "aboutUs": "من نحن",
@@ -56,7 +57,8 @@
     "featuredEvents": "الفعاليات المميزة",
     "noEvents": "لا توجد {{type}}",
     "noAvailableText": "حالياً لا توجد فعاليات للعرض. يرجى التحقق لاحقاً.",
-    "noFeaturedText": "ستظهر الفعاليات المميزة هنا."
+    "noFeaturedText": "ستظهر الفعاليات المميزة هنا.",
+    "department": "القسم"
   },
   "home": {
     "welcomeBack": "مرحباً، {{name}} !",

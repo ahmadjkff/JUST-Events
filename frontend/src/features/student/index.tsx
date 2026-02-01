@@ -5,6 +5,7 @@ import MyEvents from "./pages/MyEvents";
 import ProtectedRoute from "../../protectedRoutes";
 import NotFound from "../../pages/NotFound";
 import MyCertificates from "./pages/myCertificates";
+import MyCompletedEvents from "./pages/MyCompletedEvents";
 
 const StudentRoutes: React.FC = () => (
   <Routes>
@@ -13,6 +14,14 @@ const StudentRoutes: React.FC = () => (
       element={
         <ProtectedRoute allowedRoles={["student", "supervisor"]}>
           <MyEvents />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="my-completed-events"
+      element={
+        <ProtectedRoute allowedRoles={["student", "supervisor"]}>
+          <MyCompletedEvents />
         </ProtectedRoute>
       }
     />
