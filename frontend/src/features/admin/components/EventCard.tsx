@@ -74,7 +74,10 @@ const EventCard = ({
       </CardHeader>
 
       <CardContent>
-        <p className="text-muted-foreground mb-4">{event.description}</p>
+        <div
+          className="text-muted-foreground mb-4"
+          dangerouslySetInnerHTML={{ __html: event.description }}
+        />
         <div
           className={`text-muted-foreground flex flex-wrap gap-4 text-sm ${
             isRTL ? "flex-row-reverse" : ""
