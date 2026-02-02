@@ -26,8 +26,6 @@ interface IStage {
 const EventForm: React.FC = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
-  const [loadingDescription, setLoadingDescription] = useState(false);
-  const [descError, setDescError] = useState<string | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -68,43 +66,6 @@ const EventForm: React.FC = () => {
     >,
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // ✅ AI Description Generator
-  const handleGenerateDescription = async () => {
-    if (!form.title.trim()) {
-      setDescError("Please enter a title before generating description");
-      toast.error("Please enter a title before generating description");
-      return;
-    }
-
-    setLoadingDescription(true);
-    setDescError(null);
-
-    try {
-      const response = await fetch(
-        "http://localhost:3001/ai/generate-description",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: form.title }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (response.ok && data.description) {
-        setForm((prev) => ({ ...prev, description: data.description }));
-      } else {
-        setDescError(data.error || "Failed to generate description");
-        toast.error(data.error || "Failed to generate description");
-      }
-    } catch (error) {
-      console.error(error);
-      setDescError("Something went wrong while generating description");
-    } finally {
-      setLoadingDescription(false);
-    }
   };
 
   // ✅ Create Event handler
@@ -234,7 +195,7 @@ const EventForm: React.FC = () => {
             </div>
           </div>
 
-          {/* Description + AI Button */}
+          {/* Description */}
           <div className="mb-4">
             <label className="mb-1 block font-medium text-gray-700">
               {t("createForm.fields.description")}
@@ -272,27 +233,6 @@ const EventForm: React.FC = () => {
                 }
               />
             </div>
-
-            <button
-              type="button"
-              onClick={handleGenerateDescription}
-              disabled={loadingDescription}
-              className={`mt-2 w-full rounded-lg py-2 font-medium text-white transition ${
-                loadingDescription
-                  ? "cursor-not-allowed bg-gray-400"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
-            >
-              {loadingDescription
-                ? t("createForm.submit.generating")
-                : t("createForm.submit.generateDescription")}
-            </button>
-
-            {descError && (
-              <p className="mt-2 text-center text-sm text-red-500">
-                {descError}
-              </p>
-            )}
           </div>
 
           {/* Stage */}

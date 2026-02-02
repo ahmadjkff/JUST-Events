@@ -13,7 +13,7 @@ import eventUserRoute from "./routes/eventRoutes/userRoute";
 import notificationRoute from "./routes/notificationRoute";
 import adminDashboard from "./routes/adminDashboard";
 import path from "path";
-import aiRoute from "./routes/aiRoute";
+
 import { initializeSocket } from "./services/socketService";
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.use(
       "http://localhost:5173",
     ],
     credentials: true,
-  })
+  }),
 );
 const port = process.env.PORT;
 app.use(express.json());
@@ -52,7 +52,6 @@ app.use("/supervisor", supervisorRoute);
 app.use("/event/admin", eventAdminRoute);
 app.use("/event/supervisor-admin", supervisorAndAdminRoute);
 app.use("/notifications", notificationRoute);
-app.use("/ai", aiRoute);
 
 httpServer.listen(port, () => {
   console.log(`connected on port: ${port}`);
