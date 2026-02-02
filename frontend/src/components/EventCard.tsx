@@ -1,7 +1,7 @@
 import { Card, CardTitle } from "./ui/Card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/Button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Calendar, Clock, MapPin, Users } from "lucide-react";
 import { useAuth } from "../context/auth/AuthContext";
 import { useEvent } from "../context/event/EventContext";
@@ -59,7 +59,13 @@ const EventCard = ({ event }: { event: IEvent }) => {
       : null;
   };
 
+  const navigate = useNavigate();
+
   const handleRegister = async (eventId: string, userId: string) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     await registerForEvent(eventId, userId);
     await fetchEvents("approved");
 
@@ -84,6 +90,10 @@ const EventCard = ({ event }: { event: IEvent }) => {
   };
 
   const handleVolunteer = async (eventId: string, userId: string) => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     try {
       await volunteerForEvent(eventId, userId);
       await fetchEvents("approved");
